@@ -1,23 +1,107 @@
-module.exports = function(partArray, name, memory) {
+module.exports = function(partArray, name, memory, room) {
     let baseCreep = {
         carry: {
             energy: 0
         },
         carryCapacity: 50*getPartCount(CARRY, partArray),
-        room: {
-            find: function(entityType) {
-                return [];
-            },
-            controller: {}
+        room: room,
+        moveTo: function(entity, options) {
+            //x, y or entity
         },
-        moveTo: function(entity, options) {},
-        harvest: function(entity) {},
-        transfer: function(entity, itemType) {},
-        say: function(message) {},
-        build: function() {},
-        upgradeController: function() {},
-        name: name
-    }
+        harvest: function(entity) {
+
+        },
+        name: name,
+        pos: {
+            x: 0,
+            y: 0
+        },
+        body: function(boost, type, hits) {
+            return {};
+        },
+        fatigue: 0,
+        hits: 300 + 10*getPartCount(TOUGH, partArray),
+        hitsMax: 300 + 10*getPartCount(TOUGH, partArray),
+        id: name,
+        my: true,
+        owner: { username: 'Multitallented' },
+        saying: '',
+        spawning: false,
+        ticksToLive: 1500,
+        attack: function(target) {
+            //creep or structure
+        },
+        attackController: function(controller) {
+
+        },
+        build: function(constructionSite) {
+
+        },
+        cancelOrder: function(methodName) {
+            //name of the method to be cancelled
+        },
+        claimController: function(controller) {
+            //requires global control level
+        },
+        dismantle: function(structure) {
+
+        },
+        drop: function(resource) {
+
+        },
+        generateSafeMode: function(controller) {
+            //requires 1000 ghodium
+        },
+        getActiveBodyparts: function(type) {
+            return getPartCount(type, partArray);
+        },
+        heal: function(target) {
+
+        },
+        move: function(direction) {
+            //TOP, TOP_RIGHT, etc.
+        },
+        moveByPath: function(path) {
+
+        },
+        notifyWhenAttacked: function(enabled) {
+            //enabled by default
+        },
+        pickup: function(target) {
+            //picking up energy
+        },
+        rangedAttack: function(target) {
+
+        },
+        rangedHeal: function(target) {
+
+        },
+        rangedMassAttack: function() {
+            //every hostile creep within 3
+        },
+        repair: function(target) {
+
+        },
+        reserveController: function(controller) {
+            //1 tick per CLAIM max 5000
+        },
+        say: function(message, sayPublicly) {},
+        signController: function(controller, text) {
+            //visible to all players
+        },
+        suicide: function() {
+
+        },
+        transfer: function(target, resourceType, amount) {
+            //if amount is left out, then it transfers all
+        },
+        upgradeController: function(controller) {
+
+        },
+        withdraw: function(structure, resourceType, amount) {
+
+        }
+    };
     baseCreep = _.merge(baseCreep, memory);
     return baseCreep;
 };

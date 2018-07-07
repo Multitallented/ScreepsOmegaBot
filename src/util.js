@@ -1,6 +1,12 @@
 module.exports = {
+    /** @param {Room} room **/
     findAvailableResource: function(room) {
-        for (let resource in room.find(FIND_SOURCES)) {
+        let sourcesArray = room.find(FIND_SOURCES);
+        for (let resource in sourcesArray) {
+            if (!resource || !sourcesArray.hasOwnProperty(resource)) {
+                continue;
+            }
+            let currentResource = sourcesArray[resource];
 
         }
     },

@@ -41,9 +41,14 @@ module.exports = function () {
         STRUCTURE_TOWER: 'tower',
         STRUCTURE_WALL: 'constructedWall',
 
-        WORK: {type: "work", hits: 100},
-        CARRY: {type: "carry", hits: 100},
-        MOVE: {type: "move", hits: 100},
+        WORK: {type: "work", hits: 100, buildCost: 100},
+        CARRY: {type: "carry", hits: 100, buildCost: 50},
+        MOVE: {type: "move", hits: 100, buildCost: 50},
+        ATTACK: {type: "attack", hits: 100, buildCost: 80},
+        RANGED_ATTACK: {type: "ranged_attack", hits: 100, buildCost: 150},
+        HEAL: {type: "heal", hits: 100, buildCost: 250},
+        CLAIM: {type: "claim", hits: 100, buildCost: 600},
+        TOUGH: {type: "tough", hits: 100, buildCost: 10},
 
         //resources
         RESOURCE_ENERGY: 'resourceEnergy',
