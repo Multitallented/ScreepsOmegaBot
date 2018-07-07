@@ -43,14 +43,23 @@ module.exports = function () {
 
         WORK: {type: "work", hits: 100},
         CARRY: {type: "carry", hits: 100},
-        MOVE: {type: "move", hits: 100}
+        MOVE: {type: "move", hits: 100},
+
+        //resources
+        RESOURCE_ENERGY: 'resourceEnergy',
+
+        //Behavior constants
+        FIND_STRUCTURES: 'findStructures',
+        ERR_NOT_IN_RANGE: 'errorNotInRange',
+        FIND_SOURCES: 'findSources',
+        FIND_CONSTRUCTION_SITES: 'findConstructionSites'
     });
 
     var gameObjects = [];
 
 
-    var gameSpawns = [];
-    gameSpawns['Spawn1'] = require('./spawn');
+    var gameSpawns = {};
+    gameSpawns.Spawn1 = require('./spawn')();
 
     // Game properties
     global.Game = {
@@ -59,6 +68,7 @@ module.exports = function () {
         rooms: {},
         structures: {},
         spawns: gameSpawns,
+        time: Math.floor(new Date().getTime() / 1000),
         getObjectById: function(id) {
 
             return gameObjects[id];

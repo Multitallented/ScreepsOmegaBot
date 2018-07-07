@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/Multitallented/ScreepsOmegaBot#readme",
   "devDependencies": {
-    "jasmine": "^3.1.0"
+    "jasmine": "^3.1.0",
+    "lodash": "^4.17.10"
   }
 }
