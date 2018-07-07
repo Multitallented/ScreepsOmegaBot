@@ -1,4 +1,6 @@
 module.exports = {
+    HARVEST: "HARVEST",
+
     /** @param {Room} room **/
     findAvailableResource: function(room) {
         let sourcesArray = room.find(FIND_SOURCES);
@@ -7,7 +9,10 @@ module.exports = {
                 continue;
             }
             let currentResource = sourcesArray[resource];
-
+            console.log(currentResource.id);
+            if (findAnyCreepsHarvestingThatResource(currentResource.id).length === 0) {
+                return currentResource.id;
+            }
         }
     },
 
@@ -36,3 +41,11 @@ module.exports = {
         return creepArray;
     }
 };
+
+function findAnyCreepsHarvestingThatResource(id) {
+    let creepArray = _.filter(Game.creeps, (creep) => creep.memory.currentOrder === this.HARVEST + id);
+    if (creepArray.length > 0) {
+        return creepArray;
+    }
+    return [];
+}

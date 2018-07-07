@@ -54,23 +54,25 @@ module.exports = function () {
         RESOURCE_ENERGY: 'resourceEnergy',
 
         //Behavior constants
-        FIND_STRUCTURES: 'findStructures',
-        ERR_NOT_IN_RANGE: 'errorNotInRange',
-        FIND_SOURCES: 'findSources',
-        FIND_CONSTRUCTION_SITES: 'findConstructionSites'
+        FIND_STRUCTURES: 'FIND_STRUCTURES',
+        ERR_NOT_IN_RANGE: -9,
+        FIND_SOURCES: 'FIND_SOURCES',
+        FIND_CONSTRUCTION_SITES: 'FIND_CONSTRUCTION_SITES'
     });
 
     var gameObjects = [];
 
 
-    var gameSpawns = {};
-    gameSpawns.Spawn1 = require('./spawn')();
+    let controller1 = require('./controller')();
+    let room1 = require('./room')('Room1', controller1);
+    let gameSpawns = {};
+    gameSpawns.Spawn1 = require('./spawn')(room1);
 
     // Game properties
     global.Game = {
         creeps: {},
         flags: {},
-        rooms: {},
+        rooms: {"Room1": room1},
         structures: {},
         spawns: gameSpawns,
         time: Math.floor(new Date().getTime() / 1000),
@@ -84,7 +86,9 @@ module.exports = function () {
     global.Memory = {
         creeps: {},
         spawns: {},
-        rooms: {}
+        rooms: {
+            "Room1": room1
+        }
     };
 
     global.Map = function () {};

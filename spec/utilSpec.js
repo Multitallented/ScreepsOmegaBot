@@ -1,0 +1,26 @@
+var util = require('../src/util');
+var main = require('../src/main');
+
+describe("Respawn Tests", function() {
+    beforeEach(function() {
+        require('./mocks/game')();
+        let room1 = Game.rooms['Room1'];
+        room1.entities.FIND_SOURCES = [
+            require('./mocks/source')("Source1", 0, 0, room1),
+            require('./mocks/source')("Source2", 10, 10, room1),
+        ];
+    });
+
+    it("Util should find open resource", function() {
+        main.loop();
+        let resource = util.findAvailableResource(Game.spawns.Spawn1.room);
+        expect(resource).not.toBe(undefined);
+    });
+
+    it("Util should find open resource if one in use", function() {
+        Game.creeps['Harvester1'] = require('./mocks/creep')([MOVE, WORK, CARRY], "Harvester1", {memory: {role: 'harvester', currentOrder: 'HARVESTSource1'}}, Game.rooms.Room1);
+        main.loop();
+        let resource = util.findAvailableResource(Game.spawns.Spawn1.room);
+        expect(resource.id).toBe("Source2");
+    });
+});
