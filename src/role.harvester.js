@@ -24,15 +24,20 @@ let roleHarvester = {
                     structure.structureType === STRUCTURE_TOWER && structure.energy < structure.energyCapacity);
             });
             if(targets.length > 0) {
-                let canTransfer = creep.transfer(targets[0], RESOURCE_ENERGY);
+                let bestTarget = targets[0];
+                if (targets.length > 1 && targets[0].structureType === STRUCTURE_SPAWN &&
+                        targets[0].energy === targets[0].energyCapacity) {
+                    bestTarget = targets[1];
+                }
+                let canTransfer = creep.transfer(bestTarget, RESOURCE_ENERGY);
                 if(canTransfer === ERR_NOT_IN_RANGE) {
-                    creep.moveTo(targets[0], {visualizePathStyle: {stroke: '#ffffff'}});
-                    creep.memory.currentOrder = Util.MOVE + ":" + targets[0].id;
+                    creep.moveTo(bestTarget, {visualizePathStyle: {stroke: '#ffffff'}});
+                    creep.memory.currentOrder = Util.MOVE + ":" + bestTarget.id;
                 } else if (canTransfer === OK) {
-                    creep.memory.currentOrder = Util.TRANSFER + ":" + targets[0].id;
+                    creep.memory.currentOrder = Util.TRANSFER + ":" + bestTarget.id;
                 } else {
-                    creep.moveTo(targets[0], {visualizePathStyle: {stroke: '#ffffff'}});
-                    creep.memory.currentOrder = Util.MOVE + ":" + targets[0].id;
+                    creep.moveTo(bestTarget, {visualizePathStyle: {stroke: '#ffffff'}});
+                    creep.memory.currentOrder = Util.MOVE + ":" + bestTarget.id;
                 }
             }
         }

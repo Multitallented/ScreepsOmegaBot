@@ -36,7 +36,7 @@ module.exports = {
             }
         }
 
-        respawn.run({"harvester": 1, "upgrader": 1, "builder": 3});
+        respawn.run({"harvester": 2, "upgrader": 1, "builder": 2});
 
         if(Game.spawns['Spawn1'].spawning) {
             var spawningCreep = Game.creeps[Game.spawns['Spawn1'].spawning.name];
