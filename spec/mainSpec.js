@@ -1,9 +1,12 @@
-describe("A suite is just a function", function() {
-	var a;
+var main = require('../src/main');
 
-	it("and so is a spec", function() {
-		a = true;
+describe("Main Loop execution", function() {
 
-		expect(a).toBe(true);
+	beforeEach(function() {
+		require('./mocks/game.js')();
+	});
+
+	it("loop should run", function() {
+		main.loop();
 	});
 });
