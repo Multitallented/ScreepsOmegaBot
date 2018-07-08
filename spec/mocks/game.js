@@ -53,9 +53,13 @@ module.exports = function () {
         //resources
         RESOURCE_ENERGY: 'resourceEnergy',
 
-        //Behavior constants
-        FIND_STRUCTURES: 'FIND_STRUCTURES',
+        //ERRORS
+        OK: 0,
+        ERR_FULL: -8,
         ERR_NOT_IN_RANGE: -9,
+
+        //FIND constants
+        FIND_STRUCTURES: 'FIND_STRUCTURES',
         FIND_SOURCES: 'FIND_SOURCES',
         FIND_CONSTRUCTION_SITES: 'FIND_CONSTRUCTION_SITES'
     });
@@ -66,7 +70,7 @@ module.exports = function () {
     let controller1 = require('./controller')('Controller1');
     let room1 = require('./room')('Room1', controller1);
     let gameSpawns = {};
-    gameSpawns.Spawn1 = require('./spawn')(room1);
+    gameSpawns.Spawn1 = require('./structuretypes/structure-spawn')('Spawn1', 12, 25, room1);
 
     // Game properties
     global.Game = {
