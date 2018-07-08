@@ -1,5 +1,5 @@
-module.exports = function() {
+module.exports = function(id) {
     return {
-
+        id: id
     };
 };

@@ -63,7 +63,7 @@ module.exports = function () {
     var gameObjects = [];
 
 
-    let controller1 = require('./controller')();
+    let controller1 = require('./controller')('Controller1');
     let room1 = require('./room')('Room1', controller1);
     let gameSpawns = {};
     gameSpawns.Spawn1 = require('./spawn')(room1);

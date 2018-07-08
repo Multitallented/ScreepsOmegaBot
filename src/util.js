@@ -1,19 +1,37 @@
 module.exports = {
     HARVEST: "HARVEST",
+    MOVE: "MOVE",
+    TRANSFER: "TRANSFER",
+    UPGRADE_CONTROLLER: "UPGRADE_CONTROLLER",
+    BUILD: "BUILD",
 
     /** @param {Room} room **/
-    findAvailableResource: function(room) {
-        let sourcesArray = room.find(FIND_SOURCES);
+    /** @param {Creep} callingCreep **/
+    /** @param {} actionArray **/
+    checkIfInUse: function(room, find, callingCreep, actionArray) {
+        let sourcesArray = room.find(find);
         for (let resource in sourcesArray) {
             if (!resource || !sourcesArray.hasOwnProperty(resource)) {
                 continue;
             }
             let currentResource = sourcesArray[resource];
-            console.log(currentResource.id);
-            if (findAnyCreepsHarvestingThatResource(currentResource.id).length === 0) {
-                return currentResource.id;
+            let creepsUsingThisResource = this.findAnyCreepsUsingObject(currentResource.id, callingCreep, actionArray);
+            if (creepsUsingThisResource.length === 0) {
+                return currentResource;
             }
         }
+    },
+
+    findAnyCreepsUsingObject: function(id, callingCreep, actionArray) {
+        let creepArray = [];
+        _.forEach(actionArray, (value, key) => {
+            let currentCreepArray = _.filter(Game.creeps, (creep) => creep !== callingCreep &&
+                creep.memory.currentOrder === key + ":" + id);
+            if (currentCreepArray.length > value) {
+                _.merge(creepArray, currentCreepArray);
+            }
+        });
+        return creepArray;
     },
 
     countCreeps: function() {
@@ -41,11 +59,3 @@ module.exports = {
         return creepArray;
     }
 };
-
-function findAnyCreepsHarvestingThatResource(id) {
-    let creepArray = _.filter(Game.creeps, (creep) => creep.memory.currentOrder === this.HARVEST + id);
-    if (creepArray.length > 0) {
-        return creepArray;
-    }
-    return [];
-}
