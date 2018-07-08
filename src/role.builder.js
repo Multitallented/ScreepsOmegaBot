@@ -21,6 +21,8 @@ let roleBuilder = {
                 } else {
                     creep.memory.currentOrder = Util.BUILD + ":" + targets[0].id;
                 }
+            } else {
+                creep.memory.role = 'upgrader';
             }
         }
         else {

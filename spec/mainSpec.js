@@ -1,4 +1,5 @@
-var main = require('../src/main');
+let main = require('../src/main');
+let Util = require('../src/util');
 
 describe("Main Loop execution", function() {
 
@@ -8,6 +9,16 @@ describe("Main Loop execution", function() {
 
     it("loop should run", function() {
         main.loop();
+    });
+
+    it("builder max should be zero", function() {
+        let controller = require('./mocks/controller')('Controller1');
+        let room = require('./mocks/room')('Room1', controller);
+        Game.creeps['Upgrader1'] = require('./mocks/creep')([MOVE, WORK, CARRY], "Upgrader1", {memory: {role: 'upgrader'}}, room);
+        Game.creeps['Harvester1'] = require('./mocks/creep')([MOVE, WORK, CARRY], "Harvester1", {memory: {role: 'harvester'}}, room);
+        Game.creeps['Harvester2'] = require('./mocks/creep')([MOVE, WORK, CARRY], "Harvester2", {memory: {role: 'harvester'}}, room);
+        main.loop();
+        expect(Util.countCreeps().builder).toBe(0);
     });
 
     it("if under attack, safe mode should activate", function() {

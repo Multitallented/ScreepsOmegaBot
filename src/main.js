@@ -36,7 +36,13 @@ module.exports = {
             }
         }
 
-        respawn.run({"harvester": 2, "upgrader": 1, "builder": 2});
+        let builderMax = 2;
+        let constructionArray = Game.spawns['Spawn1'].room.find(FIND_CONSTRUCTION_SITES);
+        console.log(constructionArray.length);
+        if (constructionArray.length === 0) {
+            builderMax = 0;
+        }
+        respawn.run({"harvester": 2, "upgrader": 1, "builder": builderMax});
 
         if(Game.spawns['Spawn1'].spawning) {
             var spawningCreep = Game.creeps[Game.spawns['Spawn1'].spawning.name];
