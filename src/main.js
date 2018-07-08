@@ -6,6 +6,15 @@ var respawn = require('./respawn');
 module.exports = {
     loop: function () {
 
+        let damagedCreeps = _.filter(Game.creeps, (creep) => creep.hits < creep.hitsMax);
+        for (let i=0; i< damagedCreeps.length; i++) {
+            let creep = damagedCreeps[i];
+            if (creep.room.controller.safeMode === undefined &&
+                creep.room.controller.safeModeAvailable > 0) {
+                creep.room.controller.activateSafeMode();
+            }
+        }
+
         var tower = Game.getObjectById('TOWER_ID');
         if (tower) {
             var closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {

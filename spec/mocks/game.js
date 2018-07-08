@@ -61,7 +61,8 @@ module.exports = function () {
         //FIND constants
         FIND_STRUCTURES: 'FIND_STRUCTURES',
         FIND_SOURCES: 'FIND_SOURCES',
-        FIND_CONSTRUCTION_SITES: 'FIND_CONSTRUCTION_SITES'
+        FIND_CONSTRUCTION_SITES: 'FIND_CONSTRUCTION_SITES',
+        FIND_HOSTILE_CREEPS: 'FIND_HOSTILE_CREEPS'
     });
 
     var gameObjects = [];

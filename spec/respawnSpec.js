@@ -1,5 +1,4 @@
 var respawn = require('../src/respawn');
-var main = require("../src/main");
 var util = require('../src/util');
 
 describe("Respawn Tests", function() {

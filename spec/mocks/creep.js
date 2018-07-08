@@ -1,4 +1,13 @@
 module.exports = function(partArray, name, memory, room) {
+    let body = [];
+    _.forEach(partArray, (part) => {
+        body.push({
+            "boost": undefined,
+            "type": part,
+            "hits": 100,
+        });
+    });
+
     let baseCreep = {
         carry: {
             energy: 0
@@ -16,9 +25,7 @@ module.exports = function(partArray, name, memory, room) {
             x: 0,
             y: 0
         },
-        body: function(boost, type, hits) {
-            return {};
-        },
+        body: body,
         fatigue: 0,
         hits: 300 + 10*getPartCount(TOUGH, partArray),
         hitsMax: 300 + 10*getPartCount(TOUGH, partArray),
