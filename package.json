@@ -1,0 +1,22 @@
+{
+  "name": "screepsomegabot",
+  "version": "1.0.0",
+  "description": "The bot that will beat the other players on my server",
+  "main": "src/javascript/main.js",
+  "scripts": {
+    "test": "jasmine"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Multitallented/ScreepsOmegaBot.git"
+  },
+  "author": "Multitallented",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/Multitallented/ScreepsOmegaBot/issues"
+  },
+  "homepage": "https://github.com/Multitallented/ScreepsOmegaBot#readme",
+  "devDependencies": {
+    "jasmine": "^3.1.0"
+  }
+}
