@@ -40,7 +40,8 @@ let roleHarvester = {
                 } else if (canTransfer === OK) {
                     creep.memory.currentOrder = Util.TRANSFER + ":" + bestTarget.id;
                 } else if (canTransfer === ERR_FULL) {
-                    if (Game.spawns['Spawn1'].renewCreep(creep) === ERR_NOT_IN_RANGE) {
+                    let spawn = creep.room.find(FIND_STRUCTURES, {filter: (structure) => {return structure.structureType === STRUCTURE_SPAWN}});
+                    if (spawn.length > 0 && spawn[0].my && spawn[0].renewCreep(creep) === ERR_NOT_IN_RANGE) {
                         creep.moveTo(bestTarget, {visualizePathStyle: {stroke: '#ffffff'}});
                         creep.memory.currentOrder = Util.MOVE + ":" + bestTarget.id;
                     }
