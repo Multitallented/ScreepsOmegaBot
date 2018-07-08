@@ -12,6 +12,9 @@ module.exports = function(id, x, y, room, memory) {
             this.spawning = newCreep;
             Game.creeps[name] = newCreep;
             Memory.creeps[name] = newCreep;
+        },
+        renewCreep: function(target) {
+
         }
     };
     returnObject = _.merge(returnObject, memory);

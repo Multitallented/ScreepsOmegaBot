@@ -34,11 +34,16 @@ let roleHarvester = {
                     bestTarget = targets[1];
                 }
                 let canTransfer = creep.transfer(bestTarget, RESOURCE_ENERGY);
-                if(canTransfer === ERR_NOT_IN_RANGE) {
+                if (canTransfer === ERR_NOT_IN_RANGE) {
                     creep.moveTo(bestTarget, {visualizePathStyle: {stroke: '#ffffff'}});
                     creep.memory.currentOrder = Util.MOVE + ":" + bestTarget.id;
                 } else if (canTransfer === OK) {
                     creep.memory.currentOrder = Util.TRANSFER + ":" + bestTarget.id;
+                } else if (canTransfer === ERR_FULL) {
+                    if (Game.spawns['Spawn1'].renewCreep(creep) === ERR_NOT_IN_RANGE) {
+                        creep.moveTo(bestTarget, {visualizePathStyle: {stroke: '#ffffff'}});
+                        creep.memory.currentOrder = Util.MOVE + ":" + bestTarget.id;
+                    }
                 } else {
                     creep.moveTo(bestTarget, {visualizePathStyle: {stroke: '#ffffff'}});
                     creep.memory.currentOrder = Util.MOVE + ":" + bestTarget.id;

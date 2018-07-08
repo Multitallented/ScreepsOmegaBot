@@ -16,8 +16,10 @@ let roleBuilder = {
         if (creep.memory.repairing) {
             let targets = creep.room.find(FIND_STRUCTURES);
             targets = _.filter(targets, (target) => {
-                return target.hits < target.hitsMax;
+                return target.hits < target.hitsMax && target.structureType !== STRUCTURE_WALL &&
+                    (target.structureType !== STRUCTURE_RAMPART || target.hits < 200000);
             });
+            targets = _.sortBy(targets, (target1, target2) => { return target1.hits < target2.hits});
             if(targets.length) {
                 if(creep.repair(targets[0]) === ERR_NOT_IN_RANGE) {
                     creep.moveTo(targets[0], {visualizePathStyle: {stroke: '#ffffff'}});
@@ -41,7 +43,33 @@ let roleBuilder = {
                     creep.memory.currentOrder = Util.BUILD + ":" + targets[0].id;
                 }
             } else {
-                creep.memory.role = 'upgrader';
+                let targets = creep.room.find(FIND_STRUCTURES);
+                targets = _.filter(targets, (target) => {
+                    return target.hits < 200000 && target.structureType === STRUCTURE_RAMPART;
+                });
+                if(targets.length) {
+                    if(creep.repair(targets[0]) === ERR_NOT_IN_RANGE) {
+                        creep.moveTo(targets[0], {visualizePathStyle: {stroke: '#ffffff'}});
+                        creep.memory.currentOrder = Util.MOVE + ":" + targets[0].id;
+                    } else {
+                        creep.memory.currentOrder = Util.REPAIR + ":" + targets[0].id;
+                    }
+                } else {
+                    let targets = creep.room.find(FIND_STRUCTURES);
+                    targets = _.filter(targets, (target) => {
+                        return target.hits < 200000;
+                    });
+                    if(targets.length) {
+                        if(creep.repair(targets[0]) === ERR_NOT_IN_RANGE) {
+                            creep.moveTo(targets[0], {visualizePathStyle: {stroke: '#ffffff'}});
+                            creep.memory.currentOrder = Util.MOVE + ":" + targets[0].id;
+                        } else {
+                            creep.memory.currentOrder = Util.REPAIR + ":" + targets[0].id;
+                        }
+                    } else {
+                        creep.memory.role = 'upgrader';
+                    }
+                }
             }
         }
         else if (!creep.memory.repairing) {

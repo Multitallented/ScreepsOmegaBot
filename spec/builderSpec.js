@@ -24,4 +24,19 @@ describe("Builder Tests", function() {
         builderScript.run(builder1);
         expect(builder1.memory.currentOrder).toBe("REPAIR:Extension1");
     });
+
+    it("dont prioritize repairing walls and ramparts unless there is nothing else", function() {
+        let wall1 = require('./mocks/structure')('Wall1', 12, 30, STRUCTURE_WALL);
+        wall1.hits = 1;
+        wall1.hitsMax = 300000000;
+        Game.rooms.Room1.entities.FIND_STRUCTURES.push(wall1);
+        let rampart1 = require('./mocks/structure')('Wall1', 12, 31, STRUCTURE_RAMPART);
+        rampart1.hits = 900001;
+        rampart1.hitsMax = 999999;
+        Game.rooms.Room1.entities.FIND_STRUCTURES.push(rampart1);
+        let site1 = require('./mocks/construction-site')('Site1',11,30,Game.rooms.Room1, STRUCTURE_WALL);
+        Game.rooms.Room1.entities.FIND_CONSTRUCTION_SITES.push(site1);
+        builderScript.run(builder1);
+        expect(builder1.memory.currentOrder).toBe("BUILD:Site1");
+    });
 });
