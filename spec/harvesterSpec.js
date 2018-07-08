@@ -19,10 +19,10 @@ describe("Harvester Tests", function() {
         harvester.run(harvester1);
         expect(harvester1.memory.currentOrder).toBe("MOVE:Spawn1");
     });
-    it("Harvester should transfer to a container if spawn is full", function() {
-        Game.rooms.Room1.entities.FIND_STRUCTURES.push(
-                require('./mocks/structuretypes/structure-container')('Container1', 12, 30, STRUCTURE_CONTAINER));
-        harvester.run(harvester1);
-        expect(harvester1.memory.currentOrder).toBe("MOVE:Container1");
-    });
+    // it("Harvester should transfer to a container if spawn is full", function() {
+    //     Game.rooms.Room1.entities.FIND_STRUCTURES.push(
+    //             require('./mocks/structuretypes/structure-container')('Container1', 12, 30, STRUCTURE_CONTAINER));
+    //     harvester.run(harvester1);
+    //     expect(harvester1.memory.currentOrder).toBe("MOVE:Container1");
+    // });
 });
