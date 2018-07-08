@@ -3,9 +3,6 @@ let roleUpgrader = {
 
     /** @param {Creep} creep **/
     run: function(creep) {
-        let actionArray = {};
-        actionArray[Util.MOVE] = 1;
-        actionArray[Util.HARVEST] = 0;
         if(creep.memory.upgrading && creep.carry.energy === 0) {
             creep.memory.upgrading = false;
             creep.say('🔄 harvest');
@@ -24,12 +21,16 @@ let roleUpgrader = {
             }
         }
         else {
-            let targetSource = Util.checkIfInUse(creep.room, FIND_SOURCES, creep, actionArray);
-            if(creep.harvest(targetSource) === ERR_NOT_IN_RANGE) {
-                creep.moveTo(targetSource, {visualizePathStyle: {stroke: '#ffaa00'}});
-                creep.memory.currentOrder = Util.MOVE + ":" + targetSource.id;
+            let targetSource = Util.checkIfInUse(creep.room, FIND_SOURCES, creep, Util.HARVEST);
+            if (targetSource !== undefined) {
+                if(creep.harvest(targetSource) === ERR_NOT_IN_RANGE) {
+                    creep.moveTo(targetSource, {visualizePathStyle: {stroke: '#ffaa00'}});
+                    creep.memory.currentOrder = Util.MOVE + ":" + targetSource.id;
+                } else {
+                    creep.memory.currentOrder = Util.HARVEST + ":" + targetSource.id;
+                }
             } else {
-                creep.memory.currentOrder = Util.HARVEST + ":" + targetSource.id;
+                creep.memory.currentOrder = null;
             }
         }
     }

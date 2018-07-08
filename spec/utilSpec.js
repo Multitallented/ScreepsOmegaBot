@@ -2,10 +2,6 @@ let util = require('../src/util');
 let main = require('../src/main');
 
 describe("Util Tests", function() {
-    let actionArray = {};
-    actionArray[util.MOVE] = 1;
-    actionArray[util.HARVEST] = 0;
-
     beforeEach(function() {
         require('./mocks/game')();
         let room1 = Game.rooms['Room1'];
@@ -18,15 +14,24 @@ describe("Util Tests", function() {
 
     it("Util should find open resource", function() {
         main.loop();
-        let resource = util.checkIfInUse(Game.spawns.Spawn1.room, FIND_SOURCES);
+        let resource = util.checkIfInUse(Game.spawns.Spawn1.room, FIND_SOURCES, null, util.HARVEST);
         expect(resource).not.toBe(undefined);
     });
 
     it("Util should find open resource if one in use", function() {
         Game.creeps['Harvester1'] = require('./mocks/creep')([MOVE, WORK, CARRY], "Harvester1",
-            {memory: {role: 'harvester', currentOrder: 'HARVEST:Source1'}}, Game.rooms.Room1);
+            {memory: {role: 'harvester', currentOrder: 'MOVE:Source1'}}, Game.rooms.Room1);
         main.loop();
-        let resource = util.checkIfInUse(Game.spawns.Spawn1.room, FIND_SOURCES, null, actionArray);
+        let resource = util.checkIfInUse(Game.spawns.Spawn1.room, FIND_SOURCES, null, util.HARVEST);
+        expect(resource.id).toBe("Source2");
+    });
+    it("Util should find current resource not in use", function() {
+        Game.creeps['Harvester1'] = require('./mocks/creep')([MOVE, WORK, CARRY], "Harvester1",
+            {memory: {role: 'harvester', currentOrder: 'MOVE:Source1'}}, Game.rooms.Room1);
+        Game.creeps['Harvester2'] = require('./mocks/creep')([MOVE, WORK, CARRY], "Harvester2",
+            {memory: {role: 'harvester', currentOrder: 'MOVE:Source2'}}, Game.rooms.Room1);
+        main.loop();
+        let resource = util.checkIfInUse(Game.spawns.Spawn1.room, FIND_SOURCES, Game.creeps['Harvester2'], util.HARVEST);
         expect(resource.id).toBe("Source2");
     });
     it("Util should find open resource if one in use or moving to one", function() {
@@ -39,7 +44,7 @@ describe("Util Tests", function() {
         Game.creeps['Harvester3'] = require('./mocks/creep')([MOVE, WORK, CARRY], "Harvester3",
             {memory: {role: 'harvester', currentOrder: 'MOVE:Source3'}}, Game.rooms.Room1);
         main.loop();
-        let resource = util.checkIfInUse(Game.spawns.Spawn1.room, FIND_SOURCES, Game.creeps['Harvester3'], actionArray);
+        let resource = util.checkIfInUse(Game.spawns.Spawn1.room, FIND_SOURCES, Game.creeps['Harvester3'], util.HARVEST);
         expect(resource.id).toBe("Source3");
     });
 });

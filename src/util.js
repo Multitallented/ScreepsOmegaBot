@@ -8,14 +8,30 @@ module.exports = {
     /** @param {Room} room **/
     /** @param {Creep} callingCreep **/
     /** @param {} actionArray **/
-    checkIfInUse: function(room, find, callingCreep, actionArray) {
+    checkIfInUse: function(room, find, callingCreep, action) {
         let sourcesArray = room.find(find);
+        if (callingCreep != null && callingCreep.memory.currentOrder !== undefined &&
+                callingCreep.memory.currentOrder !== null) {
+            let currentSource = callingCreep.memory.currentOrder.split(":")[1];
+            let returnSource = null;
+            _.forEach(sourcesArray, (source) => {
+                if (source.id === currentSource &&
+                        this.findAnyCreepsUsingObject(currentSource, callingCreep,
+                                this.getActionArray(callingCreep, source, action)).length === 0) {
+                    returnSource = source;
+                }
+            });
+            if (returnSource != null) {
+                return returnSource;
+            }
+        }
         for (let resource in sourcesArray) {
             if (!resource || !sourcesArray.hasOwnProperty(resource)) {
                 continue;
             }
             let currentResource = sourcesArray[resource];
-            let creepsUsingThisResource = this.findAnyCreepsUsingObject(currentResource.id, callingCreep, actionArray);
+            let creepsUsingThisResource = this.findAnyCreepsUsingObject(currentResource.id, callingCreep,
+                    this.getActionArray(callingCreep, currentResource, action));
             if (creepsUsingThisResource.length === 0) {
                 return currentResource;
             }
@@ -32,6 +48,13 @@ module.exports = {
             }
         });
         return creepArray;
+    },
+
+    getActionArray: function(creep, target, action) {
+        let actionArray = {};
+        actionArray[action] = 0; //TODO make this dependent on distance and space available
+        actionArray[this.MOVE] = 1; //TODO also make this dependent on distance and space available
+        return actionArray;
     },
 
     countCreeps: function() {

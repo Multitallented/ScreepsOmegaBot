@@ -3,9 +3,6 @@ let roleBuilder = {
 
     /** @param {Creep} creep **/
     run: function(creep) {
-        let actionArray = {};
-        actionArray[Util.MOVE] = 1;
-        actionArray[Util.HARVEST] = 0;
         if(creep.memory.building && creep.carry.energy === 0) {
             creep.memory.building = false;
             creep.say('🔄 harvest');
@@ -27,7 +24,7 @@ let roleBuilder = {
             }
         }
         else {
-            let targetSource = Util.checkIfInUse(creep.room, FIND_SOURCES, creep, actionArray);
+            let targetSource = Util.checkIfInUse(creep.room, FIND_SOURCES, creep, Util.HARVEST);
             if(creep.harvest(targetSource) === ERR_NOT_IN_RANGE) {
                 creep.moveTo(targetSource, {visualizePathStyle: {stroke: '#ffaa00'}});
                 creep.memory.currentOrder = Util.MOVE + ":" + targetSource.id;
