@@ -20,7 +20,7 @@ describe("Util Tests", function() {
 
     it("Util should find open resource if one in use", function() {
         Game.creeps['Harvester1'] = require('./mocks/creep')([MOVE, WORK, CARRY], "Harvester1",
-            {memory: {role: 'harvester', currentOrder: 'MOVE:Source1'}}, Game.rooms.Room1);
+            {memory: {role: 'harvester', currentOrder: 'HARVEST:Source1'}}, Game.rooms.Room1);
         main.loop();
         let resource = util.checkIfInUse(Game.spawns.Spawn1.room, FIND_SOURCES, null, util.HARVEST);
         expect(resource.id).toBe("Source2");

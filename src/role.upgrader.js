@@ -30,7 +30,7 @@ let roleUpgrader = {
                     creep.memory.currentOrder = Util.HARVEST + ":" + targetSource.id;
                 }
             } else {
-                creep.memory.currentOrder = null;
+                creep.memory.currentOrder = undefined;
             }
         }
     }
