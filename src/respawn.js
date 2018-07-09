@@ -1,7 +1,16 @@
 let creepUtil = require('./creep.util');
 
 module.exports = {
-    run: function(roleArray) {
+    run: function() {
+        let builderMax = 1;
+        let constructionArray = Game.spawns['Spawn1'].room.find(FIND_CONSTRUCTION_SITES);
+        let damagedBuildings = Game.spawns['Spawn1'].room.find(FIND_STRUCTURES,
+            {filter: (structure) => {return structure.hits < structure.hitsMax}});
+        if (constructionArray.length === 0 && damagedBuildings.length === 0) {
+            builderMax = 0;
+        }
+        let roleArray = {"miner": 4, "harvester": 1, "courier": 2, "upgrader": 3 + 1 - builderMax, "builder": builderMax};
+
         let energyByRoom = {};
         _.forEach(Game.rooms, (room) => {
             if (room.controller.my) {

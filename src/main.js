@@ -3,6 +3,7 @@ let roleUpgrader = require('./role.upgrader');
 let roleBuilder = require('./role.builder');
 let roleMiner = require('./role.miner');
 let roleCourier = require('./role.courier');
+let roleTower = require('./role.tower');
 let respawn = require('./respawn');
 let creepUtil = require('./creep.util');
 
@@ -18,20 +19,7 @@ module.exports = {
             }
         }
 
-        let tower = Game.getObjectById('5b42c8cde1fd444226429188');
-        if (tower) {
-
-            let closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-            if(closestHostile) {
-                tower.attack(closestHostile);
-            }
-            let closestDamagedStructure = tower.pos.findClosestByRange(FIND_CREEPS, {
-                filter: (structure) => structure.hits < structure.hitsMax
-            });
-            if(closestDamagedStructure) {
-                tower.heal(closestDamagedStructure);
-            }
-        }
+        roleTower.run();
 
         for(var name in Memory.creeps) {
             if(!Game.creeps[name]) {
@@ -39,23 +27,19 @@ module.exports = {
             }
         }
 
-        let builderMax = 2;
-        let constructionArray = Game.spawns['Spawn1'].room.find(FIND_CONSTRUCTION_SITES);
-        let damagedBuildings = Game.spawns['Spawn1'].room.find(FIND_STRUCTURES,
-            {filter: (structure) => {return structure.hits < structure.hitsMax}});
-        if (constructionArray.length === 0 && damagedBuildings.length === 0) {
-            builderMax = 0;
-        }
-        respawn.run({"miner": 4, "harvester": 1, "courier": 2, "upgrader": 3 + 2 - builderMax, "builder": builderMax});
+        respawn.run();
 
-        if(Game.spawns['Spawn1'].spawning) {
-            var spawningCreep = Game.creeps[Game.spawns['Spawn1'].spawning.name];
-            Game.spawns['Spawn1'].room.visual.text(
-                '🛠️' + spawningCreep.memory.role,
-                Game.spawns['Spawn1'].pos.x + 1,
-                Game.spawns['Spawn1'].pos.y,
-                {align: 'left', opacity: 0.8});
-        }
+        _.forEach(Game.spawns, (spawn) => {
+            if(spawn.spawning) {
+                var spawningCreep = Game.creeps[spawn.spawning.name];
+                spawn.room.visual.text(
+                    '🛠️' + spawningCreep.memory.role,
+                    spawn.pos.x + 1,
+                    spawn.pos.y,
+                    {align: 'left', opacity: 0.8});
+            }
+        });
+
 
         _.forEach(Game.creeps, (creep) => {
             if(creep.memory.role === 'harvester') {
