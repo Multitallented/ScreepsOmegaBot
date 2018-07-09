@@ -16,7 +16,28 @@ describe("Respawn Tests", function() {
         expect(util.countCreeps().harvester).toBe(1);
     });
 
-    it("Respawn should build bigger creeps if energy available", function() {
+    it("Respawn should not respawn if energy lower than max", function() {
+        Game.rooms.Room1.energyCapacityAvailable = 600;
+        Game.spawns['Spawn1'].room.energyCapacityAvailable = 600;
+        respawn.run({"builder": 1});
+        expect(util.countCreeps().builder).toBe(0);
+    });
 
+    it("Respawn should build bigger creeps if energy available", function() {
+        Game.rooms.Room1.energyAvailable = 600;
+        Game.rooms.Room1.energyCapacityAvailable = 600;
+        Game.spawns['Spawn1'].room.energyAvailable = 600;
+        Game.spawns['Spawn1'].room.energyCapacityAvailable = 600;
+        respawn.run({'harvester': 1});
+        expect(Game.spawns['Spawn1'].spawning.body.length).toBeGreaterThan(3);
+    });
+
+    it("Respawn should build harvester if none exist and energy at least 200", function() {
+        Game.rooms.Room1.energyAvailable = 200;
+        Game.rooms.Room1.energyCapacityAvailable = 600;
+        Game.spawns['Spawn1'].room.energyAvailable = 200;
+        Game.spawns['Spawn1'].room.energyCapacityAvailable = 600;
+        respawn.run({'harvester': 1});
+        expect(util.countCreeps().harvester).toBe(1);
     });
 });

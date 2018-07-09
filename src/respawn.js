@@ -1,28 +1,28 @@
+let creepUtil = require('./creep.util');
+
 module.exports = {
     run: function(roleArray) {
-        let harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester');
+        let energyByRoom = {};
+        _.forEach(Game.rooms, (room) => {
+            if (room.controller.my) {
+                energyByRoom[room.name] = {};
+                energyByRoom[room.name].energy = room.energyAvailable;
+                energyByRoom[room.name].energyMax = room.energyCapacityAvailable;
+            }
+        });
+        let energy = energyByRoom[Game.spawns['Spawn1'].room.name].energy;
+        let energyMax = energyByRoom[Game.spawns['Spawn1'].room.name].energyMax;
+        let isMaxEnergy = energy === energyMax;
 
-        if(harvesters.length < roleArray.harvester) {
-            let newName = 'Harvester' + Game.time;
-            Game.spawns['Spawn1'].spawnCreep([WORK,CARRY,MOVE], newName,
-                {memory: {role: 'harvester'}});
-        }
-
-
-        let upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader');
-
-        if(upgraders.length < roleArray.upgrader) {
-            let newName = 'Upgrader' + Game.time;
-            Game.spawns['Spawn1'].spawnCreep([WORK,CARRY,MOVE], newName,
-                {memory: {role: 'upgrader'}});
-        }
-
-        let builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
-
-        if(builders.length < roleArray.builder) {
-            let newName = 'Builder' + Game.time;
-            Game.spawns['Spawn1'].spawnCreep([WORK,CARRY,MOVE], newName,
-                {memory: {role: 'builder'}});
-        }
+        _.forEach(roleArray, (value, key) => {
+            let creeps = _.filter(Game.creeps, (creep) => creep.memory.role === key);
+            if((creeps.length < value && isMaxEnergy) ||
+                (key === creepUtil.roles.HARVESTER && creeps.length === 0 && energy > 199)) {
+                let newName = key.charAt(0).toUpperCase() + Game.time;
+                let creepData = creepUtil.buildBestCreep(key, energy);
+                Game.spawns['Spawn1'].spawnCreep(creepData.bodyArray, newName,
+                    creepData.memory);
+            }
+        });
     }
 };

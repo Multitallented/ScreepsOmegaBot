@@ -1,5 +1,4 @@
 let harvester = require('../src/role.harvester');
-let Util = require('../src/util');
 
 describe("Harvester Tests", function() {
     let harvester1 = null;

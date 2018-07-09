@@ -6,12 +6,8 @@ module.exports = function(name, controller) {
             FIND_STRUCTURES: {}
         },
         controller: controller,
-        energyAvailable: function() {
-            return 0;
-        },
-        energyCapacityAvailable: function () {
-            return 0;
-        },
+        energyAvailable: 300,
+        energyCapacityAvailable: 300,
         memory: {},
         name: name,
         storage: undefined,

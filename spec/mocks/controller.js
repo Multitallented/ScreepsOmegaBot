@@ -4,6 +4,7 @@ module.exports = function(id) {
         safeMode: undefined,
         safeModeAvailable: 2,
         safeModeCooldown: undefined,
+        my: true,
         activateSafeMode: function() {
             this.safeMode = 3000;
             this.safeModeAvailable -= 1;
