@@ -32,8 +32,8 @@ let roleBuilder = {
                 }
             }
             if (creep.memory.repairing && creep.memory.repairing !== true) {
-                if(creep.repair(Game.getObjectById(creep.memory.repairing.id)) === ERR_NOT_IN_RANGE) {
-                    creep.moveTo(Game.getObjectById(creep.memory.repairing.id), {visualizePathStyle: {stroke: '#ffffff'}});
+                if(creep.repair(Game.getObjectById(creep.memory.repairing)) === ERR_NOT_IN_RANGE) {
+                    creep.moveTo(Game.getObjectById(creep.memory.repairing), {visualizePathStyle: {stroke: '#ffffff'}});
                     creep.memory.currentOrder = Util.MOVE + ":" + creep.memory.repairing;
                 } else {
                     creep.memory.currentOrder = Util.REPAIR + ":" + creep.memory.repairing;
