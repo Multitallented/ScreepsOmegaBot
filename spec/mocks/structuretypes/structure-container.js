@@ -7,6 +7,6 @@ module.exports = function(id, x, y, room, memory) {
         name: id
     };
     returnObject = _.merge(returnObject, memory);
-    returnObject = _.merge(returnObject, require('../structure')(id, x, y, STRUCTURE_SPAWN, room));
+    returnObject = _.merge(returnObject, require('../structure')(id, x, y, STRUCTURE_CONTAINER, room));
     return returnObject;
 };

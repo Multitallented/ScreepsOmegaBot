@@ -38,13 +38,14 @@ describe("Builder Tests", function() {
         spawn1.hits = 12;
         extension1.hits = 6;
         builder1.memory.currentOrder = "REPAIR:Spawn1";
+        builder1.memory.repairing = spawn1;
         builderScript.run(builder1);
         expect(builder1.memory.currentOrder).toBe("REPAIR:Spawn1");
     });
 
-    it("dont prioritize repairing walls and ramparts unless there is nothing else", function() {
+    it("dont prioritize repairing walls and ramparts unless they need it", function() {
         let wall1 = require('./mocks/structure')('Wall1', 12, 30, STRUCTURE_WALL);
-        wall1.hits = 1;
+        wall1.hits = 3000001;
         wall1.hitsMax = 300000000;
         Game.rooms.Room1.entities.FIND_STRUCTURES.push(wall1);
         let rampart1 = require('./mocks/structure')('Wall1', 12, 31, STRUCTURE_RAMPART);

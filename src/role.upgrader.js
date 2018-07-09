@@ -21,16 +21,28 @@ let roleUpgrader = {
             }
         }
         else {
-            let targetSource = Util.checkIfInUse(creep.room, FIND_SOURCES, creep, Util.HARVEST);
-            if (targetSource !== undefined) {
-                if(creep.harvest(targetSource) === ERR_NOT_IN_RANGE) {
-                    creep.moveTo(targetSource, {visualizePathStyle: {stroke: '#ffaa00'}});
-                    creep.memory.currentOrder = Util.MOVE + ":" + targetSource.id;
+            let container = Util.checkIfInUse(creep.room, FIND_STRUCTURES, creep, Util.WITHDRAW,
+                (structure) => { return structure.structureType === STRUCTURE_CONTAINER &&
+                    structure.store.RESOURCE_ENERGY > 0; });
+            if (container !== undefined) {
+                if (creep.withdraw(container) === ERR_NOT_IN_RANGE) {
+                    creep.moveTo(container, {visualizePathStyle: {stroke: '#ffaa00'}});
+                    creep.memory.currentOrder = Util.MOVE + ":" + container.id;
                 } else {
-                    creep.memory.currentOrder = Util.HARVEST + ":" + targetSource.id;
+                    creep.memory.currentOrder = Util.WITHDRAW + ":" + container.id;
                 }
             } else {
-                creep.memory.currentOrder = undefined;
+                let targetSource = Util.checkIfInUse(creep.room, FIND_SOURCES, creep, Util.HARVEST);
+                if (targetSource !== undefined) {
+                    if (creep.harvest(targetSource) === ERR_NOT_IN_RANGE) {
+                        creep.moveTo(targetSource, {visualizePathStyle: {stroke: '#ffaa00'}});
+                        creep.memory.currentOrder = Util.MOVE + ":" + targetSource.id;
+                    } else {
+                        creep.memory.currentOrder = Util.HARVEST + ":" + targetSource.id;
+                    }
+                } else {
+                    creep.memory.currentOrder = undefined;
+                }
             }
         }
     }

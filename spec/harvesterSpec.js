@@ -1,4 +1,4 @@
-let harvester = require('../src/role.harvester');
+let harvesterScript = require('../src/role.harvester');
 let Util = require('../src/util');
 
 describe("Harvester Tests", function() {
@@ -15,7 +15,7 @@ describe("Harvester Tests", function() {
     });
 
     it("Harvester should move to spawn if no structures need energy", function() {
-        harvester.run(harvester1);
+        harvesterScript.run(harvester1);
         expect(harvester1.memory.currentOrder).toBe("MOVE:Spawn1");
     });
 
@@ -23,15 +23,14 @@ describe("Harvester Tests", function() {
         let extension1 = require('./mocks/structuretypes/structure-extension')('Extension1', 15, 30, STRUCTURE_EXTENSION);
         extension1.energy = 0;
         Game.rooms.Room1.entities.FIND_STRUCTURES.push(extension1);
-        harvester.run(harvester1);
+        harvesterScript.run(harvester1);
         expect(harvester1.memory.currentOrder).toBe("MOVE:Extension1");
     });
 
     it("Harvester should empty its energy before harvesting", function() {
         harvester1.carry.energy = 100;
         harvester1.carryCapacity = 150;
-        harvester.run(harvester1);
-        console.log(harvester1);
+        harvesterScript.run(harvester1);
         expect(harvester1.memory.currentOrder).toBe("MOVE:Spawn1");
     });
 
@@ -42,8 +41,20 @@ describe("Harvester Tests", function() {
         );
         harvester1.carryCapacity = 100;
         harvester1.memory.currentOrder = Util.HARVEST + ":Source1";
-        harvester.run(harvester1);
-        expect(harvester1.memory.currentOrder).toBe("HARVEST:Source1");
+        harvesterScript.run(harvester1);
+        expect(harvester1.memory.currentOrder).toBe(Util.HARVEST + ":Source1");
+    });
+
+    it("Harvester should withdraw from container if possible", function() {
+        let container1 = require('./mocks/structuretypes/structure-container')('Container1', 12, 30, STRUCTURE_CONTAINER);
+        Game.rooms.Room1.entities.FIND_STRUCTURES.push(container1);
+        container1.store = { RESOURCE_ENERGY: 2000 };
+        container1.storeCapacity = 2000;
+        harvester1.carry.energy = 0;
+        harvester1.pos.x=11;
+        harvester1.pos.y=29;
+        harvesterScript.run(harvester1);
+        expect(harvester1.memory.currentOrder).toBe(Util.WITHDRAW + ":Container1");
     });
 
     // it("Harvester should transfer to a container if spawn is full", function() {

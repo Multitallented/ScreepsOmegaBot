@@ -18,7 +18,13 @@ module.exports = function(partArray, name, memory, room) {
             //x, y or entity
         },
         harvest: function(entity) {
-
+            if (Math.abs(entity.pos.x - this.pos.x) < 2 &&
+                    Math.abs(entity.pos.y - this.pos.y) < 2 &&
+                    this.room.name === entity.room.name) {
+                return OK;
+            } else {
+                return ERR_NOT_IN_RANGE;
+            }
         },
         name: name,
         pos: {

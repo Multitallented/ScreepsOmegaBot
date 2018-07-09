@@ -23,13 +23,15 @@ module.exports = function(name, controller) {
         },
         find: function(entityType, options) {
             let returnArray = [];
-            for (let entityKey in this.entities[entityType]) {
-                if (!entityKey || !this.entities[entityType].hasOwnProperty(entityKey)) {
-                    continue;
+            _.forEach(this.entities[entityType], (entity) => {
+                if (options !== undefined && options.filter !== undefined) {
+                    if (options.filter(entity)) {
+                        returnArray.push(entity);
+                    }
+                } else {
+                    returnArray.push(entity);
                 }
-                returnArray.push(this.entities[entityType][entityKey]);
-
-            }
+            });
             return returnArray;
         },
     };

@@ -3,6 +3,8 @@ module.exports = {
         HARVESTER: "harvester",
         BUILDER: 'builder',
         UPGRADER: 'upgrader',
+        MINER: 'miner',
+        COURIER: 'courier',
     },
     parts: {
         WORK: {type: "work", hits: 100, buildCost: 100},
@@ -28,15 +30,59 @@ module.exports = {
         let bodyArray = [];
         let energyRemaining = energy;
         while (energyRemaining > 10) {
-            if (type === this.roles.HARVESTER ||
-                    type === this.roles.BUILDER ||
-                    type === this.roles.UPGRADER) {
+            if (type === this.roles.BUILDER ||
+                    type === this.roles.UPGRADER ||
+                    type === this.roles.HARVESTER) {
                 if (energyRemaining > 99 && partCount.work < partCount.move) {
                     bodyArray.push(WORK);
                     partCount.work++;
                     energyRemaining -= 100;
                     continue;
                 } else if (energyRemaining > 49 && partCount.carry < partCount.move) {
+                    bodyArray.push(CARRY);
+                    partCount.carry++;
+                    energyRemaining -= 50;
+                    continue;
+                } else if (energyRemaining > 49) {
+                    bodyArray.push(MOVE);
+                    partCount.move++;
+                    energyRemaining -= 50;
+                    continue;
+                } else if (energyRemaining > 9) {
+                    bodyArray.push(TOUGH);
+                    partCount.tough++;
+                    energyRemaining -= 10;
+                    continue;
+                }
+            } else if (type === this.roles.MINER) {
+                if (energyRemaining > 49 && partCount.move === 0) {
+                    bodyArray.push(MOVE);
+                    partCount.move++;
+                    energyRemaining -= 50;
+                    continue;
+                } else if (energyRemaining > 49 && partCount.carry === 0) {
+                    bodyArray.push(CARRY);
+                    partCount.carry++;
+                    energyRemaining -= 50;
+                    continue;
+                } else if (energyRemaining > 99) {
+                    bodyArray.push(WORK);
+                    partCount.work++;
+                    energyRemaining -= 100;
+                    continue;
+                } else if (energyRemaining > 49) {
+                    bodyArray.push(MOVE);
+                    partCount.move++;
+                    energyRemaining -= 50;
+                    continue;
+                } else if (energyRemaining > 9) {
+                    bodyArray.push(TOUGH);
+                    partCount.tough++;
+                    energyRemaining -= 10;
+                    continue;
+                }
+            } else if (type === this.roles.COURIER) {
+                if (energyRemaining > 49 && partCount.carry < partCount.move * 2) {
                     bodyArray.push(CARRY);
                     partCount.carry++;
                     energyRemaining -= 50;

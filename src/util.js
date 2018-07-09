@@ -5,13 +5,19 @@ module.exports = {
     UPGRADE_CONTROLLER: "UPGRADE_CONTROLLER",
     BUILD: "BUILD",
     REPAIR: "REPAIR",
+    WITHDRAW: "WITHDRAW",
 
     /** @param {Room} room **/
     /** @param string find **/
     /** @param {Creep} callingCreep **/
     /** @param {Object} actionArray **/
-    checkIfInUse: function(room, find, callingCreep, action) {
-        let sourcesArray = room.find(find);
+    checkIfInUse: function(room, find, callingCreep, action, filter) {
+        let sourcesArray = [];
+        if (filter) {
+            sourcesArray = room.find(find, {filter: filter});
+        } else {
+            sourcesArray = room.find(find);
+        }
         if (callingCreep != null && callingCreep.memory.currentOrder !== undefined &&
                 callingCreep.memory.currentOrder !== null) {
             let currentSource = callingCreep.memory.currentOrder.split(":")[1];
@@ -85,5 +91,12 @@ module.exports = {
         }
         creepArray.total = i;
         return creepArray;
+    },
+
+    distance: function(entity1, entity2) {
+        if (entity1.room.name !== entity2.room.name) {
+            return -1;
+        }
+        return Math.max(Math.abs(entity1.pos.x - entity2.pos.x), Math.abs(entity1.pos.y - entity2.pos.y));
     }
 };

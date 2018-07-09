@@ -1,11 +1,12 @@
 let Util = require('./util');
+let structUtil = require('./structure.util');
 let roleBuilder = {
 
     /** @param {Creep} creep **/
     run: function(creep) {
         if((creep.memory.building || creep.memory.repairing) && creep.carry.energy === 0) {
             creep.memory.building = false;
-            creep.memory.repairing = false;
+            creep.memory.harvesting = true;
             creep.say('🔄 harvest');
         }
         if (!creep.memory.repairing && !creep.memory.building && creep.carry.energy === creep.carryCapacity) {
@@ -13,19 +14,29 @@ let roleBuilder = {
             // creep.say('🚧 repair');
         }
 
-        if (creep.memory.repairing) {
-            let targets = creep.room.find(FIND_STRUCTURES);
-            targets = _.filter(targets, (target) => {
-                return target.hits < target.hitsMax && target.structureType !== STRUCTURE_WALL &&
-                    (target.structureType !== STRUCTURE_RAMPART || target.hits < 200000);
-            });
-            targets = _.orderBy(targets, ['hits'], ['asc']);
-            if(targets.length) {
-                if(creep.repair(targets[0]) === ERR_NOT_IN_RANGE) {
-                    creep.moveTo(targets[0], {visualizePathStyle: {stroke: '#ffffff'}});
-                    creep.memory.currentOrder = Util.MOVE + ":" + targets[0].id;
+        if (creep.memory.repairing && !creep.memory.harvesting) {
+            if (creep.memory.repairing === true) {
+                let targets = creep.room.find(FIND_STRUCTURES, { filter: (target) => {
+                        let belowMax = target.hits < target.hitsMax;
+                        let belowRepairAt = structUtil.getRepairPoints().repairPoints[target.structureType] === undefined ||
+                            target.hits < structUtil.getRepairPoints().repairPoints[target.structureType].repairAt;
+                        let belowRepairUntil = structUtil.getRepairPoints().repairPoints[target.structureType] === undefined ||
+                            ((creep.memory.currentOrder === Util.MOVE + target.id ||
+                                creep.memory.currentOrder === Util.REPAIR + target.id) &&
+                            target.hits < structUtil.getRepairPoints().repairPoints[target.structureType].repairUntil);
+                        return belowMax && (belowRepairAt || belowRepairUntil);
+                    }});
+                targets = _.orderBy(targets, ['hits'], ['asc']);
+                if (targets.length) {
+                    creep.memory.repairing = targets[0];
+                }
+            }
+            if (creep.memory.repairing && creep.memory.repairing !== true) {
+                if(creep.repair(creep.memory.repairing) === ERR_NOT_IN_RANGE) {
+                    creep.moveTo(creep.memory.repairing, {visualizePathStyle: {stroke: '#ffffff'}});
+                    creep.memory.currentOrder = Util.MOVE + ":" + creep.memory.repairing.id;
                 } else {
-                    creep.memory.currentOrder = Util.REPAIR + ":" + targets[0].id;
+                    creep.memory.currentOrder = Util.REPAIR + ":" + creep.memory.repairing.id;
                 }
             } else {
                 creep.memory.repairing = false;
@@ -45,7 +56,7 @@ let roleBuilder = {
             } else {
                 let targets = creep.room.find(FIND_STRUCTURES);
                 targets = _.filter(targets, (target) => {
-                    return target.hits < 200000 && target.structureType === STRUCTURE_RAMPART;
+                    return target.hits < target.hitsMax;
                 });
                 if(targets.length) {
                     if(creep.repair(targets[0]) === ERR_NOT_IN_RANGE) {
@@ -55,34 +66,33 @@ let roleBuilder = {
                         creep.memory.currentOrder = Util.REPAIR + ":" + targets[0].id;
                     }
                 } else {
-                    let targets = creep.room.find(FIND_STRUCTURES);
-                    targets = _.filter(targets, (target) => {
-                        return target.hits < 200000;
-                    });
-                    if(targets.length) {
-                        if(creep.repair(targets[0]) === ERR_NOT_IN_RANGE) {
-                            creep.moveTo(targets[0], {visualizePathStyle: {stroke: '#ffffff'}});
-                            creep.memory.currentOrder = Util.MOVE + ":" + targets[0].id;
-                        } else {
-                            creep.memory.currentOrder = Util.REPAIR + ":" + targets[0].id;
-                        }
-                    } else {
-                        creep.memory.role = 'upgrader';
-                    }
+                    creep.memory.role = 'upgrader';
                 }
             }
         }
         else if (!creep.memory.repairing) {
-            let targetSource = Util.checkIfInUse(creep.room, FIND_SOURCES, creep, Util.HARVEST);
-            if (targetSource !== undefined) {
-                if (creep.harvest(targetSource) === ERR_NOT_IN_RANGE) {
-                    creep.moveTo(targetSource, {visualizePathStyle: {stroke: '#ffaa00'}});
-                    creep.memory.currentOrder = Util.MOVE + ":" + targetSource.id;
+            let container = Util.checkIfInUse(creep.room, FIND_STRUCTURES, creep, Util.WITHDRAW,
+                (structure) => { return structure.structureType === STRUCTURE_CONTAINER &&
+                    structure.store.RESOURCE_ENERGY > 0; });
+            if (container !== undefined) {
+                if (creep.withdraw(container) === ERR_NOT_IN_RANGE) {
+                    creep.moveTo(container, {visualizePathStyle: {stroke: '#ffaa00'}});
+                    creep.memory.currentOrder = Util.MOVE + ":" + container.id;
                 } else {
-                    creep.memory.currentOrder = Util.HARVEST + ":" + targetSource.id;
+                    creep.memory.currentOrder = Util.WITHDRAW + ":" + container.id;
                 }
             } else {
-                creep.memory.currentOrder = undefined;
+                let targetSource = Util.checkIfInUse(creep.room, FIND_SOURCES, creep, Util.HARVEST);
+                if (targetSource !== undefined) {
+                    if (creep.harvest(targetSource) === ERR_NOT_IN_RANGE) {
+                        creep.moveTo(targetSource, {visualizePathStyle: {stroke: '#ffaa00'}});
+                        creep.memory.currentOrder = Util.MOVE + ":" + targetSource.id;
+                    } else {
+                        creep.memory.currentOrder = Util.HARVEST + ":" + targetSource.id;
+                    }
+                } else {
+                    creep.memory.currentOrder = undefined;
+                }
             }
         }
     }
