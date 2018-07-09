@@ -72,6 +72,17 @@ module.exports = {
                 this.spawnCreep(Game.spawns[spawnId], creepUtil.roles.UPGRADER, count['energyAvailable']);
             }
         });
+
+        _.forEach(Game.spawns, (spawn) => {
+            if(spawn.spawning) {
+                var spawningCreep = Game.creeps[spawn.spawning.name];
+                spawn.room.visual.text(
+                    '🛠️' + spawningCreep.memory.role,
+                    spawn.pos.x + 1,
+                    spawn.pos.y,
+                    {align: 'left', opacity: 0.8});
+            }
+        });
         //
         // let builderMax = 1;
         // let constructionArray = Game.spawns['Spawn1'].room.find(FIND_CONSTRUCTION_SITES);

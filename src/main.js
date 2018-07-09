@@ -29,18 +29,6 @@ module.exports = {
 
         respawn.run();
 
-        _.forEach(Game.spawns, (spawn) => {
-            if(spawn.spawning) {
-                var spawningCreep = Game.creeps[spawn.spawning.name];
-                spawn.room.visual.text(
-                    '🛠️' + spawningCreep.memory.role,
-                    spawn.pos.x + 1,
-                    spawn.pos.y,
-                    {align: 'left', opacity: 0.8});
-            }
-        });
-
-
         _.forEach(Game.creeps, (creep) => {
             if(creep.memory.role === 'harvester') {
                 roleHarvester.run(creep);
