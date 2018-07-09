@@ -1,9 +1,9 @@
 module.exports = function(name, controller) {
     return {
         entities: {
-            FIND_CONSTRUCTION_SITES: {},
-            FIND_SOURCES: {},
-            FIND_STRUCTURES: {}
+            FIND_CONSTRUCTION_SITES: [],
+            FIND_SOURCES: [],
+            FIND_STRUCTURES: [],
         },
         controller: controller,
         energyAvailable: 300,
