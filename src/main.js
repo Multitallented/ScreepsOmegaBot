@@ -18,18 +18,18 @@ module.exports = {
             }
         }
 
-        var tower = Game.getObjectById('TOWER_ID');
+        let tower = Game.getObjectById('5b42c8cde1fd444226429188');
         if (tower) {
-            var closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
+
+            let closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+            if(closestHostile) {
+                tower.attack(closestHostile);
+            }
+            let closestDamagedStructure = tower.pos.findClosestByRange(FIND_CREEPS, {
                 filter: (structure) => structure.hits < structure.hitsMax
             });
             if(closestDamagedStructure) {
-                tower.repair(closestDamagedStructure);
-            }
-
-            var closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-            if(closestHostile) {
-                tower.attack(closestHostile);
+                tower.heal(closestDamagedStructure);
             }
         }
 
@@ -39,14 +39,14 @@ module.exports = {
             }
         }
 
-        let builderMax = 1;
+        let builderMax = 2;
         let constructionArray = Game.spawns['Spawn1'].room.find(FIND_CONSTRUCTION_SITES);
         let damagedBuildings = Game.spawns['Spawn1'].room.find(FIND_STRUCTURES,
             {filter: (structure) => {return structure.hits < structure.hitsMax}});
         if (constructionArray.length === 0 && damagedBuildings.length === 0) {
             builderMax = 0;
         }
-        respawn.run({"miner": 4, "harvester": 1, "courier": 2, "upgrader": 3 + 1 - builderMax, "builder": builderMax});
+        respawn.run({"miner": 4, "harvester": 1, "courier": 2, "upgrader": 3 + 2 - builderMax, "builder": builderMax});
 
         if(Game.spawns['Spawn1'].spawning) {
             var spawningCreep = Game.creeps[Game.spawns['Spawn1'].spawning.name];

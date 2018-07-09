@@ -62,7 +62,8 @@ module.exports = function () {
         FIND_STRUCTURES: 'FIND_STRUCTURES',
         FIND_SOURCES: 'FIND_SOURCES',
         FIND_CONSTRUCTION_SITES: 'FIND_CONSTRUCTION_SITES',
-        FIND_HOSTILE_CREEPS: 'FIND_HOSTILE_CREEPS'
+        FIND_HOSTILE_CREEPS: 'FIND_HOSTILE_CREEPS',
+        FIND_CREEPS: 'FIND_CREEPS',
     });
 
     let gameObjects = [];
