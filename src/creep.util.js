@@ -65,7 +65,7 @@ module.exports = {
                     partCount.carry++;
                     energyRemaining -= 50;
                     continue;
-                } else if (energyRemaining > 99) {
+                } else if (energyRemaining > 99 && partCount.work < 7) {
                     bodyArray.push(WORK);
                     partCount.work++;
                     energyRemaining -= 100;
