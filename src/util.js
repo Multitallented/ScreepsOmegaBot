@@ -33,16 +33,21 @@ module.exports = {
                 return returnSource;
             }
         }
-        let returnResource = undefined;
+        let resourceArray = [];
         _.forEach(sourcesArray, (currentResource) => {
-            if (returnResource !== undefined) {
-                return;
-            }
-
             let creepsUsingThisResource = this.findAnyCreepsUsingObject(currentResource.id, callingCreep,
                 this.getActionArray(callingCreep, currentResource, action));
             if (creepsUsingThisResource.length === 0) {
-                returnResource = currentResource;
+                resourceArray.push(currentResource);
+            }
+        });
+        let returnResource = undefined;
+        let closestDistance = 99999;
+        _.forEach(resourceArray, (src) => {
+            let currentDistance = this.distance(src, callingCreep);
+            if (currentDistance < closestDistance) {
+                returnResource = src;
+                closestDistance = currentDistance;
             }
         });
         return returnResource;
@@ -63,8 +68,13 @@ module.exports = {
 
     getActionArray: function(creep, target, action) {
         let actionArray = {};
-        actionArray[action] = 0; //TODO make this dependent on distance and space available
-        actionArray[this.MOVE] = 1; //TODO also make this dependent on distance and space available
+        if (action === this.WITHDRAW) {
+            actionArray[action] = 5;
+            actionArray[this.MOVE] = 10;
+        } else {
+            actionArray[action] = 0; //TODO make this dependent on distance and space available
+            actionArray[this.MOVE] = 1; //TODO also make this dependent on distance and space available
+        }
         return actionArray;
     },
 

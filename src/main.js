@@ -39,14 +39,14 @@ module.exports = {
             }
         }
 
-        let builderMax = 2;
+        let builderMax = 1;
         let constructionArray = Game.spawns['Spawn1'].room.find(FIND_CONSTRUCTION_SITES);
         let damagedBuildings = Game.spawns['Spawn1'].room.find(FIND_STRUCTURES,
             {filter: (structure) => {return structure.hits < structure.hitsMax}});
         if (constructionArray.length === 0 && damagedBuildings.length === 0) {
             builderMax = 0;
         }
-        respawn.run({"miner": 2, "harvester": 1, "courier": 2, "upgrader": 4 + 2 - builderMax, "builder": builderMax});
+        respawn.run({"miner": 4, "harvester": 1, "courier": 2, "upgrader": 3 + 1 - builderMax, "builder": builderMax});
 
         if(Game.spawns['Spawn1'].spawning) {
             var spawningCreep = Game.creeps[Game.spawns['Spawn1'].spawning.name];

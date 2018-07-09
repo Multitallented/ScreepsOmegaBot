@@ -10,13 +10,15 @@ module.exports = {
             }
 
             let source = Util.checkIfInUse(creep.room, FIND_SOURCES, creep, Util.HARVEST);
-            let canHarvest = creep.harvest(source);
-            if (canHarvest === ERR_NOT_IN_RANGE) {
-                creep.moveTo(source, {visualizePathStyle: {stroke: '#ffffff'}});
-                creep.memory.currentOrder = Util.MOVE + ":" + source.id;
-            } else {
-                creep.memory.inPosition = source.id;
-                creep.memory.currentOrder = Util.HARVEST + ":" + source.id;
+            if (source !== undefined) {
+                let canHarvest = creep.harvest(source);
+                if (canHarvest === ERR_NOT_IN_RANGE) {
+                    creep.moveTo(source, {visualizePathStyle: {stroke: '#ffffff'}});
+                    creep.memory.currentOrder = Util.MOVE + ":" + source.id;
+                } else {
+                    creep.memory.inPosition = source.id;
+                    creep.memory.currentOrder = Util.HARVEST + ":" + source.id;
+                }
             }
         } else {
             if (creep.carry.energy < creep.carryCapacity) {

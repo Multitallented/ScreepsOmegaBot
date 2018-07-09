@@ -57,6 +57,20 @@ describe("Builder Tests", function() {
         builderScript.run(builder1);
         expect(builder1.memory.currentOrder).toBe("BUILD:Site1");
     });
+    it("repair other buildings besides walls and ramparts first", function() {
+        let wall1 = require('./mocks/structure')('Wall1', 12, 30, STRUCTURE_WALL);
+        wall1.hits = 3000001;
+        wall1.hitsMax = 300000000;
+        Game.rooms.Room1.entities.FIND_STRUCTURES.push(wall1);
+        let rampart1 = require('./mocks/structure')('Wall1', 12, 31, STRUCTURE_RAMPART);
+        rampart1.hits = 900001;
+        rampart1.hitsMax = 999999;
+        Game.rooms.Room1.entities.FIND_STRUCTURES.push(rampart1);
+        extension1.hits = 50;
+        extension1.hitsMax = 100;
+        builderScript.run(builder1);
+        expect(builder1.memory.currentOrder).toBe("REPAIR:Extension1");
+    });
 
     it("go harvest when out of energy", function() {
         builder1.carry.energy = 0;

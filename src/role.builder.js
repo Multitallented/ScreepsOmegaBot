@@ -31,7 +31,7 @@ let roleBuilder = {
                             target.hits < structUtil.getRepairPoints().repairPoints[target.structureType].repairUntil);
                         return belowMax && (belowRepairAt || belowRepairUntil);
                     }});
-                targets = _.sortBy(targets, ['hits'], ['asc']);
+                targets = _.sortBy(targets, o => o.hitsMax - o.hits);
                 if (targets.length) {
                     creep.memory.repairing = targets[0].id;
                 }
@@ -63,6 +63,7 @@ let roleBuilder = {
                 targets = _.filter(targets, (target) => {
                     return target.hits < target.hitsMax;
                 });
+                targets = _.sortBy(targets, o => o.hitsMax - o.hits);
                 if(targets.length) {
                     if(creep.repair(targets[0]) === ERR_NOT_IN_RANGE) {
                         creep.moveTo(targets[0], {visualizePathStyle: {stroke: '#ffffff'}});
