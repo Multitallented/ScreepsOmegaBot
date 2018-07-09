@@ -7,8 +7,9 @@ module.exports = {
     REPAIR: "REPAIR",
 
     /** @param {Room} room **/
+    /** @param string find **/
     /** @param {Creep} callingCreep **/
-    /** @param {} actionArray **/
+    /** @param {Object} actionArray **/
     checkIfInUse: function(room, find, callingCreep, action) {
         let sourcesArray = room.find(find);
         if (callingCreep != null && callingCreep.memory.currentOrder !== undefined &&

@@ -44,7 +44,7 @@ module.exports = {
         if (constructionArray.length === 0 && damagedBuildings.length === 0) {
             builderMax = 0;
         }
-        respawn.run({"harvester": 2, "upgrader": 1, "builder": builderMax});
+        respawn.run({"harvester": 2, "upgrader": 1 + 2 - builderMax, "builder": builderMax});
 
         if(Game.spawns['Spawn1'].spawning) {
             var spawningCreep = Game.creeps[Game.spawns['Spawn1'].spawning.name];
