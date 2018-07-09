@@ -19,7 +19,7 @@ let roleBuilder = {
                 return target.hits < target.hitsMax && target.structureType !== STRUCTURE_WALL &&
                     (target.structureType !== STRUCTURE_RAMPART || target.hits < 200000);
             });
-            targets = _.sortBy(targets, (target1, target2) => { return target1.hits < target2.hits});
+            targets = _.orderBy(targets, ['hits'], ['asc']);
             if(targets.length) {
                 if(creep.repair(targets[0]) === ERR_NOT_IN_RANGE) {
                     creep.moveTo(targets[0], {visualizePathStyle: {stroke: '#ffffff'}});

@@ -4,12 +4,14 @@ let Util = require("../src/util");
 describe("Builder Tests", function() {
     let builder1 = null;
     let extension1 = null;
+    let spawn1 = null;
 
     beforeEach(function() {
         require("./mocks/game")();
         extension1 = require('./mocks/structuretypes/structure-extension')('Extension1', 12,28, STRUCTURE_EXTENSION);
+        spawn1 = require('./mocks/structuretypes/structure-spawn')('Spawn1', 12, 25, STRUCTURE_SPAWN);
         Game.rooms.Room1.entities.FIND_STRUCTURES = [
-            require('./mocks/structuretypes/structure-spawn')('Spawn1', 12, 25, STRUCTURE_SPAWN),
+            spawn1,
             extension1,
         ];
         builder1 = require('./mocks/creep')([MOVE, WORK, CARRY], "Builder1", {memory: {role: 'builder'}}, Game.rooms.Room1);
@@ -23,6 +25,21 @@ describe("Builder Tests", function() {
         extension1.hitsMax = 100;
         builderScript.run(builder1);
         expect(builder1.memory.currentOrder).toBe("REPAIR:Extension1");
+    });
+
+    it("prioritize structures with lower health", function() {
+        spawn1.hits = 12;
+        extension1.hits = 6;
+        builderScript.run(builder1);
+        expect(builder1.memory.currentOrder).toBe("REPAIR:Extension1");
+    });
+
+    it("don't change repair targets until finished repairing", function() {
+        spawn1.hits = 12;
+        extension1.hits = 6;
+        builder1.memory.currentOrder = "REPAIR:Spawn1";
+        builderScript.run(builder1);
+        expect(builder1.memory.currentOrder).toBe("REPAIR:Spawn1");
     });
 
     it("dont prioritize repairing walls and ramparts unless there is nothing else", function() {

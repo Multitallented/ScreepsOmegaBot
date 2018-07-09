@@ -27,17 +27,19 @@ module.exports = {
                 return returnSource;
             }
         }
-        for (let resource in sourcesArray) {
-            if (!resource || !sourcesArray.hasOwnProperty(resource)) {
-                continue;
+        let returnResource = undefined;
+        _.forEach(sourcesArray, (currentResource) => {
+            if (returnResource !== undefined) {
+                return;
             }
-            let currentResource = sourcesArray[resource];
+
             let creepsUsingThisResource = this.findAnyCreepsUsingObject(currentResource.id, callingCreep,
-                    this.getActionArray(callingCreep, currentResource, action));
+                this.getActionArray(callingCreep, currentResource, action));
             if (creepsUsingThisResource.length === 0) {
-                return currentResource;
+                returnResource = currentResource;
             }
-        }
+        });
+        return returnResource;
     },
 
     findAnyCreepsUsingObject: function(id, callingCreep, actionArray) {
