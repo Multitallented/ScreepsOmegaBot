@@ -101,7 +101,7 @@ module.exports = {
             }
         }
         let memory = { memory: { role: type }};
-        if (type === this.BUILDER) {
+        if (type === this.roles.BUILDER) {
             memory.memory.harvesting = true;
         }
         return {
