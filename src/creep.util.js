@@ -17,6 +17,11 @@ module.exports = {
         TOUGH: {type: "tough", hits: 100, buildCost: 10},
     },
     buildBestCreep: function(type, energy) {
+        if (type === this.roles.MINER) {
+            energy = Math.min(energy, 1000);
+        } else if (type === this.roles.HARVESTER) {
+            energy = Math.min(energy, 600);
+        }
         let partCount = {
             "work": 0,
             "carry": 0,
