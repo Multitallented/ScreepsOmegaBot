@@ -65,7 +65,7 @@ module.exports = function () {
         FIND_HOSTILE_CREEPS: 'FIND_HOSTILE_CREEPS'
     });
 
-    var gameObjects = [];
+    let gameObjects = [];
 
 
     let controller1 = require('./controller')('Controller1');
@@ -82,8 +82,20 @@ module.exports = function () {
         spawns: gameSpawns,
         time: Math.floor(new Date().getTime() / 1000),
         getObjectById: function(id) {
-
-            return gameObjects[id];
+            gameObjects =  _.merge(gameObjects, this.creeps);
+            gameObjects =  _.merge(gameObjects, this.rooms);
+            gameObjects =  _.merge(gameObjects, this.rooms.Room1.entities.FIND_CONSTRUCTION_SITES);
+            gameObjects =  _.merge(gameObjects, this.rooms.Room1.entities.FIND_STRUCTURES);
+            gameObjects =  _.merge(gameObjects, this.rooms.Room1.entities.FIND_SOURCES);
+            let returnArray = {};
+            _.forEach(gameObjects, (object) => {
+                if (object.id) {
+                    returnArray[object.id] = object;
+                } else if (object.name) {
+                    returnArray[object.name] = object;
+                }
+            });
+            return returnArray[id];
         }
     };
 

@@ -38,7 +38,7 @@ describe("Builder Tests", function() {
         spawn1.hits = 12;
         extension1.hits = 6;
         builder1.memory.currentOrder = "REPAIR:Spawn1";
-        builder1.memory.repairing = spawn1;
+        builder1.memory.repairing = spawn1.id;
         builderScript.run(builder1);
         expect(builder1.memory.currentOrder).toBe("REPAIR:Spawn1");
     });

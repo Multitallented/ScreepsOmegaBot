@@ -15,7 +15,7 @@ module.exports = {
         };
         repairPoints[STRUCTURE_ROAD] = {
             repairAt: 500,
-            repairUntil: 9999999,
+            repairUntil: 5000,
         };
 
         return {

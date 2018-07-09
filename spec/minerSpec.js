@@ -30,21 +30,21 @@ describe("Miner Tests", function() {
 
     it("miner in position should harvest until full", function() {
         miner1.carry.energy=6;
-        miner1.memory.inPosition = source1;
+        miner1.memory.inPosition = source1.id;
         minerScript.run(miner1);
         expect(miner1.memory.currentOrder).toBe("HARVEST:Source1");
     });
 
     it("miner in position with full should deposit in nearest container", function() {
         miner1.carry.energy = 50;
-        miner1.memory.inPosition = source1;
+        miner1.memory.inPosition = source1.id;
         minerScript.run(miner1);
         expect(miner1.memory.currentOrder).toBe("TRANSFER:Container2");
     });
 
     it("miner in position should harvest when empty", function() {
         miner1.carry.energy = 0;
-        miner1.memory.inPosition = source1;
+        miner1.memory.inPosition = source1.id;
         minerScript.run(miner1);
         expect(miner1.memory.currentOrder).toBe("HARVEST:Source1");
     });

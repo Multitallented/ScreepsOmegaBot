@@ -15,19 +15,19 @@ module.exports = {
                 creep.moveTo(source, {visualizePathStyle: {stroke: '#ffffff'}});
                 creep.memory.currentOrder = Util.MOVE + ":" + source.id;
             } else {
-                creep.memory.inPosition = source;
+                creep.memory.inPosition = source.id;
                 creep.memory.currentOrder = Util.HARVEST + ":" + source.id;
             }
         } else {
             if (creep.carry.energy < creep.carryCapacity) {
-                creep.harvest(creep.memory.inPosition);
-                creep.memory.currentOrder = Util.HARVEST + ":" + creep.memory.inPosition.id;
+                creep.harvest(Game.getObjectById(creep.memory.inPosition));
+                creep.memory.currentOrder = Util.HARVEST + ":" + creep.memory.inPosition;
             } else {
                 if (creep.memory.adjacentContainer === undefined) {
-                    creep.memory.adjacentContainer = this.findAdjacentContainer(creep);
+                    creep.memory.adjacentContainer = this.findAdjacentContainer(creep).id;
                 }
-                creep.transfer(creep.memory.adjacentContainer);
-                creep.memory.currentOrder = Util.TRANSFER + ":" + creep.memory.adjacentContainer.id;
+                creep.transfer(Game.getObjectById(creep.memory.adjacentContainer));
+                creep.memory.currentOrder = Util.TRANSFER + ":" + creep.memory.adjacentContainer;
             }
         }
     },

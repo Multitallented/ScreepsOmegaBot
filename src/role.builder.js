@@ -26,17 +26,17 @@ let roleBuilder = {
                             target.hits < structUtil.getRepairPoints().repairPoints[target.structureType].repairUntil);
                         return belowMax && (belowRepairAt || belowRepairUntil);
                     }});
-                targets = _.orderBy(targets, ['hits'], ['asc']);
+                targets = _.sortBy(targets, ['hits'], ['asc']);
                 if (targets.length) {
-                    creep.memory.repairing = targets[0];
+                    creep.memory.repairing = targets[0].id;
                 }
             }
             if (creep.memory.repairing && creep.memory.repairing !== true) {
-                if(creep.repair(creep.memory.repairing) === ERR_NOT_IN_RANGE) {
-                    creep.moveTo(creep.memory.repairing, {visualizePathStyle: {stroke: '#ffffff'}});
-                    creep.memory.currentOrder = Util.MOVE + ":" + creep.memory.repairing.id;
+                if(creep.repair(Game.getObjectById(creep.memory.repairing.id)) === ERR_NOT_IN_RANGE) {
+                    creep.moveTo(Game.getObjectById(creep.memory.repairing.id), {visualizePathStyle: {stroke: '#ffffff'}});
+                    creep.memory.currentOrder = Util.MOVE + ":" + creep.memory.repairing;
                 } else {
-                    creep.memory.currentOrder = Util.REPAIR + ":" + creep.memory.repairing.id;
+                    creep.memory.currentOrder = Util.REPAIR + ":" + creep.memory.repairing;
                 }
             } else {
                 creep.memory.repairing = false;
