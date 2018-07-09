@@ -31,8 +31,8 @@ let roleCourier = {
                     (structure.structureType === STRUCTURE_TOWER && structure.energy < structure.energyCapacity));
             });
             if(targets.length > 0) {
-                let bestTarget = targets[0];
-                if (targets.length > 1 && targets[0].structureType === STRUCTURE_SPAWN) {
+                let bestTarget = creep.pos.findClosestByPath(targets);
+                if (targets.length > 1 && bestTarget.structureType === STRUCTURE_SPAWN) {
                     bestTarget = targets[1];
                 }
                 let canTransfer = creep.transfer(bestTarget, RESOURCE_ENERGY);

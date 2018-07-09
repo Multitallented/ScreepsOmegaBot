@@ -43,7 +43,7 @@ module.exports = {
                     return;
                 }
                 this.spawnACreep(Game.getObjectById(spawnId), creepUtil.roles.HARVESTER, 300);
-            } else if (count['numContainers'] > 0 && count['numSources'] * 2 > count[creepUtil.roles.MINER]) {
+            } else if (count['numContainers'] > 0 && count['numSources'] > count[creepUtil.roles.MINER]) {
                 if (count[creepUtil.roles.MINER] < 1 && count['energyAvailable'] < 400) {
                     return;
                 } else if (count['energyAvailable'] < 1000) {
