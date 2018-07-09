@@ -5,6 +5,7 @@ module.exports = {
         UPGRADER: 'upgrader',
         MINER: 'miner',
         COURIER: 'courier',
+        CLAIMER: 'claimer',
     },
     parts: {
         WORK: {type: "work", hits: 100, buildCost: 100},
@@ -95,6 +96,28 @@ module.exports = {
                 } else if (energyRemaining > 49) {
                     bodyArray.push(MOVE);
                     partCount.move++;
+                    energyRemaining -= 50;
+                    continue;
+                } else if (energyRemaining > 9) {
+                    bodyArray.push(TOUGH);
+                    partCount.tough++;
+                    energyRemaining -= 10;
+                    continue;
+                }
+            } else if (type === this.roles.CLAIMER) {
+                if (energyRemaining > 599 && partCount.claim < 1) {
+                    bodyArray.push(CLAIM);
+                    partCount.claim++;
+                    energyRemaining -= 600;
+                    continue;
+                } else if (energyRemaining > 49 && partCount.move < partCount.carry + 1) {
+                    bodyArray.push(MOVE);
+                    partCount.move++;
+                    energyRemaining -= 50;
+                    continue;
+                } else if (energyRemaining > 49 && partCount.move > partCount.carry) {
+                    bodyArray.push(CARRY);
+                    partCount.carry++;
                     energyRemaining -= 50;
                     continue;
                 } else if (energyRemaining > 9) {

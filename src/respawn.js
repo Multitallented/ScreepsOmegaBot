@@ -70,12 +70,18 @@ module.exports = {
                     return;
                 }
                 this.spawnACreep(Game.getObjectById(spawnId), creepUtil.roles.BUILDER, count['energyAvailable']);
-            } else if (count[creepUtil.roles.UPGRADER] < 3) {
+            } else if (count[creepUtil.roles.UPGRADER] < 9) {
                 if (count['energyAvailable'] < count['energyCapacity']) {
                     return;
                 }
                 this.spawnACreep(Game.getObjectById(spawnId), creepUtil.roles.UPGRADER, count['energyAvailable']);
             }
+            // else if (count[creepUtil.roles.CLAIMER] < 1) {
+            //     if (count['energyAvailable'] < count['energyCapacity']) {
+            //         return;
+            //     }
+            //     this.spawnACreep(Game.getObjectById(spawnId), creepUtil.roles.CLAIMER, count['energyAvailable'])
+            // }
         });
 
         _.forEach(Game.spawns, (spawn) => {
