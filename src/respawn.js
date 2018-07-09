@@ -18,7 +18,7 @@ module.exports = {
             let creeps = _.filter(Game.creeps, (creep) => creep.memory.role === key);
             if((creeps.length < value && isMaxEnergy) ||
                 (key === creepUtil.roles.HARVESTER && creeps.length === 0 && energy > 199)) {
-                let newName = key.charAt(0).toUpperCase() + Game.time;
+                let newName = key.charAt(0).toUpperCase() + key.slice(1) + Game.time;
                 let creepData = creepUtil.buildBestCreep(key, energy);
                 Game.spawns['Spawn1'].spawnCreep(creepData.bodyArray, newName,
                     creepData.memory);
