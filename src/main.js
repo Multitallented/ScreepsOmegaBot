@@ -39,7 +39,9 @@ module.exports = {
 
         let builderMax = 2;
         let constructionArray = Game.spawns['Spawn1'].room.find(FIND_CONSTRUCTION_SITES);
-        if (constructionArray.length === 0) {
+        let damagedBuildings = Game.spawns['Spawn1'].room.find(FIND_STRUCTURES,
+            {filter: (structure) => {return structure.hits < structure.hitsMax}});
+        if (constructionArray.length === 0 && damagedBuildings.length === 0) {
             builderMax = 0;
         }
         respawn.run({"harvester": 2, "upgrader": 1, "builder": builderMax});

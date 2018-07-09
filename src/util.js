@@ -4,6 +4,7 @@ module.exports = {
     TRANSFER: "TRANSFER",
     UPGRADE_CONTROLLER: "UPGRADE_CONTROLLER",
     BUILD: "BUILD",
+    REPAIR: "REPAIR",
 
     /** @param {Room} room **/
     /** @param {Creep} callingCreep **/
