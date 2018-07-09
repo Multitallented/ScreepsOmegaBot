@@ -51,7 +51,7 @@ module.exports = function () {
         TOUGH: {type: "tough", hits: 100, buildCost: 10},
 
         //resources
-        RESOURCE_ENERGY: 'resourceEnergy',
+        RESOURCE_ENERGY: 'energy',
 
         //ERRORS
         OK: 0,

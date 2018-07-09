@@ -12,9 +12,9 @@ let roleHarvester = {
             creep.memory.currentOrder.split(":")[0] === Util.HARVEST && creep.carry.energy < creep.carryCapacity)) {
             let container = Util.checkIfInUse(creep.room, FIND_STRUCTURES, creep, Util.WITHDRAW,
                 (structure) => { return structure.structureType === STRUCTURE_CONTAINER &&
-                    structure.store.RESOURCE_ENERGY > 0; });
+                    structure.store.energy > 0; });
             if (container !== undefined) {
-                if (creep.withdraw(container) === ERR_NOT_IN_RANGE) {
+                if (creep.withdraw(container, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
                     creep.moveTo(container, {visualizePathStyle: {stroke: '#ffaa00'}});
                     creep.memory.currentOrder = Util.MOVE + ":" + container.id;
                 } else {
