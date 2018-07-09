@@ -29,7 +29,13 @@ module.exports = function(partArray, name, memory, room) {
         name: name,
         pos: {
             x: 0,
-            y: 0
+            y: 0,
+            findClosestByRange: function() {
+
+            },
+            findClosestByPath: function() {
+
+            }
         },
         body: body,
         fatigue: 0,

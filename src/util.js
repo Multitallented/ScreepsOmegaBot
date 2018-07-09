@@ -41,15 +41,10 @@ module.exports = {
                 resourceArray.push(currentResource);
             }
         });
-        let returnResource = undefined;
-        let closestDistance = 99999;
-        _.forEach(resourceArray, (src) => {
-            let currentDistance = this.distance(src, callingCreep);
-            if (currentDistance < closestDistance) {
-                returnResource = src;
-                closestDistance = currentDistance;
-            }
-        });
+        let returnResource = callingCreep.pos.findClosestByPath(resourceArray);
+        if (returnResource === null) {
+            returnResource = undefined;
+        }
         return returnResource;
     },
 

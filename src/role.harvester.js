@@ -41,7 +41,7 @@ let roleHarvester = {
                     (structure.structureType === STRUCTURE_TOWER && structure.energy < structure.energyCapacity));
             });
             if(targets.length > 0) {
-                let bestTarget = targets[0];
+                let bestTarget = creep.pos.findClosestByPath(targets);
                 if (targets.length > 1 && targets[0].structureType === STRUCTURE_SPAWN) {
                     bestTarget = targets[1];
                 }
