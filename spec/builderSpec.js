@@ -57,4 +57,17 @@ describe("Builder Tests", function() {
         builderScript.run(builder1);
         expect(builder1.memory.currentOrder).toBe("BUILD:Site1");
     });
+
+    it("go harvest when out of energy", function() {
+        builder1.carry.energy = 0;
+        builder1.memory.repairing = 'Extension1';
+        builder1.memory.currentOrder = "REPAIR:Extension1";
+        extension1.hits = 5;
+        extension1.hitsMax = 300;
+        Game.rooms.Room1.entities.FIND_SOURCES.push(
+            require('./mocks/source')('Source1', 25, 25, Game.rooms.Room1)
+        );
+        builderScript.run(builder1);
+        expect(builder1.memory.currentOrder).toBe("MOVE:Source1");
+    });
 });

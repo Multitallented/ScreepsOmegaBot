@@ -5,9 +5,14 @@ let roleBuilder = {
     /** @param {Creep} creep **/
     run: function(creep) {
         if((creep.memory.building || creep.memory.repairing) && creep.carry.energy === 0) {
+            if (!creep.memory.harvesting) {
+                creep.say('🔄 harvest');
+            }
             creep.memory.building = false;
             creep.memory.harvesting = true;
-            creep.say('🔄 harvest');
+        }
+        if (creep.carry.energy === creep.carryCapacity) {
+            creep.memory.harvesting = false;
         }
         if (!creep.memory.repairing && !creep.memory.building && creep.carry.energy === creep.carryCapacity) {
             creep.memory.repairing = true;
@@ -41,7 +46,7 @@ let roleBuilder = {
             } else {
                 creep.memory.repairing = false;
                 creep.memory.building = true;
-                creep.say('🚧 build');
+                // creep.say('🚧 build');
             }
         }
         if(creep.memory.building) {
@@ -69,8 +74,7 @@ let roleBuilder = {
                     creep.memory.role = 'upgrader';
                 }
             }
-        }
-        else if (!creep.memory.repairing) {
+        } else if (creep.memory.harvesting) {
             let container = Util.checkIfInUse(creep.room, FIND_STRUCTURES, creep, Util.WITHDRAW,
                 (structure) => { return structure.structureType === STRUCTURE_CONTAINER &&
                     structure.store.RESOURCE_ENERGY > 0; });
