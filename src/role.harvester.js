@@ -25,8 +25,7 @@ let roleHarvester = {
             });
             if(targets.length > 0) {
                 let bestTarget = targets[0];
-                if (targets.length > 1 && targets[0].structureType === STRUCTURE_SPAWN &&
-                        targets[0].energy === targets[0].energyCapacity) {
+                if (targets.length > 1 && targets[0].structureType === STRUCTURE_SPAWN) {
                     bestTarget = targets[1];
                 }
                 let canTransfer = creep.transfer(bestTarget, RESOURCE_ENERGY);
