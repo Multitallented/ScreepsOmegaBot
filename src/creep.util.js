@@ -100,9 +100,13 @@ module.exports = {
                 }
             }
         }
+        let memory = { memory: { role: type }};
+        if (type === this.BUILDER) {
+            memory.memory.harvesting = true;
+        }
         return {
             bodyArray: bodyArray,
-            memory: { memory: { role: type }},
+            memory: memory,
         };
     },
 };
