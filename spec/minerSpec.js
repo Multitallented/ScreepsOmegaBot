@@ -26,6 +26,7 @@ describe("Miner Tests", function() {
         miner1.pos.y = 8;
         minerScript.run(miner1);
         expect(miner1.memory.currentOrder).toBe("MOVE:Source1");
+        expect(miner1.memory.inPosition).toBe(undefined);
     });
 
     it("miner in position should harvest until full", function() {

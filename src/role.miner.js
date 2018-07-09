@@ -20,13 +20,16 @@ module.exports = {
             }
         } else {
             if (creep.carry.energy < creep.carryCapacity) {
-                creep.harvest(Game.getObjectById(creep.memory.inPosition));
+                if (creep.harvest(Game.getObjectById(creep.memory.inPosition)) === ERR_NOT_IN_RANGE) {
+                    creep.moveTo(Game.getObjectById(creep.memory.inPosition), {visualizePathStyle: {stroke: '#ffffff'}});
+                    creep.memory.currentOrder = Util.MOVE +":" + creep.memory.inPosition;
+                }
                 creep.memory.currentOrder = Util.HARVEST + ":" + creep.memory.inPosition;
             } else {
                 if (creep.memory.adjacentContainer === undefined) {
                     creep.memory.adjacentContainer = this.findAdjacentContainer(creep).id;
                 }
-                creep.transfer(Game.getObjectById(creep.memory.adjacentContainer));
+                creep.transfer(Game.getObjectById(creep.memory.adjacentContainer), RESOURCE_ENERGY);
                 creep.memory.currentOrder = Util.TRANSFER + ":" + creep.memory.adjacentContainer;
             }
         }

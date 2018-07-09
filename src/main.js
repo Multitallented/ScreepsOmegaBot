@@ -1,6 +1,7 @@
 let roleHarvester = require('./role.harvester');
 let roleUpgrader = require('./role.upgrader');
 let roleBuilder = require('./role.builder');
+let roleMiner = require('./role.miner');
 let respawn = require('./respawn');
 let creepUtil = require('./creep.util');
 
@@ -44,7 +45,7 @@ module.exports = {
         if (constructionArray.length === 0 && damagedBuildings.length === 0) {
             builderMax = 0;
         }
-        respawn.run({"harvester": 2, "upgrader": 1 + 2 - builderMax, "builder": builderMax});
+        respawn.run({"miner": 1, "harvester": 2, "upgrader": 1 + 2 - builderMax, "builder": builderMax});
 
         if(Game.spawns['Spawn1'].spawning) {
             var spawningCreep = Game.creeps[Game.spawns['Spawn1'].spawning.name];
@@ -57,14 +58,14 @@ module.exports = {
 
         for(var name in Game.creeps) {
             var creep = Game.creeps[name];
-            if(creep.memory.role == 'harvester') {
+            if(creep.memory.role === 'harvester') {
                 roleHarvester.run(creep);
-            }
-            if(creep.memory.role == 'upgrader') {
+            } else if(creep.memory.role === 'upgrader') {
                 roleUpgrader.run(creep);
-            }
-            if(creep.memory.role == 'builder') {
+            } else if(creep.memory.role === 'builder') {
                 roleBuilder.run(creep);
+            } else if (creep.memory.role === 'miner') {
+                roleMiner.run(creep);
             }
         }
     }
