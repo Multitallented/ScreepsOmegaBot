@@ -1,6 +1,15 @@
 let Util = require('./util');
 
 module.exports = {
+    getRandomAdjacentRoom: function(creep) {
+        let randDirection = {
+            0: FIND_EXIT_TOP, 1: FIND_EXIT_LEFT, 2: FIND_EXIT_RIGHT, 3: FIND_EXIT_BOTTOM
+        };
+        let direction = randDirection[Math.floor(Math.random() * 4)];
+        creep.say(direction);
+        return this.getRoomName(creep.room.name, direction);
+    },
+
     run: function(creep) {
         if (creep.room.controller && !creep.room.controller.my && creep.room.controller.owner !== undefined) {
             creep.say("Don't shoot", true);
@@ -9,23 +18,18 @@ module.exports = {
         let discoveredRoom = (creep.room.controller && creep.room.controller.my) ||
             _.filter(Game.flags, (f) => f.room === creep.room).length === 1;
         if (discoveredRoom && (!creep.memory.currentOrder || creep.memory.currentOrder.split(":")[1] === creep.room.name)) {
-            let randDirection = {
-                0: FIND_EXIT_TOP, 1: FIND_EXIT_LEFT, 2: FIND_EXIT_RIGHT, 3: FIND_EXIT_BOTTOM
-            };
-            let direction = randDirection[Math.floor(Math.random() * 4)];
-            creep.say(direction);
-            let targetRoomName = this.getRoomName(creep.room.name, direction);
+            let targetRoomName = this.getRandomAdjacentRoom(creep);
             if (creep.moveTo(creep.pos.findClosestByRange(creep.room.findExitTo(targetRoomName)), {visualizePathStyle: {stroke: '#ffffff'}}) === OK) {
                 creep.memory.currentOrder = Util.MOVE + ":" + targetRoomName;
             }
         } else if (discoveredRoom && creep.memory.currentOrder) {
             let targetRoomName = creep.memory.currentOrder.split(":")[1];
-            if (targetRoomName === creep.room.name) {
-                creep.memory.currentOrder = undefined;
-            } else {
-                if (creep.moveTo(creep.pos.findClosestByRange(creep.room.findExitTo(targetRoomName)), {visualizePathStyle: {stroke: '#ffffff'}}) === OK) {
-                    creep.memory.currentOrder = Util.MOVE + ":" + targetRoomName;
-                }
+            let direction = creep.room.findExitTo(targetRoomName);
+            let move = creep.moveTo(creep.pos.findClosestByRange(direction), {visualizePathStyle: {stroke: '#ffffff'}});
+            if (move === OK) {
+                creep.memory.currentOrder = Util.MOVE + ":" + targetRoomName;
+            } else if (move !== -11) {
+                console.log("failed move: " + move);
             }
         } else if (!discoveredRoom) {
             if (creep.room.controller && creep.room.controller.owner === undefined) {

@@ -57,6 +57,8 @@ module.exports = function () {
         OK: 0,
         ERR_FULL: -8,
         ERR_NOT_IN_RANGE: -9,
+        ERR_NO_PATH: -2,
+        ERR_INVALID_ARGS: -10,
 
         //FIND constants
         FIND_STRUCTURES: 'FIND_STRUCTURES',

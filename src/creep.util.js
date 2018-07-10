@@ -46,100 +46,76 @@ module.exports = {
                     bodyArray.push(WORK);
                     partCount.work++;
                     energyRemaining -= 100;
-                    continue;
                 } else if (energyRemaining > 49 && partCount.carry < partCount.move) {
                     bodyArray.push(CARRY);
                     partCount.carry++;
                     energyRemaining -= 50;
-                    continue;
                 } else if (energyRemaining > 49) {
                     bodyArray.push(MOVE);
                     partCount.move++;
                     energyRemaining -= 50;
-                    continue;
-                } else if (energyRemaining > 9) {
-                    bodyArray.push(TOUGH);
-                    partCount.tough++;
-                    energyRemaining -= 10;
-                    continue;
+                } else {
+                    energyRemaining = 0;
                 }
             } else if (type === this.roles.MINER) {
                 if (energyRemaining > 49 && partCount.move === 0) {
                     bodyArray.push(MOVE);
                     partCount.move++;
                     energyRemaining -= 50;
-                    continue;
                 } else if (energyRemaining > 49 && partCount.carry === 0) {
                     bodyArray.push(CARRY);
                     partCount.carry++;
                     energyRemaining -= 50;
-                    continue;
                 } else if (energyRemaining > 99 && partCount.work < 7) {
                     bodyArray.push(WORK);
                     partCount.work++;
                     energyRemaining -= 100;
-                    continue;
                 } else if (energyRemaining > 49) {
                     bodyArray.push(MOVE);
                     partCount.move++;
                     energyRemaining -= 50;
-                    continue;
-                } else if (energyRemaining > 9) {
-                    bodyArray.push(TOUGH);
-                    partCount.tough++;
-                    energyRemaining -= 10;
-                    continue;
+                } else {
+                    energyRemaining = 0;
                 }
             } else if (type === this.roles.COURIER) {
                 if (energyRemaining > 49 && partCount.carry < partCount.move * 2) {
                     bodyArray.push(CARRY);
                     partCount.carry++;
                     energyRemaining -= 50;
-                    continue;
                 } else if (energyRemaining > 49) {
                     bodyArray.push(MOVE);
                     partCount.move++;
                     energyRemaining -= 50;
-                    continue;
-                } else if (energyRemaining > 9) {
-                    bodyArray.push(TOUGH);
-                    partCount.tough++;
-                    energyRemaining -= 10;
-                    continue;
+                } else {
+                    energyRemaining = 0;
                 }
             } else if (type === this.roles.CLAIMER) {
                 if (energyRemaining > 599 && partCount.claim < 1) {
                     bodyArray.push(CLAIM);
                     partCount.claim++;
                     energyRemaining -= 600;
-                    continue;
                 } else if (energyRemaining > 49 && partCount.move < partCount.carry + 1) {
                     bodyArray.push(MOVE);
                     partCount.move++;
                     energyRemaining -= 50;
-                    continue;
                 } else if (energyRemaining > 49 && partCount.move > partCount.carry) {
                     bodyArray.push(CARRY);
                     partCount.carry++;
                     energyRemaining -= 50;
-                    continue;
                 } else if (energyRemaining > 9) {
                     bodyArray.push(TOUGH);
                     partCount.tough++;
                     energyRemaining -= 10;
-                    continue;
                 }
             } else if (type === this.roles.SCOUT) {
                 if (energyRemaining > 49 && (partCount.move < 1 || partCount.move < partCount.tough * 2)) {
                     bodyArray.push(MOVE);
                     partCount.move++;
                     energyRemaining -= 50;
-                    continue;
                 } else if (energyRemaining > 9) {
                     bodyArray.push(TOUGH);
                     partCount.tough++;
                     energyRemaining -= 10;
-                    continue;
                 }
             }
         }
