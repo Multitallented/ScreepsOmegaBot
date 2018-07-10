@@ -28,6 +28,9 @@ module.exports = {
             let move = creep.moveTo(creep.pos.findClosestByRange(direction), {visualizePathStyle: {stroke: '#ffffff'}});
             if (move === OK) {
                 creep.memory.currentOrder = Util.MOVE + ":" + targetRoomName;
+            } else if (move === ERR_NO_PATH) {
+                creep.memory.currentOrder = undefined;
+                creep.moveTo(25,25, {visualizePathStyle: {stroke: '#ffffff'}});
             } else if (move !== -11) {
                 console.log("failed move: " + move);
             }
