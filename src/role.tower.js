@@ -4,6 +4,11 @@ module.exports = {
         _.forEach(towers, (tower) => {
             if (tower) {
 
+                let closestHostileHealer = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS,
+                    {filter: (c) => _.filter(c.body, (part) => part.type === HEAL).length});
+                if(closestHostileHealer) {
+                    tower.attack(closestHostileHealer);
+                }
                 let closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
                 if(closestHostile) {
                     tower.attack(closestHostile);

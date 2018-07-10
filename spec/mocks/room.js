@@ -22,6 +22,9 @@ module.exports = function(name, controller) {
         createFlag: function(x, y, name, color, secondaryColor) {
             //only visible to me
         },
+        findExitTo: function(room) {
+            return FIND_EXIT_TOP;
+        },
         find: function(entityType, options) {
             let returnArray = [];
             _.forEach(this.entities[entityType], (entity) => {

@@ -6,6 +6,7 @@ module.exports = {
         MINER: 'miner',
         COURIER: 'courier',
         CLAIMER: 'claimer',
+        SCOUT: 'scout',
     },
     parts: {
         WORK: {type: "work", hits: 100, buildCost: 100},
@@ -126,12 +127,21 @@ module.exports = {
                     energyRemaining -= 10;
                     continue;
                 }
+            } else if (type === this.roles.SCOUT) {
+                if (energyRemaining > 49 && (partCount.move < 1 || partCount.move * 10 < partCount.tough)) {
+                    bodyArray.push(MOVE);
+                    partCount.move++;
+                    energyRemaining -= 50;
+                    continue;
+                } else if (energyRemaining > 9) {
+                    bodyArray.push(TOUGH);
+                    partCount.tough++;
+                    energyRemaining -= 10;
+                    continue;
+                }
             }
         }
         let memory = { memory: { role: type }};
-        if (type === this.roles.BUILDER) {
-            memory.memory.harvesting = true;
-        }
         return {
             bodyArray: bodyArray,
             memory: memory,

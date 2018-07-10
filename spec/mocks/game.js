@@ -64,6 +64,10 @@ module.exports = function () {
         FIND_CONSTRUCTION_SITES: 'FIND_CONSTRUCTION_SITES',
         FIND_HOSTILE_CREEPS: 'FIND_HOSTILE_CREEPS',
         FIND_CREEPS: 'FIND_CREEPS',
+        FIND_EXIT_TOP: 'FIND_EXIT_TOP',
+        FIND_EXIT_LEFT: 'FIND_EXIT_LEFT',
+        FIND_EXIT_RIGHT: 'FIND_EXIT_RIGHT',
+        FIND_EXIT_BOTTOM: 'FIND_EXIT_BOTTOM',
     });
 
     let gameObjects = [];
