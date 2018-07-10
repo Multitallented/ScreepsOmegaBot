@@ -30,11 +30,11 @@ module.exports = function(partArray, name, memory, room) {
         pos: {
             x: 0,
             y: 0,
-            findClosestByRange: function() {
-
+            findClosestByRange: function(array) {
+                return array[0];
             },
-            findClosestByPath: function() {
-
+            findClosestByPath: function(array) {
+                return array[0];
             }
         },
         body: body,

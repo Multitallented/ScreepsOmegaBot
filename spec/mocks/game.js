@@ -88,6 +88,7 @@ module.exports = function () {
             gameObjects =  _.merge(gameObjects, this.rooms.Room1.entities.FIND_CONSTRUCTION_SITES);
             gameObjects =  _.merge(gameObjects, this.rooms.Room1.entities.FIND_STRUCTURES);
             gameObjects =  _.merge(gameObjects, this.rooms.Room1.entities.FIND_SOURCES);
+            gameObjects =  _.merge(gameObjects, this.rooms.Room1.entities.FIND_CREEPS);
             let returnArray = {};
             _.forEach(gameObjects, (object) => {
                 if (object.id) {

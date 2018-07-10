@@ -1,15 +1,20 @@
 let Util = require('./util');
+let creepUtil = require('./creep.util');
 
 module.exports = {
 
     run: function(creep) {
         if (!creep.memory.inPosition) {
-            if (creep.memory.currentOrder === undefined ||
-                creep.memory.currentOrder.split(":")[0] !== Util.MOVE) {
+            if (creep.memory.currentOrder === undefined) {
                 creep.say('🔄 harvest');
             }
 
-            let source = Util.checkIfInUse(creep.room, FIND_SOURCES, creep, Util.HARVEST);
+            let source = Util.checkIfInUse(creep.room, FIND_SOURCES, creep, Util.HARVEST, (resource) => {
+                return creep.room.find(FIND_CREEPS, {filter: (c) => {
+                        return c.memory.role && c.memory.role === creepUtil.roles.MINER &&
+                            c.memory.inPosition === resource.id;
+                    }
+            })});
             if (source !== undefined) {
                 let canHarvest = creep.harvest(source);
                 if (canHarvest === ERR_NOT_IN_RANGE) {
