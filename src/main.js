@@ -10,7 +10,7 @@ let creepUtil = require('./creep.util');
 module.exports = {
     loop: function () {
 
-        let damagedCreeps = _.filter(Game.creeps, (creep) => creep.hits < creep.hitsMax);
+        let damagedCreeps = _.filter(Game.creeps, (creep) => creep.hits < creep.hitsMax && creep.my);
         for (let i=0; i< damagedCreeps.length; i++) {
             let creep = damagedCreeps[i];
             if (creep.room.controller.safeMode === undefined &&
