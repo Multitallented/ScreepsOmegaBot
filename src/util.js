@@ -6,6 +6,8 @@ module.exports = {
     BUILD: "BUILD",
     REPAIR: "REPAIR",
     WITHDRAW: "WITHDRAW",
+    CLAIM: "CLAIM",
+    RESERVE: "RESERVE",
 
     /** @param {Room} room **/
     /** @param string find **/

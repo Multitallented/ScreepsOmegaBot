@@ -10,10 +10,24 @@ module.exports = {
         return this.getRoomName(creep.room.name, direction);
     },
 
+    moveCreepIntoRoom: function(creep) {
+        if (creep.pos.x === 0) {
+            creep.moveTo(1, creep.pos.y);
+        } else if (creep.pos.x === 49) {
+            creep.moveTo(48, creep.pos.y);
+        } else if (creep.pos.y === 0) {
+            creep.moveTo(creep.pos.x, 1);
+        } else if (creep.pos.y === 49) {
+            creep.moveTo(creep.pos.x, 48);
+        }
+    },
+
     run: function(creep) {
         if (creep.room.controller && !creep.room.controller.my && creep.room.controller.owner !== undefined) {
             creep.say("Don't shoot", true);
         }
+
+
 
         let discoveredRoom = (creep.room.controller && creep.room.controller.my) ||
             _.filter(Game.flags, (f) => f.room === creep.room).length === 1;
@@ -30,30 +44,44 @@ module.exports = {
                 creep.memory.currentOrder = Util.MOVE + ":" + targetRoomName;
             } else if (move === ERR_NO_PATH) {
                 creep.memory.currentOrder = undefined;
-                creep.moveTo(25,25, {visualizePathStyle: {stroke: '#ffffff'}});
+                creep.moveTo(25, 25, {visualizePathStyle: {stroke: '#ffffff'}});
             } else if (move !== -11) {
                 console.log("failed move: " + move);
+                this.moveCreepIntoRoom(creep);
+                return;
             }
         } else if (!discoveredRoom) {
+            // 0 = claim status
+            // 1 = owner name | game time
+            // 2 = room name
+            // 3 = undefined | game time
             if (creep.room.controller && creep.room.controller.owner === undefined) {
-                creep.room.createFlag(25,25,'Unclaimed' + ":" + Game.time);
+                creep.room.createFlag(25,25,'Unclaimed' + ":" + Game.time + ":" + creep.room.name);
             } else if (creep.room.controller && creep.room.controller.owner) {
-                creep.room.createFlag(25,25, 'Claimed' + ":" + creep.room.controller.owner.username + ":" + Game.time);
+                creep.room.createFlag(25,25, 'Claimed' + ":" + creep.room.controller.owner.username + ":" + creep.room.name + ":" + Game.time);
             } else {
-                creep.room.createFlag(25,25, 'Unclaimable:' + Game.time);
+                creep.room.createFlag(25,25, 'Unclaimable:' + Game.time + ":" + creep.room.name);
             }
             creep.memory.currentOrder = undefined;
         }
 
-        // _.forEach(_.filter(Game.flags, (flag) => {
-        //     if (flag.room.controller && flag.room.controller.owner === undefined) {
-        //         flag.name = 'Unclaimed' + ":" + flag.name.split(":")[1];
-        //     } else if (flag.room.controller && flag.room.controller.owner) {
-        //         flag.name = 'Claimed' + ":" + flag.name.split(":")[1] + ":" + flag.room.controller.owner.username;
-        //     } else {
-        //         flag.name = 'Unclaimable:' + flag.name.split(":")[1];
-        //     }
-        // });
+        if (discoveredRoom && !(creep.room.controller && creep.room.controller.my)) {
+            let unclaimFlag = _.filter(Game.flags, (f) => {
+                let splitName = f.name.split(":");
+                if (splitName.length < 3) {
+                    return false;
+                }
+                return splitName[2] === creep.room.name && (splitName[0] === 'Unclaimed' ||
+                    splitName[0] === 'Claimed');
+            });
+            if (unclaimFlag.length) {
+                if (creep.room.controller && creep.room.controller.owner === undefined) {
+                    unclaimFlag[0].name = 'Unclaimed' + ":" + Game.time + ":" + creep.room.name;
+                } else if (creep.room.controller && creep.room.controller.owner) {
+                    unclaimFlag[0].name = 'Claimed' + ":" + creep.room.controller.owner.username + ":" + creep.room.name + ":" + Game.time;
+                }
+            }
+        }
     },
 
     getRoomName: function(roomName, direction) {

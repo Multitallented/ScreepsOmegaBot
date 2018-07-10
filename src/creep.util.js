@@ -94,18 +94,12 @@ module.exports = {
                     bodyArray.push(CLAIM);
                     partCount.claim++;
                     energyRemaining -= 600;
-                } else if (energyRemaining > 49 && partCount.move < partCount.carry + 1) {
+                } else if (energyRemaining > 49) {
                     bodyArray.push(MOVE);
                     partCount.move++;
                     energyRemaining -= 50;
-                } else if (energyRemaining > 49 && partCount.move > partCount.carry) {
-                    bodyArray.push(CARRY);
-                    partCount.carry++;
-                    energyRemaining -= 50;
-                } else if (energyRemaining > 9) {
-                    bodyArray.push(TOUGH);
-                    partCount.tough++;
-                    energyRemaining -= 10;
+                } else {
+                    energyRemaining = 0;
                 }
             } else if (type === this.roles.SCOUT) {
                 if (energyRemaining > 49 && (partCount.move < 1 || partCount.move < partCount.tough * 2)) {

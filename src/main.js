@@ -3,6 +3,7 @@ let roleUpgrader = require('./role.upgrader');
 let roleBuilder = require('./role.builder');
 let roleMiner = require('./role.miner');
 let roleCourier = require('./role.courier');
+let roleClaimer = require('./role.claimer');
 let roleScout = require('./role.scout');
 let roleTower = require('./role.tower');
 let respawn = require('./respawn');
@@ -45,6 +46,8 @@ module.exports = {
                 roleCourier.run(creep);
             } else if (creep.memory.role === 'scout') {
                 roleScout.run(creep);
+            } else if (creep.memory.role === 'claimer') {
+                roleClaimer.run(creep);
             }
         });
     }
