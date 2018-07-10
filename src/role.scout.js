@@ -1,4 +1,5 @@
 let Util = require('./util');
+let creepUtil = require('./creep.util');
 
 module.exports = {
     getRandomAdjacentRoom: function(creep) {
@@ -26,8 +27,40 @@ module.exports = {
         if (creep.room.controller && !creep.room.controller.my && creep.room.controller.owner !== undefined) {
             creep.say("Don't shoot", true);
         }
+        let claimers = _.filter(Game.creeps, (c) => {
+                return c.memory && c.memory.role && c.memory.role === creepUtil.roles.CLAIMER;
+            });
+        if (claimers.length) {
+            // claimers[Math.floor(Math.random() * claimers.length)];
+            // let move = creep.moveTo(creep.pos.findClosestByPath(claimers), {visualizePathStyle: {stroke: '#ffffff'}});
+            // if (move === OK) {
+            //     return;
+            // }
+        }
 
-
+        if (creep.room.controller && creep.room.controller.reservation && creep.room.controller.reservation.username === 'Multitallented') {
+            if (creep.room.find(FIND_STRUCTURES, {filter: (s) => {
+                    return s.structureType === STRUCTURE_CONTAINER;
+                }}).length && creep.room.find(FIND_CREEPS, {filter: (c) => {
+                    return c.memory && c.memory.role && c.memory.role === creepUtil.roles.MINER;
+                }}).length === 0) {
+                creep.memory.role = creepUtil.roles.MINER;
+                this.moveCreepIntoRoom(creep);
+                return;
+            }
+            // else if (creep.room.find(FIND_CREEPS, {filter: (c) => {
+            //         return c.memory && c.memory.role && c.memory.role === creepUtil.roles.MINER;
+            //     }}).length) {
+            //     creep.memory.role = creepUtil.roles.COURIER;
+            //     this.moveCreepIntoRoom(creep);
+            //     return;
+            // }
+            else {
+                creep.memory.role = creepUtil.roles.BUILDER;
+                this.moveCreepIntoRoom(creep);
+                return;
+            }
+        }
 
         let discoveredRoom = (creep.room.controller && creep.room.controller.my) ||
             _.filter(Game.flags, (f) => f.room === creep.room).length === 1;
@@ -46,7 +79,6 @@ module.exports = {
                 creep.memory.currentOrder = undefined;
                 creep.moveTo(25, 25, {visualizePathStyle: {stroke: '#ffffff'}});
             } else if (move !== -11) {
-                console.log("failed move: " + move);
                 this.moveCreepIntoRoom(creep);
                 return;
             }

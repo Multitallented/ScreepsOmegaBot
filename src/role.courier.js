@@ -10,9 +10,10 @@ let roleCourier = {
 
         if(creep.carry.energy < 1 || (creep.memory.currentOrder !== undefined &&
             creep.memory.currentOrder.split(":")[0] === Util.HARVEST && creep.carry.energy < creep.carryCapacity)) {
-            let container = Util.checkIfInUse(creep.room, FIND_STRUCTURES, creep, Util.WITHDRAW,
-                (structure) => { return structure.structureType === STRUCTURE_CONTAINER &&
-                    structure.store.energy > 0; });
+            let container = creep.pos.findClosestByPath(creep.room.find(FIND_STRUCTURES, {filter:
+                    (structure) => { return (structure.structureType === STRUCTURE_CONTAINER ||
+                    structure.structureType === STRUCTURE_STORAGE) &&
+                    structure.store.energy > 0; }}));
             if (container !== undefined) {
                 if (creep.withdraw(container, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
                     creep.moveTo(container, {visualizePathStyle: {stroke: '#ffaa00'}});
@@ -28,11 +29,13 @@ let roleCourier = {
             targets = _.filter(targets, (structure) => {
                 return ((structure.structureType === STRUCTURE_EXTENSION && structure.energy < structure.energyCapacity) ||
                     structure.structureType === STRUCTURE_SPAWN ||
-                    (structure.structureType === STRUCTURE_TOWER && structure.energy < structure.energyCapacity));
+                    (structure.structureType === STRUCTURE_TOWER && structure.energy < structure.energyCapacity) ||
+                    (structure.structureType === STRUCTURE_STORAGE && structure.store.energy < structure.storeCapacity));
             });
             if(targets.length > 0) {
                 let bestTarget = creep.pos.findClosestByPath(targets);
-                if (targets.length > 1 && (!bestTarget || bestTarget.structureType === STRUCTURE_SPAWN)) {
+                if (targets.length > 1 && (!bestTarget || bestTarget.structureType === STRUCTURE_SPAWN ||
+                    bestTarget.structureType === STRUCTURE_STORAGE)) {
                     bestTarget = targets[1];
                 }
                 let canTransfer = creep.transfer(bestTarget, RESOURCE_ENERGY);

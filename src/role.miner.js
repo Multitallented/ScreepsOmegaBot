@@ -34,28 +34,30 @@ module.exports = {
                 creep.memory.currentOrder = Util.HARVEST + ":" + creep.memory.inPosition;
             } else {
                 if (creep.memory.adjacentContainer === undefined) {
-                    creep.memory.adjacentContainer = this.findAdjacentContainer(creep).id;
+                    creep.memory.adjacentContainer = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => {
+                            return s.structureType === STRUCTURE_CONTAINER;
+                        }}).id;
                 }
                 creep.transfer(Game.getObjectById(creep.memory.adjacentContainer), RESOURCE_ENERGY);
                 creep.memory.currentOrder = Util.TRANSFER + ":" + creep.memory.adjacentContainer;
             }
         }
     },
-
-    findAdjacentContainer: function(creep) {
-        let containers = creep.room.find(FIND_STRUCTURES, {filter: (structure) => {
-                return structure.structureType === STRUCTURE_CONTAINER
-            }});
-        let returnContainer = undefined;
-        _.forEach(containers, (container) => {
-            if (returnContainer !== undefined) {
-                return;
-            }
-            let distance = Util.distance(creep, container);
-            if (distance < 2 && distance !== -1) {
-                returnContainer = container;
-            }
-        });
-        return returnContainer;
-    },
+    //
+    // findAdjacentContainer: function(creep) {
+    //     let containers = creep.room.find(FIND_STRUCTURES, {filter: (structure) => {
+    //             return structure.structureType === STRUCTURE_CONTAINER
+    //         }});
+    //     let returnContainer = undefined;
+    //     _.forEach(containers, (container) => {
+    //         if (returnContainer !== undefined) {
+    //             return;
+    //         }
+    //         let distance = Util.distance(creep, container);
+    //         if (distance < 2 && distance !== -1) {
+    //             returnContainer = container;
+    //         }
+    //     });
+    //     return returnContainer;
+    // },
 };

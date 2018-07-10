@@ -69,10 +69,15 @@ module.exports = {
             actionArray[action] = 5;
             actionArray[this.MOVE] = 10;
         } else {
-            actionArray[action] = 0; //TODO make this dependent on distance and space available
-            actionArray[this.MOVE] = 1; //TODO also make this dependent on distance and space available
+            let emptySquares = this.getEmptyAdjacentSpaces(target.pos);
+            actionArray[action] = emptySquares;
+            actionArray[this.MOVE] = emptySquares;
         }
         return actionArray;
+    },
+
+    getEmptyAdjacentSpaces: function(position) {
+        return 1;
     },
 
     countCreeps: function() {

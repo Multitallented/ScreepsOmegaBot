@@ -1,5 +1,6 @@
 let Util = require('./util');
 let structUtil = require('./structure.util');
+let creepUtil = require('./creep.util');
 let roleBuilder = {
 
     actionById: function(creep) {
@@ -30,6 +31,14 @@ let roleBuilder = {
 
     /** @param {Creep} creep **/
     run: function(creep) {
+        if (creep.room.controller && !creep.room.controller.my && (!creep.room.controller.reservation ||
+                creep.room.controller.reservation.username !== 'Multitallented')) {
+            creep.memory.role = creepUtil.roles.SCOUT;
+            creep.memory.currentOrder = undefined;
+            return;
+        }
+
+
         if (creep.carry.energy < 1 || (creep.memory.currentOrder !== undefined &&
             creep.memory.currentOrder.split(":")[0] === Util.HARVEST && creep.carry.energy < creep.carryCapacity)) {
             let container = Util.checkIfInUse(creep.room, FIND_STRUCTURES, creep, Util.WITHDRAW,
@@ -47,7 +56,8 @@ let roleBuilder = {
             } else {
                 let targetSource = Util.checkIfInUse(creep.room, FIND_SOURCES, creep, Util.HARVEST);
                 if (targetSource !== undefined) {
-                    if (creep.harvest(targetSource) === ERR_NOT_IN_RANGE) {
+                    let harvest = creep.harvest(targetSource);
+                    if (harvest === ERR_NOT_IN_RANGE) {
                         creep.moveTo(targetSource, {visualizePathStyle: {stroke: '#ffaa00'}});
                         creep.memory.currentOrder = Util.MOVE + ":" + targetSource.id;
                     } else {
