@@ -4,6 +4,7 @@ module.exports = function(name, controller) {
             FIND_CONSTRUCTION_SITES: [],
             FIND_SOURCES: [],
             FIND_STRUCTURES: [],
+            FIND_CREEPS: [],
         },
         controller: controller,
         energyAvailable: 300,

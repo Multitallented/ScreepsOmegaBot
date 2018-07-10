@@ -27,26 +27,26 @@ module.exports = {
                 if (count['energyAvailable'] < 200) {
                     return;
                 }
-                this.spawnACreep(Game.getObjectById(spawnId), creepUtil.roles.HARVESTER, 200);
+                this.spawnACreep(Game.getObjectById(spawnId), creepUtil.roles.HARVESTER, count['energyAvailable']);
             } else if (count[creepUtil.roles.UPGRADER] < 1) {
                 if (count['energyAvailable'] < 200) {
                     return;
                 }
-                this.spawnACreep(Game.getObjectById(spawnId), creepUtil.roles.UPGRADER, count['energyAvailable']);
+                this.spawnACreep(Game.getObjectById(spawnId), creepUtil.roles.UPGRADER, 200);
             } else if (count[creepUtil.roles.BUILDER] < 1) {
                 if (count['energyAvailable'] < 200) {
                     return;
                 }
-                this.spawnACreep(Game.getObjectById(spawnId), creepUtil.roles.BUILDER, count['energyAvailable']);
+                this.spawnACreep(Game.getObjectById(spawnId), creepUtil.roles.BUILDER, 200);
             } else if (count[creepUtil.roles.MINER] < 1 && count[creepUtil.roles.HARVESTER] < 2) {
                 if (count['energyAvailable'] < 300) {
                     return;
                 }
                 this.spawnACreep(Game.getObjectById(spawnId), creepUtil.roles.HARVESTER, 300);
             } else if (count['numContainers'] > 0 && count['numSources'] > count[creepUtil.roles.MINER]) {
-                if (count[creepUtil.roles.MINER] < 1 && count['energyAvailable'] < 400) {
+                if ((count[creepUtil.roles.MINER] < 1 || count[creepUtil.roles.COURIER] < 1) && count['energyAvailable'] < 400) {
                     return;
-                } else if (count['energyAvailable'] < 1000) {
+                } else if (!(count[creepUtil.roles.MINER] < 1 || count[creepUtil.roles.COURIER] < 1) && count['energyAvailable'] < 1000) {
                     return;
                 }
                 this.spawnACreep(Game.getObjectById(spawnId), creepUtil.roles.MINER, Math.min(count['energyAvailable'], 1000));
