@@ -6,6 +6,7 @@ let roleCourier = require('./role.courier');
 let roleClaimer = require('./role.claimer');
 let roleScout = require('./role.scout');
 let roleTower = require('./role.tower');
+let roleHoming = require('./role.homing');
 let respawn = require('./respawn');
 let creepUtil = require('./creep.util');
 
@@ -48,6 +49,8 @@ module.exports = {
                 roleScout.run(creep);
             } else if (creep.memory.role === 'claimer') {
                 roleClaimer.run(creep);
+            } else if (creep.memory.role === 'homing') {
+                roleHoming.run(creep);
             }
         });
     }

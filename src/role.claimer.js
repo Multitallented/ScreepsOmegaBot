@@ -1,5 +1,6 @@
 let Util = require('./util');
 let roleScout = require('./role.scout');
+let creepUtil = require('./creep.util');
 
 module.exports = {
     getRandomAdjacentRoom: function(creep) {
@@ -21,7 +22,11 @@ module.exports = {
         }
 
         let claimedRoom = creep.room.controller && creep.room.controller.my;
-        if (claimedRoom && (!creep.memory.currentOrder || creep.memory.currentOrder.split(":")[1] === creep.room.name)) {
+        let tooManyClaimers = creep.room.find(FIND_CREEPS, {filter: (c) => {
+            return c.memory && c.memory.role && c.memory.role === creepUtil.roles.CLAIMER;
+            }}).length > 3;
+        console.log('');
+        if ((claimedRoom || tooManyClaimers) && (!creep.memory.currentOrder || creep.memory.currentOrder.split(":")[1] === creep.room.name)) {
             let targetRoomName = this.getRandomAdjacentRoom(creep);
             if (creep.moveTo(creep.pos.findClosestByRange(creep.room.findExitTo(targetRoomName)), {visualizePathStyle: {stroke: '#ffffff'}}) === OK) {
                 creep.memory.currentOrder = Util.MOVE + ":" + targetRoomName;

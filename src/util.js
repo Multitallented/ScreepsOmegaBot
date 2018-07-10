@@ -8,6 +8,7 @@ module.exports = {
     WITHDRAW: "WITHDRAW",
     CLAIM: "CLAIM",
     RESERVE: "RESERVE",
+    PICKUP: "PICKUP",
 
     /** @param {Room} room **/
     /** @param string find **/

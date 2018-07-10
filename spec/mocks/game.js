@@ -70,6 +70,7 @@ module.exports = function () {
         FIND_EXIT_LEFT: 'FIND_EXIT_LEFT',
         FIND_EXIT_RIGHT: 'FIND_EXIT_RIGHT',
         FIND_EXIT_BOTTOM: 'FIND_EXIT_BOTTOM',
+        FIND_DROPPED_ENERGY: 'FIND_DROPPED_ENERGY',
     });
 
     let gameObjects = [];

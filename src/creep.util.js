@@ -7,6 +7,7 @@ module.exports = {
         COURIER: 'courier',
         CLAIMER: 'claimer',
         SCOUT: 'scout',
+        HOMING: 'homing',
     },
     parts: {
         WORK: {type: "work", hits: 100, buildCost: 100},
@@ -24,7 +25,7 @@ module.exports = {
         } else if (type === this.roles.HARVESTER) {
             energy = Math.min(energy, 600);
         } else if (type === this.roles.SCOUT) {
-            energy = Math.min(energy, 600);
+            energy = Math.min(energy, 1200);
         } else if (type === this.roles.COURIER) {
             energy = Math.min(energy, 400);
         }
@@ -43,7 +44,8 @@ module.exports = {
         while (energyRemaining > 10) {
             if (type === this.roles.BUILDER ||
                     type === this.roles.UPGRADER ||
-                    type === this.roles.HARVESTER) {
+                    type === this.roles.HARVESTER ||
+                    type === this.roles.SCOUT) {
                 if (energyRemaining > 99 && partCount.work < partCount.move) {
                     bodyArray.push(WORK);
                     partCount.work++;
@@ -103,25 +105,26 @@ module.exports = {
                 } else {
                     energyRemaining = 0;
                 }
-            } else if (type === this.roles.SCOUT) {
-                if (energyRemaining > 99 && partCount.work < 1) {
-                    bodyArray.push(WORK);
-                    partCount.work++;
-                    energyRemaining -= 100;
-                } else if (energyRemaining > 49 && (partCount.move < 1 || partCount.move < partCount.tough * 2)) {
-                    bodyArray.push(MOVE);
-                    partCount.move++;
-                    energyRemaining -= 50;
-                } else if (energyRemaining > 49 && partCount.carry === 0) {
-                    bodyArray.push(CARRY);
-                    partCount.carry++;
-                    energyRemaining -= 50;
-                } else if (energyRemaining > 9) {
-                    bodyArray.push(TOUGH);
-                    partCount.tough++;
-                    energyRemaining -= 10;
-                }
             }
+            // else if (type === this.roles.SCOUT) {
+            //     if (energyRemaining > 99 && partCount.work < 1) {
+            //         bodyArray.push(WORK);
+            //         partCount.work++;
+            //         energyRemaining -= 100;
+            //     } else if (energyRemaining > 49 && (partCount.move < 1 || partCount.move < partCount.tough * 2)) {
+            //         bodyArray.push(MOVE);
+            //         partCount.move++;
+            //         energyRemaining -= 50;
+            //     } else if (energyRemaining > 49 && partCount.carry === 0) {
+            //         bodyArray.push(CARRY);
+            //         partCount.carry++;
+            //         energyRemaining -= 50;
+            //     } else if (energyRemaining > 9) {
+            //         bodyArray.push(TOUGH);
+            //         partCount.tough++;
+            //         energyRemaining -= 10;
+            //     }
+            // }
         }
         let memory = { memory: { role: type }};
         return {

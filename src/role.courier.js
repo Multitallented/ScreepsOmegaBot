@@ -1,4 +1,5 @@
 let Util = require('./util');
+let creepUtil = require('./creep.util');
 
 let roleCourier = {
 
@@ -8,13 +9,32 @@ let roleCourier = {
             creep.memory.currentOrder = undefined;
         }
 
+        if (creep.carry.energy < 1 && creep.memory.wasScout) {
+            creep.memory.role = creepUtil.roles.SCOUT;
+            creep.memory.currentOrder = undefined;
+            return;
+        }
+
         if(creep.carry.energy < 1 || (creep.memory.currentOrder !== undefined &&
             creep.memory.currentOrder.split(":")[0] === Util.HARVEST && creep.carry.energy < creep.carryCapacity)) {
+            var energy = creep.pos.findClosestByPath(FIND_DROPPED_ENERGY, 1);
+            if (energy !== undefined && energy !== null && energy.energy > 20) {
+                let pickup = creep.pickup(energy);
+                if (pickup === OK) {
+                    creep.memory.currentOrder = Util.PICKUP + ":" + "energy";
+                    return;
+                } else {
+                    let move = creep.moveTo(energy, {visualizePathStyle: {stroke: '#ffffff'}});
+                    if (move === OK) {
+                        return;
+                    }
+                }
+            }
             let container = creep.pos.findClosestByPath(creep.room.find(FIND_STRUCTURES, {filter:
                     (structure) => { return (structure.structureType === STRUCTURE_CONTAINER ||
                     structure.structureType === STRUCTURE_STORAGE) &&
                     structure.store.energy > 0; }}));
-            if (container !== undefined) {
+            if (container !== undefined && container !== null) {
                 if (creep.withdraw(container, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
                     creep.moveTo(container, {visualizePathStyle: {stroke: '#ffaa00'}});
                     creep.memory.currentOrder = Util.MOVE + ":" + container.id;

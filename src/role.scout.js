@@ -38,26 +38,50 @@ module.exports = {
             // }
         }
 
+        if (creep.carry.energy < creep.carryCapacity) {
+            var energy = creep.pos.findClosestByPath(FIND_DROPPED_ENERGY, 1);
+            if (energy !== undefined && energy !== null && energy.energy > 100) {
+                let pickup = creep.pickup(energy);
+                if (pickup === OK) {
+                    creep.memory.currentOrder = Util.PICKUP + ":" + "energy";
+                    return;
+                } else {
+                    let move = creep.moveTo(energy, {visualizePathStyle: {stroke: '#ffffff'}});
+                    if (move === OK) {
+                        return;
+                    }
+                }
+            }
+        } else if (creep.carry.energy === creep.carryCapacity) {
+            creep.memory.role = creepUtil.roles.COURIER;
+            creep.memory.wasScout = true;
+            return;
+        }
+
         if (creep.room.controller && creep.room.controller.reservation && creep.room.controller.reservation.username === 'Multitallented') {
+            this.moveCreepIntoRoom(creep);
             if (creep.room.find(FIND_STRUCTURES, {filter: (s) => {
                     return s.structureType === STRUCTURE_CONTAINER;
                 }}).length && creep.room.find(FIND_CREEPS, {filter: (c) => {
                     return c.memory && c.memory.role && c.memory.role === creepUtil.roles.MINER;
                 }}).length === 0) {
                 creep.memory.role = creepUtil.roles.MINER;
-                this.moveCreepIntoRoom(creep);
                 return;
             }
-            // else if (creep.room.find(FIND_CREEPS, {filter: (c) => {
-            //         return c.memory && c.memory.role && c.memory.role === creepUtil.roles.MINER;
-            //     }}).length) {
-            //     creep.memory.role = creepUtil.roles.COURIER;
-            //     this.moveCreepIntoRoom(creep);
-            //     return;
-            // }
+            else if (creep.room.find(FIND_CREEPS, {filter: (c) => {
+                    return c.memory && c.memory.role && c.memory.role === creepUtil.roles.BUILDER;
+                }}).length === 0) {
+                creep.memory.role = creepUtil.roles.BUILDER;
+                return;
+            }
+            else if (creep.room.find(FIND_STRUCTURES, {filter: (c) => {
+                    return c.structureType === STRUCTURE_CONTAINER && c.store.energy > c.storeCapacity / 2;
+                }}).length) {
+                creep.memory.role = creepUtil.roles.HOMING;
+                return;
+            }
             else {
                 creep.memory.role = creepUtil.roles.BUILDER;
-                this.moveCreepIntoRoom(creep);
                 return;
             }
         }
