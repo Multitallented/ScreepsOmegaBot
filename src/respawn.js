@@ -18,7 +18,7 @@ module.exports = {
             creepCount[spawn.id]['numContainers'] = spawn.room.find(FIND_STRUCTURES, {filter: (struct) => {return struct.structureType === STRUCTURE_CONTAINER}}).length;
             _.forEach(creepUtil.roles, (role) => {
                 creepCount[spawn.id][role] =
-                    spawn.room.find(FIND_CREEPS, {filter: (creep) => {return creep.memory.role === role;}}).length;
+                    spawn.room.find(FIND_CREEPS, {filter: (creep) => {return creep.memory && creep.memory.role && creep.memory.role === role;}}).length;
             });
         });
 

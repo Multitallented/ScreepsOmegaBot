@@ -11,7 +11,7 @@ module.exports = {
 
             let source = Util.checkIfInUse(creep.room, FIND_SOURCES, creep, Util.HARVEST, (resource) => {
                 return creep.room.find(FIND_CREEPS, {filter: (c) => {
-                        return c.memory.role && c.memory.role === creepUtil.roles.MINER &&
+                        return c.memory && c.memory.role && c.memory.role === creepUtil.roles.MINER &&
                             c.memory.inPosition === resource.id;
                     }
             })});
