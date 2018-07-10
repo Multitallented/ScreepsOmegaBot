@@ -23,6 +23,8 @@ module.exports = {
             energy = Math.min(energy, 1000);
         } else if (type === this.roles.HARVESTER) {
             energy = Math.min(energy, 600);
+        } else if (type === this.roles.SCOUT) {
+            energy = Math.min(energy, 400);
         }
         let partCount = {
             "work": 0,
@@ -128,7 +130,7 @@ module.exports = {
                     continue;
                 }
             } else if (type === this.roles.SCOUT) {
-                if (energyRemaining > 49 && (partCount.move < 1 || partCount.move * 10 < partCount.tough)) {
+                if (energyRemaining > 49 && (partCount.move < 1 || partCount.move < partCount.tough)) {
                     bodyArray.push(MOVE);
                     partCount.move++;
                     energyRemaining -= 50;

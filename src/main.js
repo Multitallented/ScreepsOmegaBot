@@ -3,6 +3,7 @@ let roleUpgrader = require('./role.upgrader');
 let roleBuilder = require('./role.builder');
 let roleMiner = require('./role.miner');
 let roleCourier = require('./role.courier');
+let roleScout = require('./role.scout');
 let roleTower = require('./role.tower');
 let respawn = require('./respawn');
 let creepUtil = require('./creep.util');
@@ -13,7 +14,9 @@ module.exports = {
         let damagedCreeps = _.filter(Game.creeps, (creep) => creep.hits < creep.hitsMax && creep.my);
         for (let i=0; i< damagedCreeps.length; i++) {
             let creep = damagedCreeps[i];
-            if (creep.room.controller.safeMode === undefined &&
+            if (creep.room.controller &&
+                creep.room.controller.my &&
+                creep.room.controller.safeMode === undefined &&
                 creep.room.controller.safeModeAvailable > 0) {
                 creep.room.controller.activateSafeMode();
             }
@@ -40,6 +43,8 @@ module.exports = {
                 roleMiner.run(creep);
             } else if (creep.memory.role === 'courier') {
                 roleCourier.run(creep);
+            } else if (creep.memory.role === 'scout') {
+                roleScout.run(creep);
             }
         });
     }
