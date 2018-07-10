@@ -32,7 +32,7 @@ let roleCourier = {
             });
             if(targets.length > 0) {
                 let bestTarget = creep.pos.findClosestByPath(targets);
-                if (targets.length > 1 && bestTarget.structureType === STRUCTURE_SPAWN) {
+                if (targets.length > 1 && (!bestTarget || bestTarget.structureType === STRUCTURE_SPAWN)) {
                     bestTarget = targets[1];
                 }
                 let canTransfer = creep.transfer(bestTarget, RESOURCE_ENERGY);

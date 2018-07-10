@@ -130,7 +130,7 @@ module.exports = {
                     continue;
                 }
             } else if (type === this.roles.SCOUT) {
-                if (energyRemaining > 49 && (partCount.move < 1 || partCount.move < partCount.tough)) {
+                if (energyRemaining > 49 && (partCount.move < 1 || partCount.move < partCount.tough * 2)) {
                     bodyArray.push(MOVE);
                     partCount.move++;
                     energyRemaining -= 50;

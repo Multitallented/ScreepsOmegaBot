@@ -13,14 +13,19 @@ module.exports = {
                 0: FIND_EXIT_TOP, 1: FIND_EXIT_LEFT, 2: FIND_EXIT_RIGHT, 3: FIND_EXIT_BOTTOM
             };
             let direction = randDirection[Math.floor(Math.random() * 4)];
+            creep.say(direction);
             let targetRoomName = this.getRoomName(creep.room.name, direction);
             if (creep.moveTo(creep.pos.findClosestByRange(creep.room.findExitTo(targetRoomName)), {visualizePathStyle: {stroke: '#ffffff'}}) === OK) {
                 creep.memory.currentOrder = Util.MOVE + ":" + targetRoomName;
             }
         } else if (discoveredRoom && creep.memory.currentOrder) {
             let targetRoomName = creep.memory.currentOrder.split(":")[1];
-            if (creep.moveTo(creep.pos.findClosestByRange(creep.room.findExitTo(targetRoomName)), {visualizePathStyle: {stroke: '#ffffff'}}) === OK) {
-                creep.memory.currentOrder = Util.MOVE + ":" + targetRoomName;
+            if (targetRoomName === creep.room.name) {
+                creep.memory.currentOrder = undefined;
+            } else {
+                if (creep.moveTo(creep.pos.findClosestByRange(creep.room.findExitTo(targetRoomName)), {visualizePathStyle: {stroke: '#ffffff'}}) === OK) {
+                    creep.memory.currentOrder = Util.MOVE + ":" + targetRoomName;
+                }
             }
         } else if (!discoveredRoom) {
             if (creep.room.controller && creep.room.controller.owner === undefined) {
@@ -33,15 +38,15 @@ module.exports = {
             creep.memory.currentOrder = undefined;
         }
 
-        _.forEach(Game.flags, (flag) => {
-            if (creep.room.controller && creep.room.controller.owner === undefined) {
-                flag.name = 'Unclaimed' + ":" + flag.name.split(":")[1];
-            } else if (creep.room.controller && creep.room.controller.owner) {
-                flag.name = 'Claimed' + ":" + flag.name.split(":")[1] + ":" + creep.room.controller.owner.username;
-            } else {
-                flag.name = 'Unclaimable:' + flag.name.split(":")[1];
-            }
-        });
+        // _.forEach(_.filter(Game.flags, (flag) => {
+        //     if (flag.room.controller && flag.room.controller.owner === undefined) {
+        //         flag.name = 'Unclaimed' + ":" + flag.name.split(":")[1];
+        //     } else if (flag.room.controller && flag.room.controller.owner) {
+        //         flag.name = 'Claimed' + ":" + flag.name.split(":")[1] + ":" + flag.room.controller.owner.username;
+        //     } else {
+        //         flag.name = 'Unclaimable:' + flag.name.split(":")[1];
+        //     }
+        // });
     },
 
     getRoomName: function(roomName, direction) {
