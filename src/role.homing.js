@@ -29,7 +29,7 @@ module.exports = {
                     (structure) => { return (structure.structureType === STRUCTURE_CONTAINER ||
                         structure.structureType === STRUCTURE_STORAGE) &&
                         structure.store.energy > 0; }}));
-            if (container !== undefined) {
+            if (container !== undefined && container !== null) {
                 if (creep.withdraw(container, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
                     creep.moveTo(container, {visualizePathStyle: {stroke: '#ffaa00'}});
                     creep.memory.currentOrder = Util.MOVE + ":" + container.id;

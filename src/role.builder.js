@@ -37,6 +37,16 @@ let roleBuilder = {
             creep.memory.currentOrder = undefined;
             return;
         }
+        let reservedController = creep.room.controller && creep.room.controller.reservation &&
+            creep.room.controller.reservation.username === 'Multitallented';
+        if (reservedController) {
+            if (creep.memory.currentOrder && creep.memory.currentOrder.split(":")[0] === Util.HARVEST &&
+                    _.filter(creep.pos.lookAtArea(creep.pos.y-1, creep.pos.x-1, creep.pos.y+1, creep.pos.x+1, true), (s) => {
+                        return s.structureType && s.structureType === STRUCTURE_CONTAINER;
+                    }).length < 1) {
+                creep.room.createConstructionSite(creep.pos, STRUCTURE_CONTAINER);
+            }
+        }
 
 
         if (creep.carry.energy < 1 || (creep.memory.currentOrder !== undefined &&
@@ -100,9 +110,13 @@ let roleBuilder = {
                         }
                     });
                     if (targets.length) {
-                        targets = _.sortBy(targets, (o) => o.hits * -1);
+                        targets = _.sortBy(targets, (o) => o.hits);
                         creep.memory.currentOrder = Util.REPAIR + ":" + targets[0].id;
                         this.actionById(creep);
+                    } else if (reservedController) {
+                        creep.memory.role = creepUtil.roles.HOMING;
+                        creep.memory.currentOrder = undefined;
+                        return;
                     }
                 }
             }

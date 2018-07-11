@@ -56,7 +56,7 @@ module.exports = {
                 }
             }
         } else if (creep.carry.energy === creep.carryCapacity) {
-            creep.memory.role = creepUtil.roles.COURIER;
+            creep.memory.role = creepUtil.roles.HOMING;
             creep.memory.wasScout = true;
             return;
         }
@@ -64,10 +64,10 @@ module.exports = {
         if (creep.room.controller && creep.room.controller.reservation && creep.room.controller.reservation.username === 'Multitallented') {
             this.moveCreepIntoRoom(creep);
             if (creep.room.find(FIND_STRUCTURES, {filter: (s) => {
-                    return s.structureType === STRUCTURE_CONTAINER;
+                    return s.structureType === STRUCTURE_CONTAINER && s.store.energy < s.storeCapacity / 2;
                 }}).length && creep.room.find(FIND_CREEPS, {filter: (c) => {
                     return c.memory && c.memory.role && c.memory.role === creepUtil.roles.MINER;
-                }}).length < creep.room.find(FIND_SOURCES)) {
+                }}).length < creep.room.find(FIND_SOURCES).length) {
                 creep.memory.role = creepUtil.roles.MINER;
                 return;
             }
@@ -81,10 +81,6 @@ module.exports = {
                     return c.structureType === STRUCTURE_CONTAINER && c.store.energy > c.storeCapacity / 2;
                 }}).length) {
                 creep.memory.role = creepUtil.roles.HOMING;
-                return;
-            }
-            else {
-                creep.memory.role = creepUtil.roles.BUILDER;
                 return;
             }
         }

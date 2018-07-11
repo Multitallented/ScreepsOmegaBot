@@ -19,7 +19,8 @@ let roleCourier = {
                 targets = _.filter(targets, (structure) => {
                     return ((structure.structureType === STRUCTURE_EXTENSION && structure.energy < structure.energyCapacity) ||
                         (structure.structureType === STRUCTURE_TOWER && structure.energy < structure.energyCapacity) ||
-                        (structure.structureType === STRUCTURE_STORAGE && structure.store.energy < structure.storeCapacity));
+                        (structure.structureType === STRUCTURE_STORAGE && structure.store.energy < structure.storeCapacity) ||
+                        (structure.structureType === STRUCTURE_CONTAINER && structure.store.energy < structure.storeCapacity));
                 });
                 if (targets.length) {
                     let bestTarget = creep.pos.findClosestByPath(targets);
@@ -56,7 +57,7 @@ let roleCourier = {
             let container = creep.pos.findClosestByPath(creep.room.find(FIND_STRUCTURES, {filter:
                     (structure) => { return (structure.structureType === STRUCTURE_CONTAINER ||
                     structure.structureType === STRUCTURE_STORAGE) &&
-                    structure.store.energy > 0; }}));
+                    structure.store.energy > creep.carryCapacity; }}));
             if (container !== undefined && container !== null) {
                 if (creep.withdraw(container, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
                     creep.moveTo(container, {visualizePathStyle: {stroke: '#ffaa00'}});

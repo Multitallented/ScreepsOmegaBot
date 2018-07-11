@@ -22,17 +22,17 @@ module.exports = {
         }
 
         let claimedRoom = creep.room.controller && creep.room.controller.my;
-        let tooManyClaimers = creep.room.find(FIND_CREEPS, {filter: (c) => {
-            return c.memory && c.memory.role && c.memory.role === creepUtil.roles.CLAIMER;
-            }}).length > 3;
-        console.log('');
-        if ((claimedRoom || tooManyClaimers) && (!creep.memory.currentOrder || creep.memory.currentOrder.split(":")[1] === creep.room.name)) {
+        let claimUnnecessary = creep.room && creep.room.controller && creep.room.controller.reservation &&
+            creep.room.controller.reservation.ticksToEnd > 3000;
+        let claimConsistent = creep.room && creep.room.controller && creep.room.controller.reservation &&
+            creep.memory.currentOrder && creep.memory.currentOrder.split(":")[0] === Util.RESERVE;
+        if ((claimedRoom || (claimUnnecessary && !claimConsistent)) && (!creep.memory.currentOrder || creep.memory.currentOrder.split(":")[1] === creep.room.name)) {
             let targetRoomName = this.getRandomAdjacentRoom(creep);
             if (creep.moveTo(creep.pos.findClosestByRange(creep.room.findExitTo(targetRoomName)), {visualizePathStyle: {stroke: '#ffffff'}}) === OK) {
                 creep.memory.currentOrder = Util.MOVE + ":" + targetRoomName;
             }
         }
-        else if ((claimedRoom || (!claimedRoom && !creep.room.controller)) && creep.memory.currentOrder) {
+        else if ((claimedRoom || (claimUnnecessary && !claimConsistent) || (!claimedRoom && !creep.room.controller)) && creep.memory.currentOrder) {
             let targetRoomName = creep.memory.currentOrder.split(":")[1];
             let direction = creep.room.findExitTo(targetRoomName);
             let move = creep.moveTo(creep.pos.findClosestByRange(direction), {visualizePathStyle: {stroke: '#ffffff'}});
@@ -50,9 +50,9 @@ module.exports = {
             let reserve = creep.reserveController(creep.room.controller);
             if (reserve !== OK) {
                 let move = creep.moveTo(creep.room.controller.pos, {visualizePathStyle: {stroke: '#ffffff'}});
-                creep.memory.currentOrder = Util.MOVE + ":" + creep.room.controller.id;
+                creep.memory.currentOrder = Util.MOVE + ":" + creep.room.name;
             } else {
-                creep.memory.currentOrder = Util.RESERVE + ":" + creep.room.controller.id;
+                creep.memory.currentOrder = Util.RESERVE + ":" + creep.room.name;
             }
         }
     },

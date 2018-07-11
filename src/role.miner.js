@@ -4,6 +4,9 @@ let creepUtil = require('./creep.util');
 module.exports = {
 
     run: function(creep) {
+        let reservedController = creep.room.controller && creep.room.controller.reservation &&
+            creep.room.controller.reservation.username === 'Multitallented';
+
         if (!creep.memory.inPosition) {
             if (creep.memory.currentOrder === undefined) {
                 creep.say('🔄 harvest');
@@ -38,8 +41,13 @@ module.exports = {
                             return s.structureType === STRUCTURE_CONTAINER;
                         }}).id;
                 }
-                creep.transfer(Game.getObjectById(creep.memory.adjacentContainer), RESOURCE_ENERGY);
+                let transfer = creep.transfer(Game.getObjectById(creep.memory.adjacentContainer), RESOURCE_ENERGY);
                 creep.memory.currentOrder = Util.TRANSFER + ":" + creep.memory.adjacentContainer;
+                if (transfer === ERR_FULL && reservedController) {
+                    creep.memory.role = creepUtil.roles.HOMING;
+                    creep.memory.currentOrder = undefined;
+                    return;
+                }
             }
         }
     },
