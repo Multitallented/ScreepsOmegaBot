@@ -3,6 +3,13 @@ let creepUtil = require('./creep.util');
 let scoutScript = require('./role.scout');
 
 module.exports = {
+    moveCreepToNearestSpawn: function(creep) {
+        let move = creep.moveTo(Game.spawns['Spawn1'], {visualizePathStyle: {stroke: '#ffffff'}});
+        if (move !== OK && move !== -11) {
+            console.log("Homing failed move: " + move);
+        }
+    },
+
     run: function(creep) {
 
         if (creep.room.controller && creep.room.controller.my) {
@@ -30,16 +37,12 @@ module.exports = {
                     creep.memory.currentOrder = Util.WITHDRAW + ":" + container.id;
                 }
             } else {
-                let move = creep.moveTo(Game.spawns['Spawn1'], {visualizePathStyle: {stroke: '#ffffff'}});
-                if (move !== OK) {
-                    console.log("Homing failed move: " + move);
-                }
+                this.moveCreepToNearestSpawn(creep);
+                return;
             }
         } else {
-            let move = creep.moveTo(Game.spawns['Spawn1'], {visualizePathStyle: {stroke: '#ffffff'}});
-            if (move !== OK) {
-                console.log("Homing failed move: " + move);
-            }
+            this.moveCreepToNearestSpawn(creep);
+            return;
         }
     }
 };

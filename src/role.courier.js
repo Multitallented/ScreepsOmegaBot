@@ -9,15 +9,38 @@ let roleCourier = {
             creep.memory.currentOrder = undefined;
         }
 
-        if (creep.carry.energy < 1 && creep.memory.wasScout) {
-            creep.memory.role = creepUtil.roles.SCOUT;
-            creep.memory.currentOrder = undefined;
-            return;
+        if (creep.memory.wasScout) {
+            if (creep.carry.energy < 1) {
+                creep.memory.role = creepUtil.roles.SCOUT;
+                creep.memory.currentOrder = undefined;
+                return;
+            } else {
+                let targets = creep.room.find(FIND_STRUCTURES);
+                targets = _.filter(targets, (structure) => {
+                    return ((structure.structureType === STRUCTURE_EXTENSION && structure.energy < structure.energyCapacity) ||
+                        (structure.structureType === STRUCTURE_TOWER && structure.energy < structure.energyCapacity) ||
+                        (structure.structureType === STRUCTURE_STORAGE && structure.store.energy < structure.storeCapacity));
+                });
+                if (targets.length) {
+                    let bestTarget = creep.pos.findClosestByPath(targets);
+                    let canTransfer = creep.transfer(bestTarget, RESOURCE_ENERGY);
+                    if (canTransfer === ERR_NOT_IN_RANGE) {
+                        creep.moveTo(bestTarget, {visualizePathStyle: {stroke: '#ffffff'}});
+                        creep.memory.currentOrder = Util.MOVE + ":" + bestTarget.id;
+                    } else if (canTransfer === OK) {
+                        creep.memory.currentOrder = Util.TRANSFER + ":" + bestTarget.id;
+                    }
+                    return;
+                }
+
+            }
         }
 
         if(creep.carry.energy < 1 || (creep.memory.currentOrder !== undefined &&
             creep.memory.currentOrder.split(":")[0] === Util.HARVEST && creep.carry.energy < creep.carryCapacity)) {
-            var energy = creep.pos.findClosestByPath(FIND_DROPPED_ENERGY, 1);
+            let energy = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {filter: (r) => {
+                    return r.resourceType && r.resourceType === RESOURCE_ENERGY;
+                }});
             if (energy !== undefined && energy !== null && energy.energy > 20) {
                 let pickup = creep.pickup(energy);
                 if (pickup === OK) {

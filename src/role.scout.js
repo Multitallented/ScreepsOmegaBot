@@ -21,6 +21,7 @@ module.exports = {
         } else if (creep.pos.y === 49) {
             creep.moveTo(creep.pos.x, 48);
         }
+        creep.memory.currentOrder = undefined;
     },
 
     run: function(creep) {
@@ -39,7 +40,9 @@ module.exports = {
         }
 
         if (creep.carry.energy < creep.carryCapacity) {
-            var energy = creep.pos.findClosestByPath(FIND_DROPPED_ENERGY, 1);
+            let energy = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {filter: (r) => {
+                    return r.resourceType && r.resourceType === RESOURCE_ENERGY;
+                }});
             if (energy !== undefined && energy !== null && energy.energy > 100) {
                 let pickup = creep.pickup(energy);
                 if (pickup === OK) {
@@ -64,7 +67,7 @@ module.exports = {
                     return s.structureType === STRUCTURE_CONTAINER;
                 }}).length && creep.room.find(FIND_CREEPS, {filter: (c) => {
                     return c.memory && c.memory.role && c.memory.role === creepUtil.roles.MINER;
-                }}).length === 0) {
+                }}).length < creep.room.find(FIND_SOURCES)) {
                 creep.memory.role = creepUtil.roles.MINER;
                 return;
             }

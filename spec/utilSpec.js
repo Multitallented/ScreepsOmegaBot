@@ -62,4 +62,8 @@ describe("Util Tests", function() {
         let distance = Util.distance(room1.entities.FIND_SOURCES[0], room1.entities.FIND_SOURCES[2]);
         expect(distance).toBe(12);
     });
+
+    it("adjacent spaces should cover all spaces", function() {
+        Util.getEmptyAdjacentSpaces(room1, {x: 13, y: 13});
+    });
 });

@@ -76,14 +76,14 @@ module.exports = {
             //     this.spawnACreep(Game.getObjectById(spawnId), creepUtil.roles.BUILDER, count['energyAvailable']);
             // }
             else if (count[creepUtil.roles.CLAIMER] < 1 && creepCount[creepUtil.roles.CLAIMER + ":X"] < 8 &&
-                    creepCount[creepUtil.roles.SCOUT + ":X"] > 0) {
+                    creepCount[creepUtil.roles.SCOUT + ":X"] > 1) {
                 if (count['energyAvailable'] < 800) {
                     return;
                 }
                 this.spawnACreep(Game.getObjectById(spawnId), creepUtil.roles.CLAIMER, 800)
             }
-            else if (count[creepUtil.roles.SCOUT] < 1) {
-                if (count['energyAvailable'] < 600) {
+            else if (count[creepUtil.roles.SCOUT] < 2) {
+                if (count['energyAvailable'] < 800) {
                     return;
                 }
                 this.spawnACreep(Game.getObjectById(spawnId), creepUtil.roles.SCOUT, count['energyAvailable']);
