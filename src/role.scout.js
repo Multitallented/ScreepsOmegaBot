@@ -12,6 +12,7 @@ module.exports = {
     },
 
     moveCreepIntoRoom: function(creep) {
+        creep.memory.currentOrder = undefined;
         if (creep.pos.x === 0) {
             creep.moveTo(1, creep.pos.y);
         } else if (creep.pos.x === 49) {
@@ -20,8 +21,10 @@ module.exports = {
             creep.moveTo(creep.pos.x, 1);
         } else if (creep.pos.y === 49) {
             creep.moveTo(creep.pos.x, 48);
+        } else {
+            return false;
         }
-        creep.memory.currentOrder = undefined;
+        return true;
     },
 
     run: function(creep) {

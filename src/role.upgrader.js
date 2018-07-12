@@ -1,8 +1,14 @@
 let Util = require('./util');
+let builderScript = require('./role.builder');
+
 let roleUpgrader = {
 
     /** @param {Creep} creep **/
     run: function(creep) {
+        if (builderScript.originRoom(creep)) {
+            return;
+        }
+
         if(creep.memory.upgrading && creep.carry.energy === 0) {
             creep.memory.upgrading = false;
             creep.say('🔄 harvest');

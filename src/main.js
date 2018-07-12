@@ -68,7 +68,7 @@ module.exports = {
             } else if (creep.memory.role === 'tank') {
                 roleMelee.run(creep);
             } else if (creep.memory.role === 'melee') {
-                roleMelee.run(creep);
+                // roleMelee.run(creep);
             }
         });
     }

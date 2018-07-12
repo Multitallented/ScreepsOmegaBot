@@ -1,5 +1,6 @@
 let Util = require('./util');
 let creepUtil = require('./creep.util');
+let builderScript = require('./role.builder');
 
 let roleCourier = {
 
@@ -7,6 +8,10 @@ let roleCourier = {
     run: function(creep) {
         if (creep.memory.currentOrder === Util.HARVEST && creep.carry.energy >= creep.carryCapacity) {
             creep.memory.currentOrder = undefined;
+        }
+
+        if (builderScript.originRoom(creep)) {
+            return;
         }
 
         if (creep.memory.wasScout) {

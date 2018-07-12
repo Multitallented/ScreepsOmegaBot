@@ -28,9 +28,29 @@ let roleBuilder = {
         }
     },
 
+    originRoom: function(creep) {
+        if (!creep.memory.wasScout && creep.memory.originRoom !== creep.room.name) {
+            if (!creep.memory.originName) {
+                creep.memory.orignName = creep.room.name;
+            }
+            let room = Game.rooms[creep.memory.originRoom];
+            if (room !== undefined && room !== null) {
+                let pos = room.getPositionAt(creep.pos.x, creep.pos.y);
+                if (pos !== null) {
+                    creep.moveTo(pos, {visualizePathStyle: {stroke: '#ffaa00'}});
+                    return true;
+                }
+            }
+        }
+        return false;
+    },
 
     /** @param {Creep} creep **/
     run: function(creep) {
+        // if (this.originRoom(creep)) {
+        //     return;
+        // }
+
         if (creep.room.controller && !creep.room.controller.my && (!creep.room.controller.reservation ||
                 creep.room.controller.reservation.username !== 'Multitallented')) {
             creep.memory.role = creepUtil.roles.SCOUT;

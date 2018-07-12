@@ -1,4 +1,5 @@
 let Util = require('./util');
+let builderScript = require('./role.builder');
 
 let roleHarvester = {
 
@@ -7,6 +8,10 @@ let roleHarvester = {
         if (creep.memory.currentOrder === Util.HARVEST && creep.carry.energy >= creep.carryCapacity) {
             creep.memory.currentOrder = undefined;
         }
+
+        // if (builderScript.originRoom(creep)) {
+        //     return;
+        // }
 
         if(creep.carry.energy < 1 || (creep.memory.currentOrder !== undefined &&
             creep.memory.currentOrder.split(":")[0] === Util.HARVEST && creep.carry.energy < creep.carryCapacity)) {
