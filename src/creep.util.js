@@ -8,6 +8,9 @@ module.exports = {
         CLAIMER: 'claimer',
         SCOUT: 'scout',
         HOMING: 'homing',
+        MELEE: 'melee',
+        LOOTER: 'looter',
+        TANK: 'tank',
     },
     parts: {
         WORK: {type: "work", hits: 100, buildCost: 100},
@@ -104,6 +107,60 @@ module.exports = {
                     energyRemaining -= 50;
                 } else {
                     energyRemaining = 0;
+                }
+            } else if (type === this.roles.MELEE) {
+                if (energyRemaining > 79 && partCount.attack < 2) {
+                    bodyArray.push(ATTACK);
+                    partCount.attack++;
+                    energyRemaining -= 80;
+                } else if (energyRemaining > 49 && partCount.move < bodyArray.length / 3) {
+                    bodyArray.push(MOVE);
+                    partCount.move++;
+                    energyRemaining -= 50;
+                } else if (energyRemaining > 249 && partCount.heal < 1) {
+                    bodyArray.push(HEAL);
+                    partCount.heal++;
+                    energyRemaining -= 250;
+                } else if (energyRemaining > 9) {
+                    bodyArray.push(TOUGH);
+                    partCount.tough++;
+                    energyRemaining -= 10;
+                }
+            } else if (type === this.roles.LOOTER) {
+                if (energyRemaining > 49 && partCount.move < bodyArray.length / 3) {
+                    bodyArray.push(MOVE);
+                    partCount.move++;
+                    energyRemaining -= 50;
+                } else if (energyRemaining > 249 && partCount.heal < 1) {
+                    bodyArray.push(HEAL);
+                    partCount.heal++;
+                    energyRemaining -= 250;
+                } else if (energyRemaining > 49 && partCount.carry < 3) {
+                    bodyArray.push(CARRY);
+                    partCount.carry++;
+                    energyRemaining -= 50;
+                } else if (energyRemaining > 9) {
+                    bodyArray.push(TOUGH);
+                    partCount.tough++;
+                    energyRemaining -= 10;
+                }
+            } else if (type === this.roles.TANK) {
+                if (energyRemaining > 49 && partCount.move < bodyArray.length / 3) {
+                    bodyArray.push(MOVE);
+                    partCount.move++;
+                    energyRemaining -= 50;
+                } else if (energyRemaining > 249 && partCount.heal < 1) {
+                    bodyArray.push(HEAL);
+                    partCount.heal++;
+                    energyRemaining -= 250;
+                } else if (energyRemaining > 49 && partCount.carry < 3) {
+                    bodyArray.push(CARRY);
+                    partCount.carry++;
+                    energyRemaining -= 50;
+                } else if (energyRemaining > 9) {
+                    bodyArray.push(TOUGH);
+                    partCount.tough++;
+                    energyRemaining -= 10;
                 }
             }
             // else if (type === this.roles.SCOUT) {

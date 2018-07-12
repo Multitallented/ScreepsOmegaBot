@@ -43,7 +43,8 @@ module.exports = {
                 }
                 let transfer = creep.transfer(Game.getObjectById(creep.memory.adjacentContainer), RESOURCE_ENERGY);
                 creep.memory.currentOrder = Util.TRANSFER + ":" + creep.memory.adjacentContainer;
-                if (transfer === ERR_FULL && reservedController) {
+                if (creep.carry.energy === creep.carryCapacity && (reservedController ||
+                        (creep.room.controller && !creep.room.controller.my))) {
                     creep.memory.role = creepUtil.roles.HOMING;
                     creep.memory.currentOrder = undefined;
                     return;
@@ -51,21 +52,4 @@ module.exports = {
             }
         }
     },
-    //
-    // findAdjacentContainer: function(creep) {
-    //     let containers = creep.room.find(FIND_STRUCTURES, {filter: (structure) => {
-    //             return structure.structureType === STRUCTURE_CONTAINER
-    //         }});
-    //     let returnContainer = undefined;
-    //     _.forEach(containers, (container) => {
-    //         if (returnContainer !== undefined) {
-    //             return;
-    //         }
-    //         let distance = Util.distance(creep, container);
-    //         if (distance < 2 && distance !== -1) {
-    //             returnContainer = container;
-    //         }
-    //     });
-    //     return returnContainer;
-    // },
 };

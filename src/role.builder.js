@@ -41,7 +41,7 @@ let roleBuilder = {
             creep.room.controller.reservation.username === 'Multitallented';
         if (reservedController) {
             if (creep.memory.currentOrder && creep.memory.currentOrder.split(":")[0] === Util.HARVEST &&
-                    _.filter(creep.pos.lookAtArea(creep.pos.y-1, creep.pos.x-1, creep.pos.y+1, creep.pos.x+1, true), (s) => {
+                    _.filter(creep.room.lookAtArea(creep.pos.y-1, creep.pos.x-1, creep.pos.y+1, creep.pos.x+1, true), (s) => {
                         return s.structureType && s.structureType === STRUCTURE_CONTAINER;
                     }).length < 1) {
                 creep.room.createConstructionSite(creep.pos, STRUCTURE_CONTAINER);

@@ -8,21 +8,35 @@ let roleScout = require('./role.scout');
 let roleTower = require('./role.tower');
 let roleHoming = require('./role.homing');
 let respawn = require('./respawn');
+let roleMelee = require('./role.melee');
 let creepUtil = require('./creep.util');
 
 module.exports = {
     loop: function () {
 
-        let damagedCreeps = _.filter(Game.creeps, (creep) => creep.hits < creep.hitsMax && creep.my);
-        for (let i=0; i< damagedCreeps.length; i++) {
-            let creep = damagedCreeps[i];
-            if (creep.room.controller &&
-                creep.room.controller.my &&
-                creep.room.controller.safeMode === undefined &&
-                creep.room.controller.safeModeAvailable > 0) {
-                creep.room.controller.activateSafeMode();
+        _.forEach(_.filter(Game.structures, (s) => {
+            return s.structureType &&
+                (s.structureType === STRUCTURE_TOWER ||
+                s.structureType === STRUCTURE_SPAWN) &&
+                s.hits < s.hitsMax;
+            }), (structure) => {
+            if (structure.room.controller &&
+                structure.room.controller.my &&
+                structure.room.controller.safeMode === undefined &&
+                structure.room.controller.safeModeAvailable > 0) {
+                structure.room.controller.activateSafeMode();
             }
-        }
+        });
+        // let damagedCreeps = _.filter(Game.creeps, (creep) => creep.hits < creep.hitsMax && creep.my);
+        // for (let i=0; i< damagedCreeps.length; i++) {
+        //     let creep = damagedCreeps[i];
+        //     if (creep.room.controller &&
+        //         creep.room.controller.my &&
+        //         creep.room.controller.safeMode === undefined &&
+        //         creep.room.controller.safeModeAvailable > 0) {
+        //         creep.room.controller.activateSafeMode();
+        //     }
+        // }
 
         roleTower.run();
 
@@ -51,6 +65,10 @@ module.exports = {
                 roleClaimer.run(creep);
             } else if (creep.memory.role === 'homing') {
                 roleHoming.run(creep);
+            } else if (creep.memory.role === 'tank') {
+                roleMelee.run(creep);
+            } else if (creep.memory.role === 'melee') {
+                roleMelee.run(creep);
             }
         });
     }
