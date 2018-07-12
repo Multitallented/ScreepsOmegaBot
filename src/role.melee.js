@@ -28,7 +28,7 @@ module.exports = {
                 });
             if (!squadLeaders.length) {
                 creep.memory.squadLeader = true;
-            } else if (squadLeaders[0].ticksToLive < 500 || _.filter(Game.creeps, (c) => {
+            } else if (squadLeaders[0].ticksToLive > 1400 && _.filter(Game.creeps, (c) => {
                 return c.memory && c.memory.role && (c.memory.role === creepUtil.roles.MELEE ||
                     c.memory.role === creepUtil.roles.LOOTER || c.memory.role === creepUtil.roles.TANK);
                 }).length > 5) {
