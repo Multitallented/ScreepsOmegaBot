@@ -118,11 +118,11 @@ module.exports = {
                     partCount.move++;
                     energyRemaining -= 50;
                 }
-                // else if (energyRemaining > 249 && partCount.heal < 1) {
-                //     bodyArray.unshift(HEAL);
-                //     partCount.heal++;
-                //     energyRemaining -= 250;
-                // }
+                else if (energyRemaining > 249 && partCount.heal < 1) {
+                    bodyArray.unshift(HEAL);
+                    partCount.heal++;
+                    energyRemaining -= 250;
+                }
                 else if (energyRemaining > 9) {
                     bodyArray.unshift(TOUGH);
                     partCount.tough++;

@@ -1,9 +1,13 @@
 let Util = require('./util');
 let creepUtil = require('./creep.util');
+let builderScript = require('./role.builder');
 
 module.exports = {
 
     run: function(creep) {
+        if (builderScript.originRoom(creep)) {
+            return;
+        }
         let reservedController = creep.room.controller && creep.room.controller.reservation &&
             creep.room.controller.reservation.username === 'Multitallented';
 

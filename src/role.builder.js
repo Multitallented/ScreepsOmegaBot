@@ -47,9 +47,9 @@ let roleBuilder = {
 
     /** @param {Creep} creep **/
     run: function(creep) {
-        // if (this.originRoom(creep)) {
-        //     return;
-        // }
+        if (this.originRoom(creep)) {
+            return;
+        }
 
         if (creep.room.controller && !creep.room.controller.my && (!creep.room.controller.reservation ||
                 creep.room.controller.reservation.username !== 'Multitallented')) {

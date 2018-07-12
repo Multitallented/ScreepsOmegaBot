@@ -4,7 +4,15 @@ let scoutScript = require('./role.scout');
 
 module.exports = {
     moveCreepToDestination: function(creep, flagName) {
-        let move = creep.moveTo(Game.flags[flagName], {visualizePathStyle: {stroke: '#ffffff'}});
+        let move = null;
+        if (creep.memory.squadLeader) {
+            move = creep.moveTo(Game.flags[flagName], {visualizePathStyle: {stroke: '#ffffff'}});
+        } else {
+            let squadLeaders = _.filter(Game.creeps, (c) => { return c.memory && c.memory.squadLeader; });
+            if (squadLeaders.length && squadLeaders[0].pos.getRangeTo(creep) > 2) {
+                move = creep.moveTo(squadLeaders[0], {visualizePathStyle: {stroke: '#ffffff'}});
+            }
+        }
         creep.memory.currentOrder = Util.MOVE + ":flag";
         if (move !== OK && move !== -11 && move !== -4) {
             scoutScript.moveCreepIntoRoom(creep);
@@ -15,10 +23,12 @@ module.exports = {
     run: function(creep) {
         // creep.memory.flag= 'Unclaimed:342703';
         // creep.memory.flag= 'Claimed:Demiskeleton:362402';
+        // creep.memory.flag= 'Claimed:Sleepless:W2N7:441130';
+        creep.memory.flag= 'Unclaimed:384626:W3N7';
         // creep.memory.flag= 'Claimed:MichaelBot:W9N9:364364';
         // creep.memory.flag= 'Unclaimed:364279:W9N7';
         // creep.memory.flag= 'Unclaimed:364307:W9N8';
-        creep.memory.flag= 'Unclaimed:459529:W5N2';
+        // creep.memory.flag= 'Unclaimed:495540:W7N4';
 
         if (creep.memory && creep.memory.rescue) {
             let rescue = Game.getObjectById(creep.memory.rescue);
@@ -56,8 +66,8 @@ module.exports = {
             });
             if (!squadLeaders.length) {
                 creep.memory.squadLeader = true;
-                creep.memory.ticksToAttack = 600;
-            } else if (army.length > 0 && squadLeaders[0].ticksToLive > squadLeaders[0].memory.ticksToAttack) {
+                creep.memory.ticksToAttack = 900;
+            } else if (army.length > 6 && squadLeaders[0].ticksToLive > squadLeaders[0].memory.ticksToAttack) {
                 squadLeaders[0].memory.ticksToAttack = 100;
                 this.moveCreepToDestination(creep, creep.memory.flag);
             }
@@ -82,7 +92,7 @@ module.exports = {
         if (goals.length) {
             goal = creep.pos.findClosestByPath(goals);
         } else {
-            goals = creep.room.find(FIND_CREEPS, {filter: (s) => {
+            let goals = creep.room.find(FIND_CREEPS, {filter: (s) => {
                     return !s.my && (!s.name || s.name.indexOf("Keepera") === -1);
                 }});
 
@@ -117,16 +127,10 @@ module.exports = {
             if (creep.hits < creep.hitsMax) {
                 creep.heal(creep);
             }
-            let heal = _.filter(creep.room.lookAtArea(creep.pos.y - 1, creep.pos.x - 1, creep.pos.y + 1, creep.pos.x + 1, true), (s) => {
-                return s.type === 'creep' && s.creep.my === true && s.creep.hits < s.creep.hitsMax;
-            });
-            if (heal.length) {
-                creep.heal(heal[0].creep);
-            }
 
             let targets = _.filter(creep.room.lookAtArea(creep.pos.y - 1, creep.pos.x - 1, creep.pos.y + 1, creep.pos.x + 1, true), (s) => {
-                return s.structure && s.structure.structureType !== STRUCTURE_CONTAINER &&
-                    s.structure.structureType !== STRUCTURE_ROAD;
+                return (s.structure && s.structure.structureType !== STRUCTURE_CONTAINER &&
+                    s.structure.structureType !== STRUCTURE_ROAD) || (s.creep && !s.creep.my);
             });
             // console.log(targets.length);
             if (targets.length) {
@@ -140,6 +144,12 @@ module.exports = {
                     attack = creep.attack(targets[0].creep);
                 }
                 // console.log(attack);
+            }
+            let heal = _.filter(creep.room.lookAtArea(creep.pos.y - 1, creep.pos.x - 1, creep.pos.y + 1, creep.pos.x + 1, true), (s) => {
+                return s.type === 'creep' && s.creep.my === true && s.creep.hits < s.creep.hitsMax;
+            });
+            if (heal.length) {
+                creep.heal(heal[0].creep);
             }
         }
     }

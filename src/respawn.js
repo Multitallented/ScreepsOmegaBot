@@ -91,12 +91,12 @@ module.exports = {
             //     }
             //     this.spawnACreep(Game.getObjectById(spawnId), creepUtil.roles.TANK, count['energyAvailable']);
             // }
-            // else if (count[creepUtil.roles.MELEE] < 8 && creepCount[creepUtil.roles.MELEE + ":X"] < 8) {
-            //     if (count['energyAvailable'] < 900) {
-            //         return;
-            //     }
-            //     this.spawnACreep(Game.getObjectById(spawnId), creepUtil.roles.MELEE, count['energyAvailable']);
-            // }
+            else if (count[creepUtil.roles.MELEE] < 6 && creepCount[creepUtil.roles.MELEE + ":X"] < 6) {
+                if (count['energyAvailable'] < 900) {
+                    return;
+                }
+                this.spawnACreep(Game.getObjectById(spawnId), creepUtil.roles.MELEE, count['energyAvailable']);
+            }
             else if (count[creepUtil.roles.MELEE] < 8 && creepsUnderAttack.length > 0) {
                 if (count['energyAvailable'] < 800) {
                     return;

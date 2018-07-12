@@ -9,9 +9,9 @@ let roleHarvester = {
             creep.memory.currentOrder = undefined;
         }
 
-        // if (builderScript.originRoom(creep)) {
-        //     return;
-        // }
+        if (builderScript.originRoom(creep)) {
+            return;
+        }
 
         if(creep.carry.energy < 1 || (creep.memory.currentOrder !== undefined &&
             creep.memory.currentOrder.split(":")[0] === Util.HARVEST && creep.carry.energy < creep.carryCapacity)) {
