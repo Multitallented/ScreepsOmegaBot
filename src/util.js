@@ -79,18 +79,15 @@ module.exports = {
 
     getEmptyAdjacentSpaces: function(room, position) {
         let runningTotal = 0;
-        for (let x = position.x-1; x< position.x +2; x++) {
-            for (let y = position.y-1; y< position.y +2; y++) {
-                if (position.x !== x && position.y !== y) {
-                    let objects = room.lookAt(x, y, {filter: (o) =>
-                            { return !o.structureType || o.structureType !== STRUCTURE_CONTAINER; }
-                        });
-                    if (!objects.length) {
-                        runningTotal++;
-                    }
-                }
+        _.forEach(room.lookAtArea(position.y-1, position.x-1, position.y+1, position.x+1, true), (s) => {
+            if (s.type === 'terrain' && s.terrain !== 'plain') {
+                runningTotal++;
+            } else if (s.type === 'structure' && s.structureType !== STRUCTURE_CONTAINER) {
+                runningTotal--;
+            } else if (s.type === 'creep') {
+                runningTotal--;
             }
-        }
+        });
 
         return runningTotal;
     },

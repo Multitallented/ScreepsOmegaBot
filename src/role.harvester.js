@@ -42,7 +42,7 @@ let roleHarvester = {
             });
             if(targets.length > 0) {
                 let bestTarget = creep.pos.findClosestByPath(targets);
-                if (targets.length > 1 && bestTarget.structureType === STRUCTURE_SPAWN) {
+                if (targets.length > 1 && bestTarget && bestTarget.structureType === STRUCTURE_SPAWN) {
                     bestTarget = targets[1];
                 }
                 let canTransfer = creep.transfer(bestTarget, RESOURCE_ENERGY);
@@ -57,7 +57,7 @@ let roleHarvester = {
                         creep.moveTo(bestTarget, {visualizePathStyle: {stroke: '#ffffff'}});
                         creep.memory.currentOrder = Util.MOVE + ":" + bestTarget.id;
                     }
-                } else {
+                } else if (bestTarget !== undefined && bestTarget !== null) {
                     creep.moveTo(bestTarget, {visualizePathStyle: {stroke: '#ffffff'}});
                     creep.memory.currentOrder = Util.MOVE + ":" + bestTarget.id;
                 }

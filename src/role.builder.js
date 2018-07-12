@@ -40,12 +40,14 @@ let roleBuilder = {
         let reservedController = creep.room.controller && creep.room.controller.reservation &&
             creep.room.controller.reservation.username === 'Multitallented';
         if (reservedController) {
-            // if (creep.memory.currentOrder && creep.memory.currentOrder.split(":")[0] === Util.HARVEST &&
-            //         _.filter(creep.room.lookAtArea(creep.pos.y-1, creep.pos.x-1, creep.pos.y+1, creep.pos.x+1, true), (s) => {
-            //             return s.structureType && s.structureType === STRUCTURE_CONTAINER;
-            //         }).length < 1) {
-            //     creep.room.createConstructionSite(creep.pos, STRUCTURE_CONTAINER);
-            // }
+            if (creep.memory.currentOrder && creep.memory.currentOrder.split(":")[0] === Util.HARVEST &&
+                    _.filter(creep.room.lookAtArea(creep.pos.y-1, creep.pos.x-1, creep.pos.y+1, creep.pos.x+1, true), (s) => {
+                        return s.type === 'structure' && s.structure.structureType === STRUCTURE_CONTAINER;
+                    }).length < 1 && creep.room.find(FIND_CONSTRUCTION_SITES, {filter: (s) => {
+                        return s.structureType === STRUCTURE_CONTAINER;
+                    }}).length < 1) {
+                creep.room.createConstructionSite(creep.pos, STRUCTURE_CONTAINER);
+            }
         }
 
 
@@ -101,8 +103,11 @@ let roleBuilder = {
             } else {
                 let sites = creep.room.find(FIND_CONSTRUCTION_SITES);
                 if (sites.length) {
-                    creep.memory.currentOrder = Util.BUILD + ":" + sites[0].id;
-                    this.actionById(creep);
+                    let site = creep.pos.findClosestByPath(sites);
+                    if (site !== null) {
+                        creep.memory.currentOrder = Util.BUILD + ":" + site.id;
+                        this.actionById(creep);
+                    }
                 } else {
                     targets = creep.room.find(FIND_STRUCTURES, {
                         filter: (target) => {

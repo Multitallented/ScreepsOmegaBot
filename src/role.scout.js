@@ -83,6 +83,61 @@ module.exports = {
                 creep.memory.role = creepUtil.roles.HOMING;
                 return;
             }
+        } else if (creep.room.controller && creep.room.controller.my && creep.room.find(FIND_STRUCTURES, {filter: (s) => {
+                return s.structureType === STRUCTURE_SPAWN && s.my;
+            }}).length === 0) {
+            // if (!creep.room.find(FIND_CONSTRUCTION_SITES, {filter: (s) => {
+            //         return s.structureType === STRUCTURE_SPAWN
+            //     }}).length) {
+            //     let xDelta = 1;
+            //     let canBuild = true;
+            //     for (let x=25; x<48 && x>1; x += xDelta) {
+            //         if (xDelta > 0) {
+            //             xDelta = xDelta*-1;
+            //         } else {
+            //             xDelta = (xDelta+1)*-1;
+            //         }
+            //         let yDelta = 1;
+            //         for (let y=25; y<48 && y>1; y += yDelta) {
+            //             canBuild = true;
+            //             if (xDelta > 0) {
+            //                 yDelta = yDelta*-1;
+            //             } else {
+            //                 yDelta = (yDelta+1)*-1;
+            //             }
+            //             _.forEach(creep.room.lookAt(x, y, true), (s) => {
+            //                 if (s.type === 'terrain' && s.terrain !== 'plain') {
+            //                     canBuild = false;
+            //                     return;
+            //                 } else if (s.type === 'structure') {
+            //                     canBuild = false;
+            //                     return;
+            //                 }
+            //             });
+            //         }
+            //     }
+            // }
+
+            if (creep.room.find(FIND_STRUCTURES, {filter: (s) => {
+                    return s.structureType === STRUCTURE_CONTAINER && s.store.energy < s.storeCapacity / 2;
+                }}).length && creep.room.find(FIND_CREEPS, {filter: (c) => {
+                    return c.memory && c.memory.role && c.memory.role === creepUtil.roles.MINER;
+                }}).length < creep.room.find(FIND_SOURCES).length) {
+                creep.memory.role = creepUtil.roles.MINER;
+                return;
+            }
+            else if (creep.room.find(FIND_CREEPS, {filter: (c) => {
+                    return c.memory && c.memory.role && c.memory.role === creepUtil.roles.BUILDER;
+                }}).length === 0) {
+                creep.memory.role = creepUtil.roles.BUILDER;
+                return;
+            }
+            else if (creep.room.find(FIND_CREEPS, {filter: (c) => {
+                    return c.memory && c.memory.role && c.memory.role === creepUtil.roles.UPGRADER;
+                }}).length === 0) {
+                creep.memory.role = creepUtil.roles.UPGRADER;
+                return;
+            }
         }
 
         let discoveredRoom = (creep.room.controller && creep.room.controller.my) ||
