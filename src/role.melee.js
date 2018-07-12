@@ -5,14 +5,14 @@ let scoutScript = require('./role.scout');
 module.exports = {
     moveCreepToDestination: function(creep, flagName) {
         let move = null;
-        if (creep.memory.squadLeader) {
+        // if (creep.memory.squadLeader) {
             move = creep.moveTo(Game.flags[flagName], {visualizePathStyle: {stroke: '#ffffff'}});
-        } else {
-            let squadLeaders = _.filter(Game.creeps, (c) => { return c.memory && c.memory.squadLeader; });
-            if (squadLeaders.length && squadLeaders[0].pos.getRangeTo(creep) > 2) {
-                move = creep.moveTo(squadLeaders[0], {visualizePathStyle: {stroke: '#ffffff'}});
-            }
-        }
+        // } else {
+        //     let squadLeaders = _.filter(Game.creeps, (c) => { return c.memory && c.memory.squadLeader; });
+        //     if (squadLeaders.length && squadLeaders[0].pos.getRangeTo(creep) > 1) {
+        //         move = creep.moveTo(squadLeaders[0], {visualizePathStyle: {stroke: '#ffffff'}});
+        //     }
+        // }
         creep.memory.currentOrder = Util.MOVE + ":flag";
         if (move !== OK && move !== -11 && move !== -4) {
             scoutScript.moveCreepIntoRoom(creep);
@@ -23,8 +23,9 @@ module.exports = {
     run: function(creep) {
         // creep.memory.flag= 'Unclaimed:342703';
         // creep.memory.flag= 'Claimed:Demiskeleton:362402';
+        creep.memory.flag= 'Claimed:W1N1:Emmabot:1293';
         // creep.memory.flag= 'Claimed:Sleepless:W2N7:441130';
-        creep.memory.flag= 'Unclaimed:384626:W3N7';
+        // creep.memory.flag= 'Unclaimed:384626:W3N7';
         // creep.memory.flag= 'Claimed:MichaelBot:W9N9:364364';
         // creep.memory.flag= 'Unclaimed:364279:W9N7';
         // creep.memory.flag= 'Unclaimed:364307:W9N8';
@@ -67,7 +68,7 @@ module.exports = {
             if (!squadLeaders.length) {
                 creep.memory.squadLeader = true;
                 creep.memory.ticksToAttack = 900;
-            } else if (army.length > 6 && squadLeaders[0].ticksToLive > squadLeaders[0].memory.ticksToAttack) {
+            } else if (army.length > 0 && squadLeaders[0].ticksToLive > squadLeaders[0].memory.ticksToAttack) {
                 squadLeaders[0].memory.ticksToAttack = 100;
                 this.moveCreepToDestination(creep, creep.memory.flag);
             }
@@ -115,6 +116,8 @@ module.exports = {
             creep.moveTo(goal, {visualizePathStyle: {stroke: '#ffffff'}});
             creep.attack(goal);
             creep.memory.currentOrder = Util.MOVE + ":" + goal.id;
+        } else {
+            this.moveCreepToDestination(creep, creep.memory.flag);
         }
 
         if (creep.pos.x !== 0 && creep.pos.x !== 50 && creep.pos.y !== 0 && creep.pos.y !== 50) {

@@ -31,14 +31,16 @@ let roleBuilder = {
     originRoom: function(creep) {
         if (!creep.memory.wasScout && creep.memory.originRoom !== creep.room.name) {
             if (!creep.memory.originName) {
-                creep.memory.orignName = creep.room.name;
+                creep.memory.originName = creep.room.name;
             }
-            let room = Game.rooms[creep.memory.originRoom];
-            if (room !== undefined && room !== null) {
+            let room = Game.rooms[creep.memory.originName];
+            if (room !== undefined && room !== null && creep.room !== room) {
                 let pos = room.getPositionAt(creep.pos.x, creep.pos.y);
                 if (pos !== null) {
-                    creep.moveTo(pos, {visualizePathStyle: {stroke: '#ffaa00'}});
-                    return true;
+                    let move = creep.moveTo(pos, {visualizePathStyle: {stroke: '#ffaa00'}});
+                    if (move === OK) {
+                        return true;
+                    }
                 }
             }
         }

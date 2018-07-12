@@ -100,6 +100,15 @@ module.exports = {
         return runningTotal;
     },
 
+    getRoomDistance: function(roomName, destName) {
+        let x = Number(roomName.charAt(1));
+        let y = Number(roomName.charAt(3));
+        let dx = Number(destName.charAt(1));
+        let dy = Number(destName.charAt(3));
+
+        return Math.max(Math.abs(x-dx), Math.abs(y-dy));
+    },
+
     countCreeps: function() {
         let i = 0;
         let creepArray = {

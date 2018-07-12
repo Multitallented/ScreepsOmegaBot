@@ -147,16 +147,21 @@ module.exports = {
                     energyRemaining -= 10;
                 }
             } else if (type === this.roles.TANK) {
-                if (energyRemaining > 49 && partCount.move < bodyArray.length / 2) {
+                if (energyRemaining > 79 && partCount.attack < 1) {
+                    bodyArray.unshift(ATTACK);
+                    partCount.attack++;
+                    energyRemaining -= 80;
+                }
+                else if (energyRemaining > 49 && partCount.move < bodyArray.length / 3) {
                     bodyArray.unshift(MOVE);
                     partCount.move++;
                     energyRemaining -= 50;
                 }
-                // else if (energyRemaining > 249 && partCount.heal < 2) {
-                //     bodyArray.unshift(HEAL);
-                //     partCount.heal++;
-                //     energyRemaining -= 250;
-                // }
+                else if (energyRemaining > 249) {
+                    bodyArray.unshift(HEAL);
+                    partCount.heal++;
+                    energyRemaining -= 250;
+                }
                 else if (energyRemaining > 9) {
                     bodyArray.unshift(TOUGH);
                     partCount.tough++;
