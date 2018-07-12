@@ -73,13 +73,11 @@ let roleCourier = {
             targets = _.filter(targets, (structure) => {
                 return ((structure.structureType === STRUCTURE_EXTENSION && structure.energy < structure.energyCapacity) ||
                     structure.structureType === STRUCTURE_SPAWN ||
-                    (structure.structureType === STRUCTURE_TOWER && structure.energy < structure.energyCapacity) ||
-                    (structure.structureType === STRUCTURE_STORAGE && structure.store.energy < structure.storeCapacity));
+                    (structure.structureType === STRUCTURE_TOWER && structure.energy < structure.energyCapacity));
             });
             if(targets.length > 0) {
                 let bestTarget = creep.pos.findClosestByPath(targets);
-                if (targets.length > 1 && (!bestTarget || bestTarget.structureType === STRUCTURE_SPAWN ||
-                    bestTarget.structureType === STRUCTURE_STORAGE)) {
+                if (targets.length > 1 && (!bestTarget || bestTarget.structureType === STRUCTURE_SPAWN)) {
                     bestTarget = targets[1];
                 }
                 let canTransfer = creep.transfer(bestTarget, RESOURCE_ENERGY);
@@ -89,12 +87,13 @@ let roleCourier = {
                 } else if (canTransfer === OK) {
                     creep.memory.currentOrder = Util.TRANSFER + ":" + bestTarget.id;
                 } else if (canTransfer === ERR_FULL) {
-                    let spawn = creep.room.find(FIND_STRUCTURES, {filter: (structure) => {return structure.structureType === STRUCTURE_SPAWN}});
+                    let spawn = creep.room.find(FIND_STRUCTURES, {filter: (structure) =>
+                        {return structure.structureType === STRUCTURE_SPAWN}});
                     if (spawn.length > 0 && spawn[0].my && spawn[0].renewCreep(creep) === ERR_NOT_IN_RANGE) {
                         creep.moveTo(bestTarget, {visualizePathStyle: {stroke: '#ffffff'}});
                         creep.memory.currentOrder = Util.MOVE + ":" + bestTarget.id;
                     }
-                } else {
+                } else if (bestTarget !== undefined && bestTarget !== null) {
                     creep.moveTo(bestTarget, {visualizePathStyle: {stroke: '#ffffff'}});
                     creep.memory.currentOrder = Util.MOVE + ":" + bestTarget.id;
                 }

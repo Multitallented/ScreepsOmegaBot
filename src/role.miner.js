@@ -43,12 +43,12 @@ module.exports = {
                 }
                 let transfer = creep.transfer(Game.getObjectById(creep.memory.adjacentContainer), RESOURCE_ENERGY);
                 creep.memory.currentOrder = Util.TRANSFER + ":" + creep.memory.adjacentContainer;
-                if (creep.carry.energy === creep.carryCapacity && (reservedController ||
-                        (creep.room.controller && !creep.room.controller.my))) {
-                    creep.memory.role = creepUtil.roles.HOMING;
-                    creep.memory.currentOrder = undefined;
-                    return;
-                }
+                // if (creep.carry.energy === creep.carryCapacity && (reservedController ||
+                //         (creep.room.controller && !creep.room.controller.my))) {
+                //     creep.memory.role = creepUtil.roles.HOMING;
+                //     creep.memory.currentOrder = undefined;
+                //     return;
+                // }
             }
         }
     },

@@ -4,7 +4,7 @@ let scoutScript = require('./role.scout');
 
 module.exports = {
     moveCreepToDestination: function(creep, flagName) {
-        let move = creep.moveTo(Game.flags[flagName], {visualizePathStyle: {stroke: '#ffffff'}, ignoreCreeps: true});
+        let move = creep.moveTo(Game.flags[flagName], {visualizePathStyle: {stroke: '#ffffff'}});
         creep.memory.currentOrder = Util.MOVE + ":flag";
         if (move !== OK && move !== -11 && move !== -4) {
             console.log("melee failed move: " + move);
@@ -14,7 +14,9 @@ module.exports = {
     },
 
     run: function(creep) {
-        creep.memory.flag= 'Claimed:Demiskeleton:362402';
+        // creep.memory.flag= 'Unclaimed:342703';
+        // creep.memory.flag= 'Claimed:Demiskeleton:362402';
+        creep.memory.flag= 'Claimed:MichaelBot:W9N9:364364';
 
         if (creep.room.controller && creep.room.controller.my) {
             let spawns = creep.room.find(FIND_STRUCTURES, {filter: (s) => {
@@ -28,12 +30,11 @@ module.exports = {
                 });
             if (!squadLeaders.length) {
                 creep.memory.squadLeader = true;
-            } else if (squadLeaders[0].ticksToLive > 1400 && _.filter(Game.creeps, (c) => {
+            } else if (_.filter(Game.creeps, (c) => {
                 return c.memory && c.memory.role && (c.memory.role === creepUtil.roles.MELEE ||
                     c.memory.role === creepUtil.roles.LOOTER || c.memory.role === creepUtil.roles.TANK);
-                }).length > 5) {
-                creep.memory.flag = 'Claimed:Demiskeleton:362402';
-                this.moveCreepToDestination(creep, 'Claimed:Demiskeleton:362402');
+                }).length > 6) {
+                this.moveCreepToDestination(creep, creep.memory.flag);
             }
             return;
         } else if (creep.room.controller && creep.room.controller.owner === undefined) {

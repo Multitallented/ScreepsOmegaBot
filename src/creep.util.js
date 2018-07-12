@@ -46,9 +46,9 @@ module.exports = {
         let energyRemaining = energy;
         while (energyRemaining > 10) {
             if (type === this.roles.BUILDER ||
-                    type === this.roles.UPGRADER ||
-                    type === this.roles.HARVESTER ||
-                    type === this.roles.SCOUT) {
+                type === this.roles.UPGRADER ||
+                type === this.roles.HARVESTER ||
+                type === this.roles.SCOUT) {
                 if (energyRemaining > 99 && partCount.work < partCount.move) {
                     bodyArray.unshift(WORK);
                     partCount.work++;
@@ -113,21 +113,23 @@ module.exports = {
                     bodyArray.unshift(ATTACK);
                     partCount.attack++;
                     energyRemaining -= 80;
-                } else if (energyRemaining > 49 && partCount.move < bodyArray.length / 3) {
+                } else if (energyRemaining > 49 && partCount.move < bodyArray.length / 2) {
                     bodyArray.unshift(MOVE);
                     partCount.move++;
                     energyRemaining -= 50;
-                } else if (energyRemaining > 249 && partCount.heal < 1) {
-                    bodyArray.unshift(HEAL);
-                    partCount.heal++;
-                    energyRemaining -= 250;
-                } else if (energyRemaining > 9) {
+                }
+                // else if (energyRemaining > 249 && partCount.heal < 1) {
+                //     bodyArray.unshift(HEAL);
+                //     partCount.heal++;
+                //     energyRemaining -= 250;
+                // }
+                else if (energyRemaining > 9) {
                     bodyArray.unshift(TOUGH);
                     partCount.tough++;
                     energyRemaining -= 10;
                 }
             } else if (type === this.roles.LOOTER) {
-                if (energyRemaining > 49 && partCount.move < bodyArray.length / 3) {
+                if (energyRemaining > 49 && partCount.move < bodyArray.length / 2) {
                     bodyArray.unshift(MOVE);
                     partCount.move++;
                     energyRemaining -= 50;
@@ -145,15 +147,17 @@ module.exports = {
                     energyRemaining -= 10;
                 }
             } else if (type === this.roles.TANK) {
-                if (energyRemaining > 49 && partCount.move < bodyArray.length / 2.5) {
+                if (energyRemaining > 49 && partCount.move < bodyArray.length / 2) {
                     bodyArray.unshift(MOVE);
                     partCount.move++;
                     energyRemaining -= 50;
-                } else if (energyRemaining > 249 && partCount.heal < 2) {
-                    bodyArray.unshift(HEAL);
-                    partCount.heal++;
-                    energyRemaining -= 250;
-                } else if (energyRemaining > 9) {
+                }
+                // else if (energyRemaining > 249 && partCount.heal < 2) {
+                //     bodyArray.unshift(HEAL);
+                //     partCount.heal++;
+                //     energyRemaining -= 250;
+                // }
+                else if (energyRemaining > 9) {
                     bodyArray.unshift(TOUGH);
                     partCount.tough++;
                     energyRemaining -= 10;
