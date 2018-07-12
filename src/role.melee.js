@@ -3,15 +3,18 @@ let creepUtil = require('./creep.util');
 let scoutScript = require('./role.scout');
 
 module.exports = {
-    moveCreepToDestination: function(creep, flag) {
-        let move = creep.moveTo(flag, {visualizePathStyle: {stroke: '#ffffff'}});
-        creep.memory.currentOrder = Util.MOVE + ":" + flag.name;
-        if (move !== OK && move !== -11) {
+    moveCreepToDestination: function(creep, flagName) {
+        let move = creep.moveTo(Game.flags[flagName], {visualizePathStyle: {stroke: '#ffffff'}, ignoreCreeps: true});
+        creep.memory.currentOrder = Util.MOVE + ":flag";
+        if (move !== OK && move !== -11 && move !== -4) {
             console.log("melee failed move: " + move);
+            scoutScript.moveCreepIntoRoom(creep);
         }
+
     },
 
     run: function(creep) {
+        creep.memory.flag= 'Claimed:Demiskeleton:362402';
 
         if (creep.room.controller && creep.room.controller.my) {
             let spawns = creep.room.find(FIND_STRUCTURES, {filter: (s) => {
@@ -28,8 +31,9 @@ module.exports = {
             } else if (squadLeaders[0].ticksToLive < 500 || _.filter(Game.creeps, (c) => {
                 return c.memory && c.memory.role && (c.memory.role === creepUtil.roles.MELEE ||
                     c.memory.role === creepUtil.roles.LOOTER || c.memory.role === creepUtil.roles.TANK);
-                }).length > 4) {
-                this.moveCreepToDestination(creep, Game.flags['Claimed:Demiskeleton:362402']);
+                }).length > 5) {
+                creep.memory.flag = 'Claimed:Demiskeleton:362402';
+                this.moveCreepToDestination(creep, 'Claimed:Demiskeleton:362402');
             }
             return;
         } else if (creep.room.controller && creep.room.controller.owner === undefined) {
@@ -44,7 +48,7 @@ module.exports = {
         }
 
         let withdraw = _.filter(creep.room.lookAtArea(creep.pos.y-1, creep.pos.x-1, creep.pos.y+1, creep.pos.x+1, true), (s) => {
-            return s.store.energy > 0; });
+            return s.store && s.store.energy > 0; });
         creep.withdraw(withdraw[0]);
         let heal = _.filter(creep.room.lookAtArea(creep.pos.y-1, creep.pos.x-1, creep.pos.y+1, creep.pos.x+1, true), (s) => {
             return s.my === true && s.hits < s.hitsMax; });

@@ -50,15 +50,15 @@ module.exports = {
                     type === this.roles.HARVESTER ||
                     type === this.roles.SCOUT) {
                 if (energyRemaining > 99 && partCount.work < partCount.move) {
-                    bodyArray.push(WORK);
+                    bodyArray.unshift(WORK);
                     partCount.work++;
                     energyRemaining -= 100;
                 } else if (energyRemaining > 49 && partCount.carry < partCount.move) {
-                    bodyArray.push(CARRY);
+                    bodyArray.unshift(CARRY);
                     partCount.carry++;
                     energyRemaining -= 50;
                 } else if (energyRemaining > 49) {
-                    bodyArray.push(MOVE);
+                    bodyArray.unshift(MOVE);
                     partCount.move++;
                     energyRemaining -= 50;
                 } else {
@@ -66,19 +66,19 @@ module.exports = {
                 }
             } else if (type === this.roles.MINER) {
                 if (energyRemaining > 49 && partCount.move === 0) {
-                    bodyArray.push(MOVE);
+                    bodyArray.unshift(MOVE);
                     partCount.move++;
                     energyRemaining -= 50;
                 } else if (energyRemaining > 49 && partCount.carry === 0) {
-                    bodyArray.push(CARRY);
+                    bodyArray.unshift(CARRY);
                     partCount.carry++;
                     energyRemaining -= 50;
                 } else if (energyRemaining > 99 && partCount.work < 7) {
-                    bodyArray.push(WORK);
+                    bodyArray.unshift(WORK);
                     partCount.work++;
                     energyRemaining -= 100;
                 } else if (energyRemaining > 49) {
-                    bodyArray.push(MOVE);
+                    bodyArray.unshift(MOVE);
                     partCount.move++;
                     energyRemaining -= 50;
                 } else {
@@ -86,11 +86,11 @@ module.exports = {
                 }
             } else if (type === this.roles.COURIER) {
                 if (energyRemaining > 49 && partCount.carry < partCount.move * 2) {
-                    bodyArray.push(CARRY);
+                    bodyArray.unshift(CARRY);
                     partCount.carry++;
                     energyRemaining -= 50;
                 } else if (energyRemaining > 49) {
-                    bodyArray.push(MOVE);
+                    bodyArray.unshift(MOVE);
                     partCount.move++;
                     energyRemaining -= 50;
                 } else {
@@ -98,11 +98,11 @@ module.exports = {
                 }
             } else if (type === this.roles.CLAIMER) {
                 if (energyRemaining > 599 && partCount.claim < 1) {
-                    bodyArray.push(CLAIM);
+                    bodyArray.unshift(CLAIM);
                     partCount.claim++;
                     energyRemaining -= 600;
                 } else if (energyRemaining > 49) {
-                    bodyArray.push(MOVE);
+                    bodyArray.unshift(MOVE);
                     partCount.move++;
                     energyRemaining -= 50;
                 } else {
@@ -110,74 +110,70 @@ module.exports = {
                 }
             } else if (type === this.roles.MELEE) {
                 if (energyRemaining > 79 && partCount.attack < 2) {
-                    bodyArray.push(ATTACK);
+                    bodyArray.unshift(ATTACK);
                     partCount.attack++;
                     energyRemaining -= 80;
                 } else if (energyRemaining > 49 && partCount.move < bodyArray.length / 3) {
-                    bodyArray.push(MOVE);
+                    bodyArray.unshift(MOVE);
                     partCount.move++;
                     energyRemaining -= 50;
                 } else if (energyRemaining > 249 && partCount.heal < 1) {
-                    bodyArray.push(HEAL);
+                    bodyArray.unshift(HEAL);
                     partCount.heal++;
                     energyRemaining -= 250;
                 } else if (energyRemaining > 9) {
-                    bodyArray.push(TOUGH);
+                    bodyArray.unshift(TOUGH);
                     partCount.tough++;
                     energyRemaining -= 10;
                 }
             } else if (type === this.roles.LOOTER) {
                 if (energyRemaining > 49 && partCount.move < bodyArray.length / 3) {
-                    bodyArray.push(MOVE);
+                    bodyArray.unshift(MOVE);
                     partCount.move++;
                     energyRemaining -= 50;
                 } else if (energyRemaining > 249 && partCount.heal < 1) {
-                    bodyArray.push(HEAL);
+                    bodyArray.unshift(HEAL);
                     partCount.heal++;
                     energyRemaining -= 250;
                 } else if (energyRemaining > 49 && partCount.carry < 3) {
-                    bodyArray.push(CARRY);
+                    bodyArray.unshift(CARRY);
                     partCount.carry++;
                     energyRemaining -= 50;
                 } else if (energyRemaining > 9) {
-                    bodyArray.push(TOUGH);
+                    bodyArray.unshift(TOUGH);
                     partCount.tough++;
                     energyRemaining -= 10;
                 }
             } else if (type === this.roles.TANK) {
-                if (energyRemaining > 49 && partCount.move < bodyArray.length / 3) {
-                    bodyArray.push(MOVE);
+                if (energyRemaining > 49 && partCount.move < bodyArray.length / 2.5) {
+                    bodyArray.unshift(MOVE);
                     partCount.move++;
                     energyRemaining -= 50;
-                } else if (energyRemaining > 249 && partCount.heal < 1) {
-                    bodyArray.push(HEAL);
+                } else if (energyRemaining > 249 && partCount.heal < 2) {
+                    bodyArray.unshift(HEAL);
                     partCount.heal++;
                     energyRemaining -= 250;
-                } else if (energyRemaining > 49 && partCount.carry < 3) {
-                    bodyArray.push(CARRY);
-                    partCount.carry++;
-                    energyRemaining -= 50;
                 } else if (energyRemaining > 9) {
-                    bodyArray.push(TOUGH);
+                    bodyArray.unshift(TOUGH);
                     partCount.tough++;
                     energyRemaining -= 10;
                 }
             }
             // else if (type === this.roles.SCOUT) {
             //     if (energyRemaining > 99 && partCount.work < 1) {
-            //         bodyArray.push(WORK);
+            //         bodyArray.unshift(WORK);
             //         partCount.work++;
             //         energyRemaining -= 100;
             //     } else if (energyRemaining > 49 && (partCount.move < 1 || partCount.move < partCount.tough * 2)) {
-            //         bodyArray.push(MOVE);
+            //         bodyArray.unshift(MOVE);
             //         partCount.move++;
             //         energyRemaining -= 50;
             //     } else if (energyRemaining > 49 && partCount.carry === 0) {
-            //         bodyArray.push(CARRY);
+            //         bodyArray.unshift(CARRY);
             //         partCount.carry++;
             //         energyRemaining -= 50;
             //     } else if (energyRemaining > 9) {
-            //         bodyArray.push(TOUGH);
+            //         bodyArray.unshift(TOUGH);
             //         partCount.tough++;
             //         energyRemaining -= 10;
             //     }

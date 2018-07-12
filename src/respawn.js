@@ -67,25 +67,25 @@ module.exports = {
                 }
                 this.spawnACreep(Game.getObjectById(spawnId), creepUtil.roles.COURIER, count['energyAvailable']);
             }
-            else if (count[creepUtil.roles.UPGRADER] < 2 ||
-                (count[creepUtil.roles.UPGRADER] < 5 && creepCount[creepUtil.roles.CLAIMER + ":X"] > 3)) {
+            else if (count[creepUtil.roles.UPGRADER] < 2) {
+                // (count[creepUtil.roles.UPGRADER] < 5 && creepCount[creepUtil.roles.CLAIMER + ":X"] > 3)) {
                 if (count['energyAvailable'] < 800) {
                     return;
                 }
                 this.spawnACreep(Game.getObjectById(spawnId), creepUtil.roles.UPGRADER, count['energyAvailable']);
             }
-            else if (count[creepUtil.roles.TANK] < 1) {
-                if (count['energyAvailable'] < 1100) {
-                    return;
-                }
-                this.spawnACreep(Game.getObjectById(spawnId), creepUtil.roles.TANK, count['energyAvailable']);
-            }
-            else if (count[creepUtil.roles.MELEE] < 1 && creepCount[creepUtil.roles.MELEE + ":X"] < 4) {
-                if (count['energyAvailable'] < 900) {
-                    return;
-                }
-                this.spawnACreep(Game.getObjectById(spawnId), creepUtil.roles.MELEE, count['energyAvailable']);
-            }
+            // else if (count[creepUtil.roles.TANK] < 1) {
+            //     if (count['energyAvailable'] < 1100) {
+            //         return;
+            //     }
+            //     this.spawnACreep(Game.getObjectById(spawnId), creepUtil.roles.TANK, count['energyAvailable']);
+            // }
+            // else if (count[creepUtil.roles.MELEE] < 6 && creepCount[creepUtil.roles.MELEE + ":X"] < 6) {
+            //     if (count['energyAvailable'] < 900) {
+            //         return;
+            //     }
+            //     this.spawnACreep(Game.getObjectById(spawnId), creepUtil.roles.MELEE, count['energyAvailable']);
+            // }
             else if (count[creepUtil.roles.BUILDER] < 2) {
                 if (count['energyAvailable'] < 800) {
                     return;
