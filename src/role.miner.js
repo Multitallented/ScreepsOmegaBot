@@ -41,9 +41,12 @@ module.exports = {
                 creep.memory.currentOrder = Util.HARVEST + ":" + creep.memory.inPosition;
             } else {
                 if (creep.memory.adjacentContainer === undefined) {
-                    creep.memory.adjacentContainer = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => {
+                     let targetSource = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => {
                             return s.structureType === STRUCTURE_CONTAINER;
-                        }}).id;
+                        }});
+                    if (targetSource) {
+                        creep.memory.adjacentContainer = targetSource.id;
+                    }
                 }
                 let transfer = creep.transfer(Game.getObjectById(creep.memory.adjacentContainer), RESOURCE_ENERGY);
                 creep.memory.currentOrder = Util.TRANSFER + ":" + creep.memory.adjacentContainer;
