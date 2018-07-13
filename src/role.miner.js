@@ -53,12 +53,14 @@ module.exports = {
                 if (transfer !== OK) {
                     creep.moveTo(Game.getObjectById(creep.memory.adjacentContainer));
                 }
-                // if (creep.carry.energy === creep.carryCapacity && (reservedController ||
-                //         (creep.room.controller && !creep.room.controller.my))) {
-                //     creep.memory.role = creepUtil.roles.HOMING;
-                //     creep.memory.currentOrder = undefined;
-                //     return;
-                // }
+                if (creep.carry.energy === creep.carryCapacity && creep.memory.wasScout) {
+                    let container = Game.getObjectById(creep.memory.adjacentContainer);
+                    if (container && container.store.energy === container.carryCapacity) {
+                        creep.memory.role = creepUtil.roles.HOMING;
+                        creep.memory.currentOrder = undefined;
+                        return;
+                    }
+                }
             }
         }
     },
