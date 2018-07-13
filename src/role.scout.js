@@ -142,6 +142,15 @@ module.exports = {
                 return;
             }
         }
+        if (creep.room.controller && (!creep.room.controller.owner || creep.room.controller.owner.username !== 'Multitallented')) {
+            if (creep.room.find(FIND_STRUCTURES, {filter: (s) => {
+                return s.structureType && s.structureType === STRUCTURE_CONTAINER &&
+                    s.store.energy > 0;
+                }})) {
+                creep.memory.role = creepUtil.roles.HOMING;
+                return;
+            }
+        }
 
         let discoveredRoom = (creep.room.controller && creep.room.controller.my) ||
             _.filter(Game.flags, (f) => f.room === creep.room).length === 1;
