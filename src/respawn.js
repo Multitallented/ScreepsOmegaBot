@@ -30,7 +30,8 @@ module.exports = {
                 return;
             }
             let creepsUnderAttack = _.filter(Game.creeps, (c) => {
-                return c.hits < c.hitsMax && c.my && c.room.find(FIND_STRUCTURES, {filter: (s) => {
+                return c.hits < c.hitsMax && c.my && c.memory && c.memory.role &&
+                    c.memory.role !== creepUtil.roles.SCOUT && c.room.find(FIND_STRUCTURES, {filter: (s) => {
                         return s.structureType && s.structureType === STRUCTURE_TOWER;
                     }}).length < 1;
                 });
@@ -63,10 +64,11 @@ module.exports = {
             } else if (count['numContainers'] > 0 && count['numSources'] > count[creepUtil.roles.MINER]) {
                 if ((count[creepUtil.roles.MINER] < 1 || count[creepUtil.roles.COURIER] < 1) && count['energyAvailable'] < 400) {
                     return;
-                } else if (!(count[creepUtil.roles.MINER] < 1 || count[creepUtil.roles.COURIER] < 1) && (count['energyAvailable'] < 900 && count['energyCapacity'] > 899)) {
+                } else if (!(count[creepUtil.roles.MINER] < 1 || count[creepUtil.roles.COURIER] < 1) &&
+                        ((count['energyAvailable'] < 900 && count['energyCapacity'] > 899) || count['energyAvailable'] < 400)) {
                     return;
                 }
-                this.spawnACreep(Game.getObjectById(spawnId), creepUtil.roles.MINER, Math.min(count['energyAvailable'], 1000));
+                this.spawnACreep(Game.getObjectById(spawnId), creepUtil.roles.MINER, Math.min(count['energyAvailable'], 900));
             } else if (count[creepUtil.roles.MINER] < 1 && count[creepUtil.roles.HARVESTER] < 3) {
                 if (count['energyAvailable'] < 400) {
                     return;
@@ -97,32 +99,32 @@ module.exports = {
             //     }
             //     this.spawnACreep(Game.getObjectById(spawnId), creepUtil.roles.MELEE, count['energyAvailable']);
             // }
-            else if (count[creepUtil.roles.MELEE] < 8 && creepsUnderAttack.length > 0) {
-                if (count['energyAvailable'] < 800) {
-                    return;
-                }
-                let flag = null;
-                let flagPos = 0;
-                for (let i=0; i< creepsUnderAttack.length; i++) {
-                    if (_.filter(Game.flags, (f) => {
-                        return f.name === this.getRescueFlagName(creepsUnderAttack[i]);
-                        }).length) {
-                        continue;
-                    }
-                    flag = this.getRescueFlagName(creepsUnderAttack[i]);
-                    flagPos = i;
-                }
-                this.spawnACreep(Game.getObjectById(spawnId), creepUtil.roles.MELEE, count['energyAvailable']);
-                let creep = Game.getObjectById(spawnId).spawning;
-                if (creep && creep.memory && creep.memory.role === creepUtil.roles.MELEE) {
-                    if (flag !== null) {
-                        creepsUnderAttack[flagPos].room.createFlag(creepsUnderAttack[flagPos].x, creepsUnderAttack[flagPos].y, flag);
-                        creep.memory.rescue = flag;
-                    } else {
-                        creep.memory.rescue = this.getRescueFlagName(creepsUnderAttack[flagPos]);
-                    }
-                }
-            }
+            // else if (count[creepUtil.roles.MELEE] < 8 && creepsUnderAttack.length > 0) {
+            //     if (count['energyAvailable'] < 800) {
+            //         return;
+            //     }
+            //     let flag = null;
+            //     let flagPos = 0;
+            //     for (let i=0; i< creepsUnderAttack.length; i++) {
+            //         if (_.filter(Game.flags, (f) => {
+            //             return f.name === this.getRescueFlagName(creepsUnderAttack[i]);
+            //             }).length) {
+            //             continue;
+            //         }
+            //         flag = this.getRescueFlagName(creepsUnderAttack[i]);
+            //         flagPos = i;
+            //     }
+            //     this.spawnACreep(Game.getObjectById(spawnId), creepUtil.roles.MELEE, count['energyAvailable']);
+            //     let creep = Game.getObjectById(spawnId).spawning;
+            //     if (creep && creep.memory && creep.memory.role === creepUtil.roles.MELEE) {
+            //         if (flag !== null) {
+            //             creepsUnderAttack[flagPos].room.createFlag(creepsUnderAttack[flagPos].x, creepsUnderAttack[flagPos].y, flag);
+            //             creep.memory.rescue = flag;
+            //         } else {
+            //             creep.memory.rescue = this.getRescueFlagName(creepsUnderAttack[flagPos]);
+            //         }
+            //     }
+            // }
             else if (count[creepUtil.roles.BUILDER] < 2) {
                 if (count['energyAvailable'] < 800) {
                     return;
