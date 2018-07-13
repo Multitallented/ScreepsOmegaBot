@@ -23,7 +23,7 @@ module.exports = {
     run: function(creep) {
         // creep.memory.flag= 'Unclaimed:342703';
         // creep.memory.flag= 'Claimed:Demiskeleton:362402';
-        creep.memory.flag= 'Claimed:W1N1:Emmabot:1293';
+        creep.memory.flag= 'Claimed:W8N3:Demiskeleton:3912';
         // creep.memory.flag= 'Claimed:Sleepless:W2N7:441130';
         // creep.memory.flag= 'Unclaimed:384626:W3N7';
         // creep.memory.flag= 'Claimed:MichaelBot:W9N9:364364';
@@ -124,18 +124,15 @@ module.exports = {
             let withdraw = _.filter(creep.room.lookAtArea(creep.pos.y - 1, creep.pos.x - 1, creep.pos.y + 1, creep.pos.x + 1, true), (s) => {
                 return s.type === 'structure' && s.structure.structureType === STRUCTURE_CONTAINER && s.structure.store.energy > 0;
             });
-            if (withdraw.length) {
-                creep.withdraw(withdraw[0].structure);
-            }
-            if (creep.hits < creep.hitsMax) {
-                creep.heal(creep);
-            }
-
             let targets = _.filter(creep.room.lookAtArea(creep.pos.y - 1, creep.pos.x - 1, creep.pos.y + 1, creep.pos.x + 1, true), (s) => {
                 return (s.structure && s.structure.structureType !== STRUCTURE_CONTAINER &&
                     s.structure.structureType !== STRUCTURE_ROAD) || (s.creep && !s.creep.my);
             });
+
             // console.log(targets.length);
+            if (withdraw.length) {
+                creep.withdraw(withdraw[0].structure);
+            }
             if (targets.length) {
                 targets = _.sortBy(targets, (t) => {
                     let hits = t.structure ? t.structure.hits : t.creep.hits;
@@ -147,6 +144,9 @@ module.exports = {
                     attack = creep.attack(targets[0].creep);
                 }
                 // console.log(attack);
+            }
+            if (creep.hits < creep.hitsMax) {
+                creep.heal(creep);
             }
             let heal = _.filter(creep.room.lookAtArea(creep.pos.y - 1, creep.pos.x - 1, creep.pos.y + 1, creep.pos.x + 1, true), (s) => {
                 return s.type === 'creep' && s.creep.my === true && s.creep.hits < s.creep.hitsMax;
