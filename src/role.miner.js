@@ -55,7 +55,7 @@ module.exports = {
                 }
                 if (creep.carry.energy === creep.carryCapacity && creep.memory.wasScout) {
                     let container = Game.getObjectById(creep.memory.adjacentContainer);
-                    if (container && container.store.energy === container.carryCapacity) {
+                    if (container && container.store.energy === container.storeCapacity) {
                         creep.memory.role = creepUtil.roles.HOMING;
                         creep.memory.currentOrder = undefined;
                         return;
