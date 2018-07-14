@@ -5,9 +5,6 @@ let scoutScript = require('./role.scout');
 module.exports = {
     moveCreepToNearestSpawn: function(creep) {
         let move = creep.moveTo(Game.spawns['Spawn1'], {visualizePathStyle: {stroke: '#ffffff'}});
-        if (move !== OK && move !== -11) {
-            console.log("Homing failed move: " + move);
-        }
     },
 
     run: function(creep) {

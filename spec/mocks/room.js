@@ -1,10 +1,10 @@
 module.exports = function(name, controller) {
     return {
         entities: {
-            FIND_CONSTRUCTION_SITES: [],
-            FIND_SOURCES: [],
-            FIND_STRUCTURES: [],
-            FIND_CREEPS: [],
+            111: [],
+            105: [],
+            107: [],
+            101: [],
         },
         controller: controller,
         energyAvailable: 300,
@@ -23,7 +23,7 @@ module.exports = function(name, controller) {
 
         },
         lookAtArea: function(top, left, bottom, right, isArray) {
-
+            return [ { x: left, y: top, type: 'terrain', terrain: 'plain' } ]
         },
         getPositionAt: function(x, y) {
             return {

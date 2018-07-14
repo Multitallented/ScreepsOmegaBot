@@ -3,6 +3,12 @@ let roomBuilder = require('../src/room.builder');
 describe("Room Builder tests", function() {
     beforeEach(function() {
         require('./mocks/game')();
+        Game.rooms.Room1.entities[FIND_SOURCES].push(
+            require('./mocks/source')("Source1",38,10,Game.rooms.Room1)
+        );
+        Game.rooms.Room1.entities[FIND_SOURCES].push(
+            require('./mocks/source')("Source1",15,22,Game.rooms.Room1)
+        );
     });
 
     it("Init tests", function() {
@@ -41,5 +47,23 @@ describe("Room Builder tests", function() {
             }
         });
         expect(hasSpawn).toBe(true);
+    });
+    it("Output should not have 2 spawn", function() {
+        let constructionSites = roomBuilder.buildRoom(Game.rooms.Room1);
+        let hasSpawn = 0;
+        _.forEach(constructionSites, (site) => {
+            if (site.type === STRUCTURE_SPAWN) {
+                hasSpawn++;
+            }
+        });
+        expect(hasSpawn).toBe(1);
+    });
+
+    it("loop from center should length 9", function() {
+        let counter = 0;
+        roomBuilder.loopFromCenter(26, 26, 3, (x, y) => {
+            counter++;
+        });
+        expect(counter).toBe(9);
     });
 });
