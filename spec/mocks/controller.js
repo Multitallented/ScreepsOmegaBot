@@ -14,6 +14,10 @@ module.exports = function(id) {
             this.safeModeAvailable -= 1;
             this.safeModeCooldown = 10000;
         },
-        level: 6
+        level: 6,
+        pos: {
+            x: 30,
+            y: 40,
+        }
     };
 };

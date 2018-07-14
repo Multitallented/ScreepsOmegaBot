@@ -24,9 +24,6 @@ module.exports = {
         let pointsOfImportance = _.merge(sources, importantStructures);
         pointsOfImportance.push(room.controller);
 
-        for (let i=0; i<3; i++) {
-            pointsOfImportance.push(this.getPositionWithBuffer(constructionSites, room, 25, 25, 38, 1, STRUCTURE_SPAWN));
-        }
 
         let centerOfInterest = this.getCenterOfArray(pointsOfImportance);
         for (let i=0; i<6; i++) {
@@ -36,6 +33,10 @@ module.exports = {
         }
         pointsOfImportance.push(this.getPositionWithBuffer(constructionSites, room, 25, 25, 38, 0, STRUCTURE_STORAGE));
 
+        for (let i=0; i<3; i++) {
+            pointsOfImportance.push(this.getPositionWithBuffer(constructionSites, room, 25, 25, 38, 1, STRUCTURE_SPAWN));
+        }
+
         this.getRoadsAndRamparts(constructionSites, room, pointsOfImportance);
 
         this.getWalls(constructionSites, room);
@@ -43,6 +44,10 @@ module.exports = {
         for (let i=0; i< 60; i++) {
             this.getPositionWithBuffer(constructionSites, room, 25, 25, 38, 0, STRUCTURE_EXTENSION);
         }
+
+        _.forEach(constructionSites, (site) => {
+            console.log(site.pos.x + ":" + site.pos.y + " type=" + site.type);
+        });
 
         let controllerLevel = room.controller.level;
         let structureCount = {};
@@ -64,7 +69,8 @@ module.exports = {
     getRoadsAndRamparts: function(constructionSites, room, pointsOfImportance) {
         _.forEach(pointsOfImportance, (point1) => {
             _.forEach(pointsOfImportance, (point2) => {
-                if (point1 === point2 || point1.pos === undefined || point2.pos === undefined) {
+                if (point1 === point2 || point1.pos === undefined || point2.pos === undefined ||
+                        point1.pos === null || point2.pos === null) {
                     return;
                 }
                 let pos1 = room.getPositionAt(point1.pos.x, point1.pos.y);
@@ -104,14 +110,14 @@ module.exports = {
         let maxY = 0;
         let minY = 50;
         _.forEach(array, (entity) => {
-            maxX = entity.x > maxX ? entity.x : maxX;
-            minX = entity.x < minX ? entity.x : minX;
-            maxY = entity.y > maxY ? entity.y : maxY;
-            minY = entity.y < minY ? entity.y : minY;
+            maxX = entity.pos.x > maxX ? entity.pos.x : maxX;
+            minX = entity.pos.x < minX ? entity.pos.x : minX;
+            maxY = entity.pos.y > maxY ? entity.pos.y : maxY;
+            minY = entity.pos.y < minY ? entity.pos.y : minY;
         });
         return {
-            x: Math.floor(Math.abs(maxX - minX) / array.length),
-            y: Math.floor(Math.abs(maxY - minY) / array.length),
+            x: minX + Math.floor(Math.abs(maxX - minX) / array.length),
+            y: minY + Math.floor(Math.abs(maxY - minY) / array.length),
         }
     },
 
@@ -122,12 +128,18 @@ module.exports = {
             if (buffer > 1) {
                 this.loopFromCenter(x, y, 1 + 2 * buffer, (x, y) => {
                     if (_.filter(room.lookAt(x, y), (c) => {
-                        return c.type === 'structure' || (c.type === 'terrain' && c.terrain === 'wall');
-                    }).length && _.filter(constructionSites, (site) => { return site.pos.x === x && site.pos.y === y; }).length) {
+                            return c.type === 'structure' || (c.type === 'terrain' && c.terrain === 'wall'); }).length ||
+                            _.filter(constructionSites, (site) => { return site.pos.x === x && site.pos.y === y; }).length) {
                         positionOk = false;
                         return true;
                     }
                 });
+            } else {
+                if (_.filter(room.lookAt(x, y), (c) => {
+                        return c.type === 'structure' || (c.type === 'terrain' && c.terrain === 'wall'); }).length ||
+                    _.filter(constructionSites, (site) => { return site.pos.x === x && site.pos.y === y; }).length) {
+                    positionOk = false;
+                }
             }
             if (positionOk) {
                 constructionSites.push({type: type, pos: {x: x, y: y}});
