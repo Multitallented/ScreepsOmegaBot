@@ -132,16 +132,16 @@ let roleBuilder = {
                         this.actionById(creep);
                     }
                 } else {
-                    if (creep.room.controller && creep.room.controller.my &&
-                            creep.room.controller.owner !== undefined &&
-                            creep.room.controller.owner.username === 'Multitallented') {
-                        // let constructionArray = roomBuilder.buildRoom(creep.room);
-                        // if (constructionArray.length) {
-                        //     creep.room.createConstructionSite(constructionArray.pos.x,
-                        //         constructionArray.pos.y, constructionArray.type);
-                        //     return;
-                        // }
-                    } else {
+                    // if (creep.room.controller && creep.room.controller.my &&
+                    //         creep.room.controller.owner !== undefined &&
+                    //         creep.room.controller.owner.username === 'Multitallented') {
+                    //     let constructionArray = roomBuilder.buildRoom(creep.room);
+                    //     if (constructionArray.length) {
+                    //         creep.room.createConstructionSite(constructionArray.pos.x,
+                    //             constructionArray.pos.y, constructionArray.type);
+                    //         return;
+                    //     }
+                    // } else {
                         targets = creep.room.find(FIND_STRUCTURES, {
                             filter: (target) => {
                                 return target.hits < target.hitsMax;
@@ -156,7 +156,7 @@ let roleBuilder = {
                             creep.memory.currentOrder = undefined;
                             return;
                         }
-                    }
+                    // }
 
                 }
             }
