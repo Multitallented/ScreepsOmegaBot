@@ -1,4 +1,4 @@
-modules.export = {
+module.exports = {
     buildRoom: function(room) {
         let centerFlag = room.find(FIND_FLAGS, {filter: (f) => {
                 return flag.name && (flag.name.indexOf('Claimed') !== -1 ||
@@ -8,7 +8,7 @@ modules.export = {
             centerFlag[0].remove();
         }
 
-        let constructionSites = {};
+        let constructionSites = [];
 
         let sources = room.find(FIND_SOURCES);
         let importantStructures = room.find(FIND_STRUCTURES, {filter: (s) => {
@@ -17,21 +17,85 @@ modules.export = {
                 s.structureType === STRUCTURE_STORAGE);
             }});
 
-        let pointsOfImportance = _.merge(source, importantStructures);
+        if (sources.length) {
+            this.getContainers(constructionSites, room, sources);
+        }
 
-        this.getContainers(constructionSites, room, sources);
-        let spawnPositions = this.getPositionWithBuffer(constructionSites, room, 25, 25, 38, 1, STRUCTURE_SPAWN);
+        let pointsOfImportance = _.merge(sources, importantStructures);
+        pointsOfImportance.push(room.controller);
 
-        this.getPositionWithBuffer(constructionSites, room, 25, 25, 38, 1, STRUCTURE_TOWER);
-        //TODO extensions
-        //TODO storage
+        for (let i=0; i<3; i++) {
+            pointsOfImportance.push(this.getPositionWithBuffer(constructionSites, room, 25, 25, 38, 1, STRUCTURE_SPAWN));
+        }
+
+        let centerOfInterest = this.getCenterOfArray(pointsOfImportance);
+        for (let i=0; i<6; i++) {
+            pointsOfImportance.push(this.getPositionWithBuffer(constructionSites, room,
+                centerOfInterest.x, centerOfInterest.y,
+                38 - 2 * Math.max(Math.abs(centerOfInterest.x - 25), Math.abs(centerOfInterest.y - 25)), 0, STRUCTURE_TOWER));
+        }
+        pointsOfImportance.push(this.getPositionWithBuffer(constructionSites, room, 25, 25, 38, 0, STRUCTURE_STORAGE));
+
+        this.getRoadsAndRamparts(constructionSites, room, pointsOfImportance);
 
         this.getWalls(constructionSites, room);
 
-        //TODO roads/ramparts
+        for (let i=0; i< 60; i++) {
+            this.getPositionWithBuffer(constructionSites, room, 25, 25, 38, 0, STRUCTURE_EXTENSION);
+        }
 
-        //TODO filter by RCL limits
-        //TODO sort by priority
+        let controllerLevel = room.controller.level;
+        let structureCount = {};
+        constructionSites = _.filter(constructionSites, (site) => {
+            if (!structureCount[site.structureType]) {
+                structureCount[site.structureType] = 1;
+            } else {
+                structureCount[site.structureType]++;
+            }
+            let type = site.type ? site.type : site.structureType;
+            return structureCount[site.structureType] <= CONTROLLER_STRUCTURES[type][controllerLevel];
+        });
+
+        constructionSites = _.sortBy(constructionSites, (site) => { return this.getTypeRanking(site.structureType); });
+
+        return constructionSites;
+    },
+
+    getRoadsAndRamparts: function(constructionSites, room, pointsOfImportance) {
+        _.forEach(pointsOfImportance, (point1) => {
+            _.forEach(pointsOfImportance, (point2) => {
+                if (point1 === point2 || point1.pos === undefined || point2.pos === undefined) {
+                    return;
+                }
+                let pos1 = room.getPositionAt(point1.pos.x, point1.pos.y);
+                let pos2 = room.getPositionAt(point2.pos.x, point2.pos.y);
+                _.forEach(pos1.findPathTo(pos2), (roadPos) => {
+                    let isWall = roadPos.x === 4 || roadPos.x === 46 || roadPos.y === 4 || roadPos.y === 46;
+                    if (isWall) {
+                        constructionSites.push({type: STRUCTURE_RAMPART, pos: {x: x, y: y}});
+                    } else if (!_.filter(room.lookAt(roadPos.x, roadPos.y), (c) => {
+                            return c.type === 'structure' || (c.type === 'terrain' && c.terrain === 'wall');
+                            }).length) {
+                        constructionSites.push({type: STRUCTURE_ROAD, pos: {x: x, y: y}});
+
+                    }
+                });
+            });
+        });
+    },
+
+    getTypeRanking: function(type) {
+        switch(type) {
+            case STRUCTURE_SPAWN: return 99;
+            case STRUCTURE_TOWER: return 98;
+            case STRUCTURE_EXTENSION: return 97;
+            case STRUCTURE_CONTAINER: return 96;
+            case STRUCTURE_ROAD: return 90;
+            case STRUCTURE_WALL:
+            case STRUCTURE_RAMPART: return 80;
+            case STRUCTURE_STORAGE: return 70;
+            default: return 60;
+        }
     },
 
     getCenterOfArray: function(array) {
@@ -54,18 +118,19 @@ modules.export = {
     getPositionWithBuffer: function(constructionSites, room, x, y, size, buffer, type) {
         let finalPosition = null;
         this.loopFromCenter(x, y, size, (x, y) => {
-            //TODO replace this with another look from center
             let positionOk = true;
-            this.loopFromCenter(x, y, 3, (x, y) => {
-                if (_.filter(room.lookAt(x,y), (c) => {
+            if (buffer > 1) {
+                this.loopFromCenter(x, y, 1 + 2 * buffer, (x, y) => {
+                    if (_.filter(room.lookAt(x, y), (c) => {
                         return c.type === 'structure' || (c.type === 'terrain' && c.terrain === 'wall');
-                        }).length && constructionSites[x + ":" + y] !== null) {
-                    positionOk = false;
-                    return true;
-                }
-            });
+                    }).length && _.filter(constructionSites, (site) => { return site.pos.x === x && site.pos.y === y; }).length) {
+                        positionOk = false;
+                        return true;
+                    }
+                });
+            }
             if (positionOk) {
-                constructionSites[x + ":" + y] = type;
+                constructionSites.push({type: type, pos: {x: x, y: y}});
                 finalPosition = { x: x, y: y };
                 return true;
             }
@@ -101,15 +166,21 @@ modules.export = {
 
     getWalls: function(constructionSites, room) {
         for (let x=4; x<46; x++) {
-            for (let y=4; y<46; y++) {
-                if (!constructionSites[x + ":" + y]) {
-                    if (!_.filter(room.lookAt(x, y), (c) => {
-                            return c.type === 'terrain' && c.terrain === 'wall';
-                            }).length) {
-                        constructionSites[x + ":" + y] = STRUCTURE_WALL;
-                    }
-                }
-            }
+            this.checkWall(x, 4, room, constructionSites);
+            this.checkWall(x, 46, room, constructionSites);
+        }
+        for (let y=4; y<46; y++) {
+            this.checkWall(4, y, room, constructionSites);
+            this.checkWall(46, y, room, constructionSites);
+        }
+    },
+
+    checkWall: function(x, y, room, constructionSites) {
+        if (!_.filter(constructionSites, (site) => { return site.pos.x === x && site.pos.y === y; }).length &&
+                !_.filter(room.lookAt(x, y), (c) => {
+                    return c.type === 'terrain' && c.terrain === 'wall';
+                }).length) {
+            constructionSites.push({type: STRUCTURE_WALL, pos: {x: x, y: y}});
         }
     },
 
@@ -127,7 +198,7 @@ modules.export = {
                 }).length) {
                     return;
                 }
-                constructionSites[c.x + ":" + c.y] = STRUCTURE_CONTAINER;
+                constructionSites.push({type: STRUCTURE_CONTAINER, pos: {x: x, y: y}});
                 hasContainer = true;
             });
         });

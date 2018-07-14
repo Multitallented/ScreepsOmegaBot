@@ -19,6 +19,20 @@ module.exports = function(name, controller) {
         createConstructionSite: function(x, y, structureType, name) {
 
         },
+        lookAt: function(x, y) {
+
+        },
+        lookAtArea: function(top, left, bottom, right, isArray) {
+
+        },
+        getPositionAt: function(x, y) {
+            return {
+                x: x, y: y, room: this,
+                findPathTo: function(position) {
+                    return [];
+                }
+            }
+        },
         createFlag: function(x, y, name, color, secondaryColor) {
             //only visible to me
         },
