@@ -33,6 +33,14 @@ module.exports = {
                 }
             }
         } else {
+            if (_.filter(Game.creeps, (c) => {
+                    return c.id !== creep.id && c.memory && c.memory.role === creepUtil.roles.MINER &&
+                        c.memory.inPosition === creep.memory.inPosition;
+                    }).length) {
+                creep.memory.inPosition = undefined;
+                return;
+            }
+
             if (creep.carry.energy < creep.carryCapacity) {
                 if (creep.harvest(Game.getObjectById(creep.memory.inPosition)) === ERR_NOT_IN_RANGE) {
                     creep.moveTo(Game.getObjectById(creep.memory.inPosition), {visualizePathStyle: {stroke: '#ffffff'}});

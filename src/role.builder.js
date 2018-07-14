@@ -141,7 +141,7 @@ let roleBuilder = {
                         creep.memory.currentOrder = Util.REPAIR + ":" + targets[0].id;
                         this.actionById(creep);
                     } else if (reservedController) {
-                        creep.memory.role = creepUtil.roles.HOMING;
+                        creep.memory.role = creepUtil.roles.SCOUT;
                         creep.memory.currentOrder = undefined;
                         return;
                     }
