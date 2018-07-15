@@ -14,6 +14,12 @@ let roleCourier = {
             return;
         }
 
+        if (creep.memory.wasXCourier && creep.carry.energy < 1) {
+            creep.memory.role = creepUtil.roles.XCOURIER;
+            creep.memory.currentOrder = undefined;
+            return;
+        }
+
         if (creep.memory.wasScout) {
             if (creep.carry.energy < 1) {
                 creep.memory.role = creepUtil.roles.SCOUT;

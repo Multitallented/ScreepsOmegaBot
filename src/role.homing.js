@@ -12,10 +12,11 @@ module.exports = {
         if (creep.room.controller && creep.room.controller.my) {
             scoutScript.moveCreepIntoRoom(creep);
             if (creep.carry.energy > 0) {
-                creep.memory.wasScout = true;
                 creep.memory.role = creepUtil.roles.COURIER;
-            } else {
+            } else if (creep.memory.wasScout) {
                 creep.memory.role = creepUtil.roles.SCOUT;
+            } else if (creep.memory.wasXCourier) {
+                creep.memory.role = creepUtil.roles.XCOURIER;
             }
             return;
         }

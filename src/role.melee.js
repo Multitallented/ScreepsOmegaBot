@@ -23,7 +23,7 @@ module.exports = {
     run: function(creep) {
         // creep.memory.flag= 'Unclaimed:342703';
         // creep.memory.flag= 'Claimed:Demiskeleton:362402';
-        creep.memory.flag= 'Claimed:W8N3:Demiskeleton:3912';
+        creep.memory.flag= 'Claimed:Demiskeleton:362402';
         // creep.memory.flag= 'Claimed:Sleepless:W2N7:441130';
         // creep.memory.flag= 'Unclaimed:384626:W3N7';
         // creep.memory.flag= 'Claimed:MichaelBot:W9N9:364364';
@@ -44,7 +44,7 @@ module.exports = {
         if (creep.memory && creep.memory.rescue) {
             let flag = Game.flags[creep.memory.rescue];
             if (flag != null && flag.name.split(":")[2] !== creep.room.name) {
-                this.moveCreepToDestination(creep.memory.rescue);
+                this.moveCreepToDestination(creep, creep.memory.rescue);
             } else {
                 this.fight(creep);
             }
@@ -120,7 +120,7 @@ module.exports = {
             this.moveCreepToDestination(creep, creep.memory.flag);
         }
 
-        if (creep.pos.x !== 0 && creep.pos.x !== 50 && creep.pos.y !== 0 && creep.pos.y !== 50) {
+        if (creep.pos.x !== 1 && creep.pos.x !== 49 && creep.pos.y !== 1 && creep.pos.y !== 49) {
             let withdraw = _.filter(creep.room.lookAtArea(creep.pos.y - 1, creep.pos.x - 1, creep.pos.y + 1, creep.pos.x + 1, true), (s) => {
                 return s.type === 'structure' && s.structure.structureType === STRUCTURE_CONTAINER && s.structure.store.energy > 0;
             });
@@ -129,10 +129,7 @@ module.exports = {
                     s.structure.structureType !== STRUCTURE_ROAD) || (s.creep && !s.creep.my);
             });
 
-            // console.log(targets.length);
-            if (withdraw.length) {
-                creep.withdraw(withdraw[0].structure);
-            }
+
             if (targets.length) {
                 targets = _.sortBy(targets, (t) => {
                     let hits = t.structure ? t.structure.hits : t.creep.hits;
@@ -144,6 +141,9 @@ module.exports = {
                     attack = creep.attack(targets[0].creep);
                 }
                 // console.log(attack);
+            }
+            if (withdraw.length) {
+                creep.withdraw(withdraw[0].structure);
             }
             if (creep.hits < creep.hitsMax) {
                 creep.heal(creep);

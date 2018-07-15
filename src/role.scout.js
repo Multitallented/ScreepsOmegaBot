@@ -29,7 +29,10 @@ module.exports = {
 
     run: function(creep) {
         if (creep.room.controller && !creep.room.controller.my && creep.room.controller.owner !== undefined) {
-            creep.say("Don't shoot", true);
+            creep.say("Dont shoot", true);
+        }
+        if (!creep.memory || !creep.memory.wasScout) {
+            creep.memory.wasScout = true;
         }
         let claimers = _.filter(Game.creeps, (c) => {
                 return c.memory && c.memory.role && c.memory.role === creepUtil.roles.CLAIMER;
@@ -60,7 +63,7 @@ module.exports = {
             }
         } else if (creep.carry.energy === creep.carryCapacity) {
             creep.memory.role = creepUtil.roles.HOMING;
-            creep.memory.wasScout = true;
+            creep.say("homing");
             return;
         }
 
@@ -72,18 +75,21 @@ module.exports = {
                     return c.memory && c.memory.role && c.memory.role === creepUtil.roles.MINER;
                 }}).length < creep.room.find(FIND_SOURCES).length) {
                 creep.memory.role = creepUtil.roles.MINER;
+                creep.say("miner");
                 return;
             }
             else if (creep.room.find(FIND_CREEPS, {filter: (c) => {
                     return c.memory && c.memory.role && c.memory.role === creepUtil.roles.BUILDER;
                 }}).length === 0) {
                 creep.memory.role = creepUtil.roles.BUILDER;
+                creep.say("builder");
                 return;
             }
             else if (creep.room.find(FIND_STRUCTURES, {filter: (c) => {
                     return c.structureType === STRUCTURE_CONTAINER && c.store.energy > c.storeCapacity / 2;
                 }}).length) {
                 creep.memory.role = creepUtil.roles.HOMING;
+                creep.say("homing");
                 return;
             }
         } else if (creep.room.controller && creep.room.controller.my && creep.room.find(FIND_STRUCTURES, {filter: (s) => {
@@ -96,17 +102,20 @@ module.exports = {
                     return c.memory && c.memory.role && c.memory.role === creepUtil.roles.MINER;
                 }}).length < creep.room.find(FIND_SOURCES).length) {
                 creep.memory.role = creepUtil.roles.MINER;
+                creep.say("miner");
                 return;
             }
             else if (creep.room.find(FIND_CREEPS, {filter: (c) => {
                     return c.memory && c.memory.role && c.memory.role === creepUtil.roles.BUILDER;
                 }}).length === 0) {
+                creep.say("builder");
                 creep.memory.role = creepUtil.roles.BUILDER;
                 return;
             }
             else if (creep.room.find(FIND_CREEPS, {filter: (c) => {
                     return c.memory && c.memory.role && c.memory.role === creepUtil.roles.UPGRADER;
                 }}).length === 0) {
+                creep.say("upgrader");
                 creep.memory.role = creepUtil.roles.UPGRADER;
                 return;
             }
@@ -117,6 +126,7 @@ module.exports = {
                     s.store.energy > 0;
                 }})) {
                 creep.memory.role = creepUtil.roles.HOMING;
+                creep.say("homing");
                 return;
             }
         }

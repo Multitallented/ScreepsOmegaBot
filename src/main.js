@@ -9,6 +9,7 @@ let roleTower = require('./role.tower');
 let roleHoming = require('./role.homing');
 let respawn = require('./respawn');
 let roleMelee = require('./role.melee');
+let roleXCourier = require('./role.xcourier');
 let creepUtil = require('./creep.util');
 
 module.exports = {
@@ -68,7 +69,9 @@ module.exports = {
             } else if (creep.memory.role === 'tank') {
                 roleMelee.run(creep);
             } else if (creep.memory.role === 'melee') {
-                // roleMelee.run(creep);
+                roleMelee.run(creep);
+            } else if (creep.memory.role === 'xcourier') {
+                roleXCourier.run(creep);
             }
         });
     }

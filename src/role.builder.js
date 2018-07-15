@@ -54,6 +54,15 @@ let roleBuilder = {
             return;
         }
 
+        if (creep.memory && creep.memory.wasScout &&
+            creep.room.find(FIND_CREEPS, {filter: (c) => {
+                    return c.memory && c.memory.role === creepUtil.roles.BUILDER;
+                }}).length > 1) {
+            creep.say("scout");
+            creep.memory.role = creepUtil.roles.SCOUT;
+            return;
+        }
+
         if (creep.room.controller && !creep.room.controller.my && (!creep.room.controller.reservation ||
                 creep.room.controller.reservation.username !== 'Multitallented')) {
             creep.memory.role = creepUtil.roles.SCOUT;

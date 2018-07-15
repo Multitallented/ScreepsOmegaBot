@@ -11,6 +11,7 @@ module.exports = {
         MELEE: 'melee',
         LOOTER: 'looter',
         TANK: 'tank',
+        XCOURIER: 'xcourier',
     },
     parts: {
         WORK: {type: "work", hits: 100, buildCost: 100},
@@ -31,6 +32,8 @@ module.exports = {
             energy = Math.min(energy, 1200);
         } else if (type === this.roles.COURIER) {
             energy = Math.min(energy, 400);
+        } else if (type === this.roles.XCOURIER) {
+            energy = Math.min(energy, 800);
         }
         let partCount = {
             "work": 0,
@@ -84,7 +87,8 @@ module.exports = {
                 } else {
                     energyRemaining = 0;
                 }
-            } else if (type === this.roles.COURIER) {
+            } else if (type === this.roles.COURIER ||
+                    type === this.roles.XCOURIER) {
                 if (energyRemaining > 49 && partCount.carry < partCount.move * 2) {
                     bodyArray.unshift(CARRY);
                     partCount.carry++;

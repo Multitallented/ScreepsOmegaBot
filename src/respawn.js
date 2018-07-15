@@ -17,10 +17,10 @@ module.exports = {
         });
         _.forEach(creepsUnderAttack, (c) => {
             if (!Game.flags['Rescue:' + c.room.name]) {
-                c.room.createFlag(c.pos.x, c.pos.y, "Rescue:" + c.id + ":" + c.room.name);
+                c.room.createFlag(c.pos.x, c.pos.y, "Rescue:" + c.room.name);
             }
         });
-        _.forEach(Game.room, (room) => {
+        _.forEach(Game.rooms, (room) => {
             let flags = _.filter(Game.flags, (flag) => {
                 let flagName = flag.name.split(":");
                 return flagName[0] === "Rescue" && flagName[1] === room.name;
@@ -98,6 +98,32 @@ module.exports = {
                 }
                 this.spawnACreep(Game.getObjectById(spawnId), creepUtil.roles.COURIER, count['energyAvailable']);
             }
+            else if (count[creepUtil.roles.MELEE] < 8 && creepsUnderAttack.length > 0) {
+                if (count['energyAvailable'] < 800) {
+                    return;
+                }
+                let flag = null;
+                let flagPos = 0;
+                for (let i=0; i< creepsUnderAttack.length; i++) {
+                    if (_.filter(Game.flags, (f) => {
+                        return f.name === this.getRescueFlagName(creepsUnderAttack[i]);
+                    }).length) {
+                        continue;
+                    }
+                    flag = this.getRescueFlagName(creepsUnderAttack[i]);
+                    flagPos = i;
+                }
+                this.spawnACreep(Game.getObjectById(spawnId), creepUtil.roles.MELEE, count['energyAvailable']);
+                let creep = Game.getObjectById(spawnId).spawning;
+                if (creep && creep.memory && creep.memory.role === creepUtil.roles.MELEE) {
+                    if (flag !== null) {
+                        creepsUnderAttack[flagPos].room.createFlag(creepsUnderAttack[flagPos].x, creepsUnderAttack[flagPos].y, flag);
+                        creep.memory.rescue = flag;
+                    } else {
+                        creep.memory.rescue = this.getRescueFlagName(creepsUnderAttack[flagPos]);
+                    }
+                }
+            }
             else if (count[creepUtil.roles.UPGRADER] < 2 ||
                 (count[creepUtil.roles.UPGRADER] < 3 && creepCount[creepUtil.roles.CLAIMER + ":X"] > 3)) {
                 if (count['energyAvailable'] < 550) {
@@ -117,32 +143,6 @@ module.exports = {
             //     }
             //     this.spawnACreep(Game.getObjectById(spawnId), creepUtil.roles.MELEE, count['energyAvailable']);
             // }
-            else if (count[creepUtil.roles.MELEE] < 8 && creepsUnderAttack.length > 0) {
-                if (count['energyAvailable'] < 800) {
-                    return;
-                }
-                let flag = null;
-                let flagPos = 0;
-                for (let i=0; i< creepsUnderAttack.length; i++) {
-                    if (_.filter(Game.flags, (f) => {
-                        return f.name === this.getRescueFlagName(creepsUnderAttack[i]);
-                        }).length) {
-                        continue;
-                    }
-                    flag = this.getRescueFlagName(creepsUnderAttack[i]);
-                    flagPos = i;
-                }
-                this.spawnACreep(Game.getObjectById(spawnId), creepUtil.roles.MELEE, count['energyAvailable']);
-                let creep = Game.getObjectById(spawnId).spawning;
-                if (creep && creep.memory && creep.memory.role === creepUtil.roles.MELEE) {
-                    if (flag !== null) {
-                        creepsUnderAttack[flagPos].room.createFlag(creepsUnderAttack[flagPos].x, creepsUnderAttack[flagPos].y, flag);
-                        creep.memory.rescue = flag;
-                    } else {
-                        creep.memory.rescue = this.getRescueFlagName(creepsUnderAttack[flagPos]);
-                    }
-                }
-            }
             else if (count[creepUtil.roles.BUILDER] < 2) {
                 if (count['energyAvailable'] < 800) {
                     return;
@@ -156,11 +156,17 @@ module.exports = {
                 }
                 this.spawnACreep(Game.getObjectById(spawnId), creepUtil.roles.CLAIMER, 800)
             }
-            else if (count[creepUtil.roles.SCOUT] < 2) {
+            else if (count[creepUtil.roles.SCOUT] < 1) {
                 if (count['energyAvailable'] < 800) {
                     return;
                 }
                 this.spawnACreep(Game.getObjectById(spawnId), creepUtil.roles.SCOUT, count['energyAvailable']);
+            }
+            else if (count[creepUtil.roles.XCOURIER] < 2) {
+                if (count['energyAvailable'] < 800) {
+                    return;
+                }
+                this.spawnACreep(Game.getObjectById(spawnId), creepUtil.roles.XCOURIER, Math.min(1000, count['energyAvailable']));
             }
             else if (count[creepUtil.roles.UPGRADER] < 3) {
                 if (count['energyAvailable'] < 800) {
