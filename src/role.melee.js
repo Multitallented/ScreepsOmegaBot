@@ -43,7 +43,7 @@ module.exports = {
 
         if (creep.memory && creep.memory.rescue) {
             let flag = Game.flags[creep.memory.rescue];
-            if (flag != null && flag.name.split(":")[2] !== creep.room.name) {
+            if (flag != null && flag.name.split(":")[1] !== creep.room.name) {
                 this.moveCreepToDestination(creep, creep.memory.rescue);
             } else {
                 this.fight(creep);
