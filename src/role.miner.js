@@ -40,6 +40,13 @@ module.exports = {
                 creep.memory.inPosition = undefined;
                 return;
             }
+            // if (_.filter(Game.creeps, (c) => {
+            //         return c.id !== creep.id && c.memory && c.memory.role === creepUtil.roles.MINER &&
+            //             c.memory.adjacentContainer === creep.memory.adjacentContainer;
+            //         }).length) {
+            //     creep.memory.adjacentContainer = undefined;
+            //     return;
+            // }
 
             if (creep.carry.energy < creep.carryCapacity) {
                 if (creep.harvest(Game.getObjectById(creep.memory.inPosition)) === ERR_NOT_IN_RANGE) {
@@ -49,11 +56,19 @@ module.exports = {
                 creep.memory.currentOrder = Util.HARVEST + ":" + creep.memory.inPosition;
             } else {
                 if (creep.memory.adjacentContainer === undefined) {
-                     let targetSource = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => {
-                            return s.structureType === STRUCTURE_CONTAINER;
+                    let targetSources = _.filter(creep.room.lookAtArea(creep.pos.y-1, creep.pos.x-1, creep.pos.y+1, creep.pos.x+1, true), (c) => {
+                        return c.type === 'structure' && c.structure.structureType === STRUCTURE_CONTAINER;
+                    });
+
+                    if (targetSources.length) {
+                        creep.memory.adjacentContainer = targetSources[0].structure.id;
+                    } else {
+                        let targetSource = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => {
+                                return s.structureType === STRUCTURE_CONTAINER;
                             }});
-                    if (targetSource) {
-                        creep.memory.adjacentContainer = targetSource.id;
+                        if (targetSource) {
+                            creep.memory.adjacentContainer = targetSource.id;
+                        }
                     }
                 }
                 let transfer = creep.transfer(Game.getObjectById(creep.memory.adjacentContainer), RESOURCE_ENERGY);

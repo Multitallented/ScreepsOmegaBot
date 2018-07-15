@@ -69,9 +69,20 @@ let roleCourier = {
                     }
                 }
             }
-            let container = creep.pos.findClosestByPath(creep.room.find(FIND_STRUCTURES, {filter:
+            let containers = creep.room.find(FIND_STRUCTURES, {filter:
                     (structure) => { return (structure.structureType === STRUCTURE_CONTAINER ||
-                    structure.structureType === STRUCTURE_STORAGE); }}));
+                        structure.structureType === STRUCTURE_STORAGE) && structure.store.energy >= creep.carryCapacity; }});
+            if (!containers.length) {
+                containers = creep.room.find(FIND_STRUCTURES, {filter:
+                        (structure) => { return (structure.structureType === STRUCTURE_CONTAINER ||
+                            structure.structureType === STRUCTURE_STORAGE); }});
+            }
+
+            if (!containers.length) {
+                creep.memory.currentOrder = undefined;
+                return;
+            }
+            let container = creep.pos.findClosestByPath(containers);
             if (container !== undefined && container !== null) {
                 if (creep.withdraw(container, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
                     creep.moveTo(container, {visualizePathStyle: {stroke: '#ffaa00'}});

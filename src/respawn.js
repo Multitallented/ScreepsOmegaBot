@@ -12,7 +12,7 @@ module.exports = {
         let flagsToSend = [];
         let creepsUnderAttack = _.filter(Game.creeps, (c) => {
             return c.hits < c.hitsMax && c.my && c.memory && c.memory.role &&
-                c.memory.role !== creepUtil.roles.SCOUT && c.room.find(FIND_STRUCTURES, {filter: (s) => {
+                c.memory.role !== creepUtil.roles.SCOUT && c.memory.role !== creepUtil.roles.MELEE && c.room.find(FIND_STRUCTURES, {filter: (s) => {
                         return s.structureType && s.my && s.structureType === STRUCTURE_TOWER && s.energy > s.energyCapacity / 2;
                     }}).length < 1;
         });
@@ -33,7 +33,9 @@ module.exports = {
                 let flagName = flag.name.split(":");
                 return flagName[0] === "Rescue" && flagName[1] === room.name;
             });
-            if (flags.length && !room.find(FIND_HOSTILE_CREEPS).length) {
+            if (flags.length && !room.find(FIND_HOSTILE_CREEPS, {filter: (c) => {
+                    return c.name.indexOf("Keeper") === -1;
+                }}).length) {
                 _.forEach(flags, (flag) => {
                     flag.remove();
                 });

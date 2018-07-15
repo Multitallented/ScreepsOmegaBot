@@ -16,10 +16,10 @@ module.exports = {
     loop: function () {
 
         _.forEach(_.filter(Game.structures, (s) => {
-            return s.structureType &&
+            return s.structureType && s.my &&
                 (s.structureType === STRUCTURE_TOWER ||
                 s.structureType === STRUCTURE_SPAWN) &&
-                s.hits < s.hitsMax;
+                s.hits < s.hitsMax / 2;
             }), (structure) => {
             if (structure.room.controller &&
                 structure.room.controller.my &&
