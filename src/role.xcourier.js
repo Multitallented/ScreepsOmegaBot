@@ -34,17 +34,17 @@ module.exports = {
         }
 
         if (creep.room.controller && creep.room.controller.reservation && creep.room.controller.reservation.username === Util.USERNAME) {
-            scoutScript.moveCreepIntoRoom(creep);
             if (creep.room.find(FIND_STRUCTURES, {filter: (c) => {
                     return c.structureType === STRUCTURE_CONTAINER && c.store.energy > c.storeCapacity / 2;
                 }}).length) {
+                scoutScript.moveCreepIntoRoom(creep);
                 creep.memory.role = creepUtil.roles.HOMING;
                 creep.say("homing");
                 return;
             }
         }
 
-        if (creep.room.controller && !creep.room.controller.reservation &&
+        if (creep.room.controller && !creep.room.controller.my && !creep.room.controller.reservation &&
                 (!creep.room.controller.owner || creep.room.controller.owner.username !== Util.USERNAME)) {
             if (creep.room.find(FIND_STRUCTURES, {filter: (s) => {
                     return s.structureType && s.structureType === STRUCTURE_CONTAINER &&

@@ -3,10 +3,20 @@ let creepUtil = require('./creep.util');
 
 module.exports = {
     getRandomAdjacentRoom: function(creep) {
-        let randDirection = {
-            0: FIND_EXIT_TOP, 1: FIND_EXIT_LEFT, 2: FIND_EXIT_RIGHT, 3: FIND_EXIT_BOTTOM
-        };
-        let direction = randDirection[Math.floor(Math.random() * 4)];
+        let randDirection = [];
+        if (creep.pos.x !== 1) {
+            randDirection.push(FIND_EXIT_LEFT);
+        }
+        if (creep.pos.y !== 1) {
+            randDirection.push(FIND_EXIT_TOP);
+        }
+        if (creep.pos.x !== 49) {
+            randDirection.push(FIND_EXIT_RIGHT);
+        }
+        if (creep.pos.y !== 49) {
+            randDirection.push(FIND_EXIT_BOTTOM);
+        }
+        let direction = randDirection[Math.floor(Math.random() * randDirection.length)];
         creep.say(direction);
         return this.getRoomName(creep.room.name, direction);
     },
