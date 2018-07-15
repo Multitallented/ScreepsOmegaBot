@@ -7,8 +7,8 @@ module.exports = {
             return;
         }
         let centerFlag = room.find(FIND_FLAGS, {filter: (f) => {
-                return flag.name && (flag.name.indexOf('Claimed') !== -1 ||
-                    flag.name.indexOf('Unclaimed') !== -1);
+                return f.name && (f.name.indexOf('Claimed') !== -1 ||
+                    f.name.indexOf('Unclaimed') !== -1);
             }});
         if (centerFlag.length && centerFlag[0] !== undefined && centerFlag !== null) {
             centerFlag[0].remove();
@@ -33,11 +33,6 @@ module.exports = {
         let sources = room.find(FIND_SOURCES);
         let importantStructures = room.find(FIND_STRUCTURES, {filter: (s) => {
             if (s.structureType && s.my) {
-                if (siteCounts[s.structureType]) {
-                    siteCounts[s.structureType]++;
-                } else {
-                    siteCounts[s.structureType] = 1;
-                }
                 siteLocations[s.pos.x + ":" + s.pos.y] = { type: s.structureType, pos: s.pos };
             }
             return s.my && s.structureType && (s.structureType === STRUCTURE_SPAWN || s.structureType === STRUCTURE_TOWER ||
@@ -120,7 +115,10 @@ module.exports = {
             } else {
                 structureCount[type]++;
             }
-            return structureCount[type] <= CONTROLLER_STRUCTURES[type][controllerLevel];
+            if (CONTROLLER_STRUCTURES[type]) {
+                return structureCount[type] <= CONTROLLER_STRUCTURES[type][controllerLevel];
+            }
+            return true;
         });
 
         constructionSites = _.sortBy(constructionSites, (site) => { return this.getTypeRanking(site.type); });
@@ -135,7 +133,7 @@ module.exports = {
 
     updateCache: function(room, siteLocations, siteCounts, constructionSites) {
         _.forEach(room.find(FIND_STRUCTURES), (structure) => {
-            if (!structure.my && structure.owner && structure.owner.username !== Util.USERNAME) {
+            if (!structure.my && structure.owner && structure.owner.username !== 'Multitallented') {
                 structure.destroy();
                 return;
             }

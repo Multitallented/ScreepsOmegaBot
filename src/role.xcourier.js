@@ -33,7 +33,7 @@ module.exports = {
             return;
         }
 
-        if (creep.room.controller && creep.room.controller.reservation && creep.room.controller.reservation.username === Util.USERNAME) {
+        if (creep.room.controller && creep.room.controller.reservation && creep.room.controller.reservation.username === 'Multitallented') {
             if (creep.room.find(FIND_STRUCTURES, {filter: (c) => {
                     return c.structureType === STRUCTURE_CONTAINER && c.store.energy > c.storeCapacity / 2;
                 }}).length) {
@@ -45,7 +45,7 @@ module.exports = {
         }
 
         if (creep.room.controller && !creep.room.controller.my && !creep.room.controller.reservation &&
-                (!creep.room.controller.owner || creep.room.controller.owner.username !== Util.USERNAME)) {
+                (!creep.room.controller.owner || creep.room.controller.owner.username !== 'Multitallented')) {
             if (creep.room.find(FIND_STRUCTURES, {filter: (s) => {
                     return s.structureType && s.structureType === STRUCTURE_CONTAINER &&
                         s.store.energy > 0;

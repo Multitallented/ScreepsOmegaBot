@@ -12,6 +12,7 @@ let roleMelee = require('./role.melee');
 let roleXCourier = require('./role.xcourier');
 let roomBuilder = require('./room.builder');
 let creepUtil = require('./creep.util');
+let Util = require('./util');
 
 module.exports = {
     loop: function () {
@@ -68,8 +69,11 @@ module.exports = {
 
         _.forEach(Game.rooms, (room) => {
             if (room.controller && room.controller.my && room.controller.owner &&
-                room.controller.owner.username === Util.USERNAME && room.memory.controllerLevel < room.controller.level) {
-                roomBuilder.buildRoom(room);
+                room.controller.owner.username === 'Multitallented' &&
+                (!room.memory || !room.memory.controllerLevel ||
+                room.memory.controllerLevel < room.controller.level)) {
+                console.log(room.name);
+                // roomBuilder.buildRoom(room);
             }
         });
     }

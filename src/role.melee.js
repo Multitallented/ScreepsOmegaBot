@@ -125,7 +125,7 @@ module.exports = {
                 return s.type === 'structure' && s.structure.structureType === STRUCTURE_CONTAINER && s.structure.store.energy > 0;
             });
             let targets = _.filter(creep.room.lookAtArea(creep.pos.y - 1, creep.pos.x - 1, creep.pos.y + 1, creep.pos.x + 1, true), (s) => {
-                return (s.structure && s.structure.structureType !== STRUCTURE_CONTAINER &&
+                return (!s.my && s.structure && s.structure.structureType !== STRUCTURE_CONTAINER &&
                     s.structure.structureType !== STRUCTURE_ROAD) || (s.creep && !s.creep.my);
             });
 

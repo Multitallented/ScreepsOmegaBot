@@ -147,14 +147,23 @@ let roleBuilder = {
                 } else {
                     if (creep.room.controller && creep.room.controller.my &&
                             creep.room.controller.owner !== undefined &&
-                            creep.room.controller.owner.username === Util.USERNAME &&
+                            creep.room.controller.owner.username === 'Multitallented' &&
                             creep.room.memory &&
-                            creep.room.controller.memory.controllerLevel >= creep.room.controller.level) {
+                            creep.room.memory.controllerLevel >= creep.room.controller.level &&
+                            creep.room.memory.constructionSites.length > 0) {
+
                         let constructionArray = creep.room.memory.constructionSites;
-                        creep.room.createConstructionSite(constructionArray[0].pos.x,
-                            constructionArray[0].pos.y, constructionArray[0].type);
-                        delete constructionArray[0];
-                        return;
+                        if (constructionArray[0] == null) {
+                            creep.room.memory.constructionSites.splice(0,1);
+                            return;
+                        } else {
+                            let construct = creep.room.createConstructionSite(constructionArray[0].pos.x,
+                                constructionArray[0].pos.y, constructionArray[0].type);
+                            console.log("New Construction: " + constructionArray[0].type + " = " + construct);
+                            creep.room.memory.constructionSites.splice(0,1);
+                            return;
+                        }
+
                     } else {
                         targets = creep.room.find(FIND_STRUCTURES, {
                             filter: (target) => {
@@ -172,7 +181,6 @@ let roleBuilder = {
                             return;
                         }
                     }
-
                 }
             }
         }

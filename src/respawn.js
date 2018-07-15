@@ -12,7 +12,10 @@ module.exports = {
         let flagsToSend = [];
         let creepsUnderAttack = _.filter(Game.creeps, (c) => {
             return c.hits < c.hitsMax && c.my && c.memory && c.memory.role &&
-                c.memory.role !== creepUtil.roles.SCOUT && c.memory.role !== creepUtil.roles.MELEE && c.room.find(FIND_STRUCTURES, {filter: (s) => {
+                c.room.controller && (c.room.controller.my || (c.room.controller.reservation &&
+                c.room.controller.reservation.username === 'Multitallented')) &&
+                c.room.find(FIND_HOSTILE_CREEPS).length > 1 &&
+                c.room.find(FIND_STRUCTURES, {filter: (s) => {
                         return s.structureType && s.my && s.structureType === STRUCTURE_TOWER && s.energy > s.energyCapacity / 2;
                     }}).length < 1;
         });
