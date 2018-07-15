@@ -32,7 +32,15 @@ module.exports = {
 
         let sources = room.find(FIND_SOURCES);
         let importantStructures = room.find(FIND_STRUCTURES, {filter: (s) => {
-            return s.structureType && (s.structureType === STRUCTURE_SPAWN || s.structureType === STRUCTURE_TOWER ||
+            if (s.structureType && s.my) {
+                if (siteCounts[s.structureType]) {
+                    siteCounts[s.structureType]++;
+                } else {
+                    siteCounts[s.structureType] = 1;
+                }
+                siteLocations[s.pos.x + ":" + s.pos.y] = { type: s.structureType, pos: s.pos };
+            }
+            return s.my && s.structureType && (s.structureType === STRUCTURE_SPAWN || s.structureType === STRUCTURE_TOWER ||
                 s.structureType === STRUCTURE_STORAGE);
             }});
 

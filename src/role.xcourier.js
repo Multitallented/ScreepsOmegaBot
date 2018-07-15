@@ -22,6 +22,7 @@ module.exports = {
                 } else {
                     let move = creep.moveTo(energy, {visualizePathStyle: {stroke: '#ffffff'}});
                     if (move === OK) {
+                        creep.memory.currentOrder = Util.MOVE + ":energy";
                         return;
                     }
                 }
@@ -32,7 +33,7 @@ module.exports = {
             return;
         }
 
-        if (creep.room.controller && creep.room.controller.reservation && creep.room.controller.reservation.username === 'Multitallented') {
+        if (creep.room.controller && creep.room.controller.reservation && creep.room.controller.reservation.username === Util.USERNAME) {
             scoutScript.moveCreepIntoRoom(creep);
             if (creep.room.find(FIND_STRUCTURES, {filter: (c) => {
                     return c.structureType === STRUCTURE_CONTAINER && c.store.energy > c.storeCapacity / 2;
@@ -42,8 +43,9 @@ module.exports = {
                 return;
             }
         }
+
         if (creep.room.controller && !creep.room.controller.reservation &&
-                (!creep.room.controller.owner || creep.room.controller.owner.username !== 'Multitallented')) {
+                (!creep.room.controller.owner || creep.room.controller.owner.username !== Util.USERNAME)) {
             if (creep.room.find(FIND_STRUCTURES, {filter: (s) => {
                     return s.structureType && s.structureType === STRUCTURE_CONTAINER &&
                         s.store.energy > 0;
@@ -56,16 +58,17 @@ module.exports = {
 
         let discoveredRoom = (creep.room.controller && creep.room.controller.my) ||
             _.filter(Game.flags, (f) => f.room === creep.room).length === 1;
-        console.log(discoveredRoom + ":" + (!creep.memory.currentOrder) + ":" + (creep.memory.currentOrder.split(":")[1] === creep.room.name));
         if (discoveredRoom && (!creep.memory.currentOrder || creep.memory.currentOrder.split(":")[1] === creep.room.name)) {
             let targetRoomName = scoutScript.getRandomAdjacentRoom(creep);
-            if (creep.moveTo(creep.pos.findClosestByRange(creep.room.findExitTo(targetRoomName)), {visualizePathStyle: {stroke: '#ffffff'}}) === OK) {
+            let move = creep.moveTo(creep.pos.findClosestByRange(creep.room.findExitTo(targetRoomName)),
+                {reusePath: 3, visualizePathStyle: {stroke: '#ffffff'}});
+            if (move === OK) {
                 creep.memory.currentOrder = Util.MOVE + ":" + targetRoomName;
             }
         } else if (discoveredRoom && creep.memory.currentOrder) {
             let targetRoomName = creep.memory.currentOrder.split(":")[1];
             let direction = creep.room.findExitTo(targetRoomName);
-            let move = creep.moveTo(creep.pos.findClosestByRange(direction), {visualizePathStyle: {stroke: '#ffffff'}});
+            let move = creep.moveTo(creep.pos.findClosestByRange(direction), {reusePath: 3, visualizePathStyle: {stroke: '#ffffff'}});
             if (move === OK) {
                 creep.memory.currentOrder = Util.MOVE + ":" + targetRoomName;
             } else if (move === ERR_NO_PATH) {

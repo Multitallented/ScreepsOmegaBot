@@ -8,6 +8,10 @@ module.exports = {
     },
 
     run: function(creep) {
+        if (creep.memory.wasBuilder) {
+            creep.memory.wasBuilder = undefined;
+        }
+
 
         if (creep.room.controller && creep.room.controller.my) {
             scoutScript.moveCreepIntoRoom(creep);

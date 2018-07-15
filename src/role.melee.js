@@ -6,7 +6,7 @@ module.exports = {
     moveCreepToDestination: function(creep, flagName) {
         let move = null;
         // if (creep.memory.squadLeader) {
-            move = creep.moveTo(Game.flags[flagName], {visualizePathStyle: {stroke: '#ffffff'}});
+            move = creep.moveTo(Game.flags[flagName], {reusePath: 3, visualizePathStyle: {stroke: '#ffffff'}});
         // } else {
         //     let squadLeaders = _.filter(Game.creeps, (c) => { return c.memory && c.memory.squadLeader; });
         //     if (squadLeaders.length && squadLeaders[0].pos.getRangeTo(creep) > 1) {
@@ -35,7 +35,7 @@ module.exports = {
             let rescue = Game.getObjectById(creep.memory.rescue);
             if (rescue !== undefined && rescue !== null) {
                 if (rescue.room.name !== creep.room.name) {
-                    creep.moveTo(rescue.pos, {visualizePathStyle: {stroke: '#ffffff'}});
+                    creep.moveTo(rescue.pos, {reusePath: 3, visualizePathStyle: {stroke: '#ffffff'}});
                     creep.memory.currentOrder = Util.MOVE + ":" + rescue.room.name;
                 }
             }

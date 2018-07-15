@@ -1,7 +1,6 @@
 let Util = require('./util');
 let structUtil = require('./structure.util');
 let creepUtil = require('./creep.util');
-let roomBuilder = require('./room.builder');
 let roleBuilder = {
 
     actionById: function(creep) {
@@ -143,13 +142,13 @@ let roleBuilder = {
                 } else {
                     if (creep.room.controller && creep.room.controller.my &&
                             creep.room.controller.owner !== undefined &&
-                            creep.room.controller.owner.username === 'Multitallented' &&
+                            creep.room.controller.owner.username === Util.USERNAME &&
+                            creep.room.memory &&
                             creep.room.controller.memory.controllerLevel >= creep.room.controller.level) {
                         let constructionArray = creep.room.memory.constructionSites;
-                        _.forEach(constructionArray, (site) => {
-                            creep.room.createConstructionSite(constructionArray[0].pos.x,
-                                constructionArray[0].pos.y, constructionArray[0].type);
-                        });
+                        creep.room.createConstructionSite(constructionArray[0].pos.x,
+                            constructionArray[0].pos.y, constructionArray[0].type);
+                        delete constructionArray[0];
                         return;
                     } else {
                         targets = creep.room.find(FIND_STRUCTURES, {
@@ -163,6 +162,7 @@ let roleBuilder = {
                             this.actionById(creep);
                         } else if (reservedController) {
                             creep.memory.role = creepUtil.roles.SCOUT;
+                            creep.memory.wasBuilder = true;
                             creep.memory.currentOrder = undefined;
                             return;
                         }

@@ -78,7 +78,7 @@ module.exports = {
                 creep.say("miner");
                 return;
             }
-            else if (creep.room.find(FIND_CREEPS, {filter: (c) => {
+            else if (!creep.memory.wasBuilder && creep.room.find(FIND_CREEPS, {filter: (c) => {
                     return c.memory && c.memory.role && c.memory.role === creepUtil.roles.BUILDER;
                 }}).length === 0) {
                 creep.memory.role = creepUtil.roles.BUILDER;
@@ -105,7 +105,7 @@ module.exports = {
                 creep.say("miner");
                 return;
             }
-            else if (creep.room.find(FIND_CREEPS, {filter: (c) => {
+            else if (!creep.memory.wasBuilder && creep.room.find(FIND_CREEPS, {filter: (c) => {
                     return c.memory && c.memory.role && c.memory.role === creepUtil.roles.BUILDER;
                 }}).length === 0) {
                 creep.say("builder");
@@ -135,18 +135,18 @@ module.exports = {
             _.filter(Game.flags, (f) => f.room === creep.room).length === 1;
         if (discoveredRoom && (!creep.memory.currentOrder || creep.memory.currentOrder.split(":")[1] === creep.room.name)) {
             let targetRoomName = this.getRandomAdjacentRoom(creep);
-            if (creep.moveTo(creep.pos.findClosestByRange(creep.room.findExitTo(targetRoomName)), {visualizePathStyle: {stroke: '#ffffff'}}) === OK) {
+            if (creep.moveTo(creep.pos.findClosestByRange(creep.room.findExitTo(targetRoomName)), {reusePath: 3, visualizePathStyle: {stroke: '#ffffff'}}) === OK) {
                 creep.memory.currentOrder = Util.MOVE + ":" + targetRoomName;
             }
         } else if (discoveredRoom && creep.memory.currentOrder) {
             let targetRoomName = creep.memory.currentOrder.split(":")[1];
             let direction = creep.room.findExitTo(targetRoomName);
-            let move = creep.moveTo(creep.pos.findClosestByRange(direction), {visualizePathStyle: {stroke: '#ffffff'}});
+            let move = creep.moveTo(creep.pos.findClosestByRange(direction), {reusePath: 3, visualizePathStyle: {stroke: '#ffffff'}});
             if (move === OK) {
                 creep.memory.currentOrder = Util.MOVE + ":" + targetRoomName;
             } else if (move === ERR_NO_PATH) {
                 creep.memory.currentOrder = undefined;
-                creep.moveTo(25, 25, {visualizePathStyle: {stroke: '#ffffff'}});
+                creep.moveTo(25, 25, {reusePath: 3, visualizePathStyle: {stroke: '#ffffff'}});
             } else if (move !== -11) {
                 this.moveCreepIntoRoom(creep);
                 return;

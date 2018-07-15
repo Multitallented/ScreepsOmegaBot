@@ -154,7 +154,8 @@ module.exports = {
                 }
                 this.spawnACreep(Game.getObjectById(spawnId), creepUtil.roles.CLAIMER, 800)
             }
-            else if (count[creepUtil.roles.SCOUT] < 1) {
+            else if (count[creepUtil.roles.SCOUT] < 1 &&
+                    creepCount[creepUtil.roles.SCOUT + ":X"] < creepCount[creepUtil.roles.XCOURIER + ":X"]) {
                 if (count['energyAvailable'] < 800) {
                     return;
                 }
