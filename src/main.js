@@ -10,6 +10,7 @@ let roleHoming = require('./role.homing');
 let respawn = require('./respawn');
 let roleMelee = require('./role.melee');
 let roleXCourier = require('./role.xcourier');
+let roomBuilder = require('./room.builder');
 let creepUtil = require('./creep.util');
 
 module.exports = {
@@ -28,16 +29,6 @@ module.exports = {
                 structure.room.controller.activateSafeMode();
             }
         });
-        // let damagedCreeps = _.filter(Game.creeps, (creep) => creep.hits < creep.hitsMax && creep.my);
-        // for (let i=0; i< damagedCreeps.length; i++) {
-        //     let creep = damagedCreeps[i];
-        //     if (creep.room.controller &&
-        //         creep.room.controller.my &&
-        //         creep.room.controller.safeMode === undefined &&
-        //         creep.room.controller.safeModeAvailable > 0) {
-        //         creep.room.controller.activateSafeMode();
-        //     }
-        // }
 
         roleTower.run();
 
@@ -72,6 +63,13 @@ module.exports = {
                 roleMelee.run(creep);
             } else if (creep.memory.role === 'xcourier') {
                 roleXCourier.run(creep);
+            }
+        });
+
+        _.forEach(Game.rooms, (room) => {
+            if (room.controller && room.controller.my && room.controller.owner &&
+                room.controller.owner.username === Util.USERNAME && room.memory.controllerLevel < room.controller.level) {
+                roomBuilder.buildRoom(room);
             }
         });
     }

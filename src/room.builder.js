@@ -36,8 +36,9 @@ module.exports = {
                 s.structureType === STRUCTURE_STORAGE);
             }});
 
-        if (sources.length > siteCounts[STRUCTURE_CONTAINER]) {
-            saveAndQuit =  this.getContainers(constructionSites, room, sources, siteCounts, siteLocations);
+        let containerCount = siteCounts[STRUCTURE_CONTAINER] ? siteCounts[STRUCTURE_CONTAINER] : 0;
+        if (sources.length > containerCount) {
+            saveAndQuit = this.getContainers(constructionSites, room, sources, siteCounts, siteLocations);
             if (saveAndQuit) {
                 this.saveToCache(room, siteCounts, siteLocations, constructionSites);
                 return;
@@ -49,7 +50,8 @@ module.exports = {
 
 
         let centerOfInterest = this.getCenterOfArray(pointsOfImportance);
-        for (let i=0; i<6 - siteCounts[STRUCTURE_TOWER]; i++) {
+        let towerCount = siteCounts[STRUCTURE_TOWER] ? siteCounts[STRUCTURE_TOWER] : 0;
+        for (let i=0; i<6 - towerCount; i++) {
             saveAndQuit = this.getPositionWithBuffer(room, centerOfInterest.x, centerOfInterest.y,
                 38 - 2 * Math.max(Math.abs(centerOfInterest.x - 25), Math.abs(centerOfInterest.y - 25)), 0, STRUCTURE_TOWER,
                 pointsOfImportance, siteCounts, siteLocations, constructionSites);
@@ -69,7 +71,8 @@ module.exports = {
             }
         }
 
-        for (let i=0; i<3 - siteCounts[STRUCTURE_SPAWN]; i++) {
+        let spawnCount = siteCounts[STRUCTURE_SPAWN] ? siteCounts[STRUCTURE_SPAWN] : 0;
+        for (let i=0; i<3 - spawnCount; i++) {
             saveAndQuit = this.getPositionWithBuffer(room, 25, 25, 38, 1, STRUCTURE_SPAWN, pointsOfImportance, siteCounts,
                 siteLocations, constructionSites);
 
@@ -79,13 +82,27 @@ module.exports = {
             }
         }
 
-        this.getRoadsAndRamparts(constructionSites, room, pointsOfImportance, siteCounts, siteLocations);
+        saveAndQuit = this.getRoadsAndRamparts(constructionSites, room, pointsOfImportance, siteCounts, siteLocations);
+        if (saveAndQuit) {
+            this.saveToCache(room, siteCounts, siteLocations, constructionSites);
+            return;
+        }
 
-        this.getWalls(constructionSites, room);
+        saveAndQuit = this.getWalls(room, siteCounts, siteLocations, constructionSites);
+        if (saveAndQuit) {
+            this.saveToCache(room, siteCounts, siteLocations, constructionSites);
+            return;
+        }
 
-        // for (let i=0; i< 60; i++) {
-        //     this.getPositionWithBuffer(constructionSites, room, 25, 25, 38, 1, STRUCTURE_EXTENSION);
-        // }
+        let extensionCount = siteCounts[STRUCTURE_EXTENSION] ? siteCounts[STRUCTURE_EXTENSION] : 0;
+        for (let i=0; i< 60 - extensionCount; i++) {
+            saveAndQuit = this.getPositionWithBuffer(room, 25, 25, 38, 1, STRUCTURE_EXTENSION, pointsOfImportance,
+                siteCounts, siteLocations, constructionSites);
+            if (saveAndQuit) {
+                this.saveToCache(room, siteCounts, siteLocations, constructionSites);
+                return;
+            }
+        }
 
         let structureCount = {};
         constructionSites = _.filter(constructionSites, (site) => {
@@ -155,6 +172,7 @@ module.exports = {
                         let newSite = {type: STRUCTURE_RAMPART, pos: {x: roadPos.x, y: roadPos.y}};
                         siteLocations[roadPos.x + ":" + roadPos.y] = newSite;
                         constructionSites.push(newSite);
+                        saveAndQuit = true;
                     } else if (!siteLocations[roadPos.x + ":" + roadPos.y] &&
                             !_.filter(room.lookAt(roadPos.x, roadPos.y), (c) => {
                             return c.type === 'structure' || (c.type === 'terrain' && c.terrain === 'wall');
@@ -162,6 +180,7 @@ module.exports = {
                         let newSite = {type: STRUCTURE_ROAD, pos: {x: roadPos.x, y: roadPos.y}};
                         siteLocations[roadPos.x + ":" + roadPos.y] = newSite;
                         constructionSites.push(newSite);
+                        saveAndQuit = true;
                     }
                 });
             });
@@ -234,34 +253,6 @@ module.exports = {
         });
         return true;
     },
-    getPositionWithBuffer: function(constructionSites, room, x, y, size, buffer, type) {
-        let finalPosition = null;
-        this.loopFromCenter(x, y, size, (x, y) => {
-            let positionOk = true;
-            if (buffer > 0) {
-                this.loopFromCenter(x, y, 1 + 2 * buffer, (x, y) => {
-                    if (_.filter(room.lookAt(x, y), (c) => {
-                            return c.type === 'structure' || (c.type === 'terrain' && c.terrain === 'wall'); }).length ||
-                        _.filter(constructionSites, (site) => { return site.pos.x === x && site.pos.y === y; }).length) {
-                        positionOk = false;
-                        return true;
-                    }
-                });
-            } else {
-                if (_.filter(room.lookAt(x, y), (c) => {
-                        return c.type === 'structure' || (c.type === 'terrain' && c.terrain === 'wall'); }).length ||
-                    _.filter(constructionSites, (site) => { return site.pos.x === x && site.pos.y === y; }).length) {
-                    positionOk = false;
-                }
-            }
-            if (positionOk) {
-                constructionSites.push({type: type, pos: {x: x, y: y}});
-                finalPosition = { x: x, y: y };
-                return true;
-            }
-        });
-        return { structureType: type, pos: finalPosition };
-    },
 
     loopFromCenter: function(x, y, size, callback) {
         let d = 3;
@@ -290,24 +281,30 @@ module.exports = {
         callback(x, y);
     },
 
-    getWalls: function(constructionSites, room) {
+    getWalls: function(room, siteCounts, siteLocations, constructionSites) {
+        let saveAndQuit = false;
         for (let x=4; x<46; x++) {
-            this.checkWall(x, 4, room, constructionSites);
-            this.checkWall(x, 46, room, constructionSites);
+            saveAndQuit = saveAndQuit ? saveAndQuit : this.checkWall(x, 4, room, siteCounts, siteLocations, constructionSites);
+            saveAndQuit = saveAndQuit ? saveAndQuit : this.checkWall(x, 46, room, siteCounts, siteLocations, constructionSites);
         }
         for (let y=4; y<46; y++) {
-            this.checkWall(4, y, room, constructionSites);
-            this.checkWall(46, y, room, constructionSites);
+            saveAndQuit = saveAndQuit ? saveAndQuit : this.checkWall(4, y, room, siteCounts, siteLocations, constructionSites);
+            saveAndQuit = saveAndQuit ? saveAndQuit : this.checkWall(46, y, room, siteCounts, siteLocations, constructionSites);
         }
+        return saveAndQuit;
     },
 
-    checkWall: function(x, y, room, constructionSites) {
-        if (!_.filter(constructionSites, (site) => { return site.pos.x === x && site.pos.y === y; }).length &&
+    checkWall: function(x, y, room, siteCounts, siteLocations, constructionSites) {
+        if (!siteLocations[x + ":" + y] &&
                 !_.filter(room.lookAt(x, y), (c) => {
                     return c.type === 'terrain' && c.terrain === 'wall';
                 }).length) {
-            constructionSites.push({type: STRUCTURE_WALL, pos: {x: x, y: y}});
+            let newSite = {type: STRUCTURE_WALL, pos: {x: x, y: y}};
+            constructionSites.push(newSite);
+            siteLocations[x + ":" + y] = newSite;
+            return true;
         }
+        return false;
     },
 
     getContainers: function(constructionSites, room, sources, siteCounts, siteLocations) {

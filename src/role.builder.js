@@ -143,13 +143,14 @@ let roleBuilder = {
                 } else {
                     if (creep.room.controller && creep.room.controller.my &&
                             creep.room.controller.owner !== undefined &&
-                            creep.room.controller.owner.username === 'Multitallented') {
-                        let constructionArray = roomBuilder.buildRoom(creep.room);
-                        if (constructionArray.length) {
+                            creep.room.controller.owner.username === 'Multitallented' &&
+                            creep.room.controller.memory.controllerLevel >= creep.room.controller.level) {
+                        let constructionArray = creep.room.memory.constructionSites;
+                        _.forEach(constructionArray, (site) => {
                             creep.room.createConstructionSite(constructionArray[0].pos.x,
                                 constructionArray[0].pos.y, constructionArray[0].type);
-                            return;
-                        }
+                        });
+                        return;
                     } else {
                         targets = creep.room.find(FIND_STRUCTURES, {
                             filter: (target) => {

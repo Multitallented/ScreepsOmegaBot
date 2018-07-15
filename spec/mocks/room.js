@@ -1,15 +1,17 @@
 module.exports = function(name, controller) {
     return {
         entities: {
-            111: [],
-            105: [],
-            107: [],
-            101: [],
+            111: [], //FIND_CONSTRUCTION_SITES
+            105: [], //FIND_SOURCES
+            107: [], //FIND_STRUCTURES
+            101: [], //FIND_CREEPS
         },
         controller: controller,
         energyAvailable: 300,
         energyCapacityAvailable: 300,
-        memory: {},
+        memory: {
+            controllerLevel: 0,
+        },
         name: name,
         storage: undefined,
         terminal: undefined,
@@ -20,7 +22,7 @@ module.exports = function(name, controller) {
 
         },
         lookAt: function(x, y) {
-
+            return [ { x: x, y: y, type: 'terrain', terrain: 'plain' } ];
         },
         lookAtArea: function(top, left, bottom, right, isArray) {
             return [ { x: left, y: top, type: 'terrain', terrain: 'plain' } ]

@@ -12,20 +12,44 @@ describe("Room Builder tests", function() {
     });
 
     it("Init tests", function() {
-        let constructionSites = roomBuilder.buildRoom(Game.rooms.Room1);
-        _.forEach(constructionSites, (site) => {
+        let count = 0;
+        console.log("Controller Level: " + Game.rooms.Room1.memory.controllerLevel);
+        while (Game.rooms.Room1.memory.controllerLevel < 5) {
+            roomBuilder.buildRoom(Game.rooms.Room1);
+            count++;
+        }
+        console.log("Controller Level: " + Game.rooms.Room1.memory.controllerLevel);
+        console.log("Count: " + count);
+        _.forEach(Game.rooms.Room1.memory.constructionSites, (site) => {
             console.log(site.pos.x + ":" + site.pos.y + " type=" + site.type);
         });
     });
     it("Output should contain storage", function() {
-        let constructionSites = roomBuilder.buildRoom(Game.rooms.Room1);
+        while (Game.rooms.Room1.memory.controllerLevel < 5) {
+            roomBuilder.buildRoom(Game.rooms.Room1);
+        }
         let hasStorage = false;
-        _.forEach(constructionSites, (site) => {
+        _.forEach(Game.rooms.Room1.memory.constructionSites, (site) => {
             if (site.type === STRUCTURE_STORAGE) {
                 hasStorage = true;
             }
         });
         expect(hasStorage).toBe(true);
+    });
+    it("Output should not contain storage", function() {
+        Game.rooms.Room1.entities[107].push(
+            require('./mocks/structure')('Storage1', 25, 25, STRUCTURE_STORAGE, Game.rooms.Room1)
+        );
+        while (Game.rooms.Room1.memory.controllerLevel < 5) {
+            roomBuilder.buildRoom(Game.rooms.Room1);
+        }
+        let hasStorage = false;
+        _.forEach(Game.rooms.Room1.memory.constructionSites, (site) => {
+            if (site.type === STRUCTURE_STORAGE) {
+                hasStorage = true;
+            }
+        });
+        expect(hasStorage).toBe(false);
     });
 
     it("center should be 30, 20", function() {
@@ -39,9 +63,11 @@ describe("Room Builder tests", function() {
     });
 
     it("Output should contain spawn", function() {
-        let constructionSites = roomBuilder.buildRoom(Game.rooms.Room1);
+        while (Game.rooms.Room1.memory.controllerLevel < 5) {
+            roomBuilder.buildRoom(Game.rooms.Room1);
+        }
         let hasSpawn = false;
-        _.forEach(constructionSites, (site) => {
+        _.forEach(Game.rooms.Room1.memory.constructionSites, (site) => {
             if (site.type === STRUCTURE_SPAWN) {
                 hasSpawn = true;
             }
@@ -49,9 +75,11 @@ describe("Room Builder tests", function() {
         expect(hasSpawn).toBe(true);
     });
     it("Output should not have 2 spawn", function() {
-        let constructionSites = roomBuilder.buildRoom(Game.rooms.Room1);
+        while (Game.rooms.Room1.memory.controllerLevel < 5) {
+            roomBuilder.buildRoom(Game.rooms.Room1);
+        }
         let hasSpawn = 0;
-        _.forEach(constructionSites, (site) => {
+        _.forEach(Game.rooms.Room1.memory.constructionSites, (site) => {
             if (site.type === STRUCTURE_SPAWN) {
                 hasSpawn++;
             }
