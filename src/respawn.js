@@ -1,23 +1,31 @@
 let creepUtil = require('./creep.util');
 
 module.exports = {
-    spawnACreep: function(spawn, key, energy) {
+    spawnACreep: function(spawn, key, energy, memory) {
         let newName = key.charAt(0).toUpperCase() + key.slice(1) + Game.time;
-        let creepData = creepUtil.buildBestCreep(key, energy);
+        let creepData = creepUtil.buildBestCreep(key, energy, memory);
         spawn.spawnCreep(creepData.bodyArray, newName,
             creepData.memory);
     },
 
     rescueResponse: function() {
+        let flagsToSend = [];
         let creepsUnderAttack = _.filter(Game.creeps, (c) => {
             return c.hits < c.hitsMax && c.my && c.memory && c.memory.role &&
                 c.memory.role !== creepUtil.roles.SCOUT && c.room.find(FIND_STRUCTURES, {filter: (s) => {
-                        return s.structureType && s.structureType === STRUCTURE_TOWER;
+                        return s.structureType && s.my && s.structureType === STRUCTURE_TOWER && s.energy > s.energyCapacity / 2;
                     }}).length < 1;
+        });
+        _.forEach(_.filter(Game.flags, (flag) => {
+            let flagName = flag.name.split(":");
+            return flagName[0] === "Rescue";
+        }), (flag) => {
+            flagsToSend.push(flag.name);
         });
         _.forEach(creepsUnderAttack, (c) => {
             if (!Game.flags['Rescue:' + c.room.name]) {
                 c.room.createFlag(c.pos.x, c.pos.y, "Rescue:" + c.room.name);
+                flagsToSend.push("Rescue:" + c.room.name);
             }
         });
         _.forEach(Game.rooms, (room) => {
@@ -31,13 +39,14 @@ module.exports = {
                 });
             }
         });
-        return creepsUnderAttack;
+
+        return flagsToSend;
     },
 
     run: function() {
         let creepCount = {};
 
-        let creepsUnderAttack = this.rescueResponse();
+        let rescueFlags = this.rescueResponse();
 
         _.forEach(Game.spawns, (spawn) => {
             creepCount[spawn.id] = {};
@@ -98,25 +107,18 @@ module.exports = {
                 }
                 this.spawnACreep(Game.getObjectById(spawnId), creepUtil.roles.COURIER, count['energyAvailable']);
             }
-            else if (count[creepUtil.roles.MELEE] < 8 && creepsUnderAttack.length > 0) {
+            else if (count[creepUtil.roles.MELEE] < 8 && rescueFlags.length > 0) {
                 if (count['energyAvailable'] < 800) {
                     return;
                 }
-                let flags = _.sortBy(_.filter(Game.flags, (flag) => {
-                            return flag.name && flag.name.split(":")[0] === "Rescue";
-                        }), (flag) => {
+                rescueFlags = _.sortBy(rescueFlags, (flag) => {
                     return _.filter(Game.creeps, (creep) => {
                         return creep.memory && creep.memory.rescue === flag.name;
                     }).length;
                 });
-
-                this.spawnACreep(Game.getObjectById(spawnId), creepUtil.roles.MELEE, count['energyAvailable']);
-                let creep = Game.getObjectById(spawnId).spawning;
-                if (creep && creep.memory && creep.memory.role === creepUtil.roles.MELEE) {
-                    if (flags.length) {
-                        creep.memory.rescue = flags[0].name;
-                    }
-                }
+                let memory = {};
+                memory.rescue = rescueFlags[0];
+                this.spawnACreep(Game.getObjectById(spawnId), creepUtil.roles.MELEE, count['energyAvailable'], memory);
             }
             else if (count[creepUtil.roles.UPGRADER] < 2 ||
                 (count[creepUtil.roles.UPGRADER] < 3 && creepCount[creepUtil.roles.CLAIMER + ":X"] > 3)) {

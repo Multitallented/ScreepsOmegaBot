@@ -51,7 +51,7 @@ module.exports = {
                 if (creep.memory.adjacentContainer === undefined) {
                      let targetSource = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => {
                             return s.structureType === STRUCTURE_CONTAINER;
-                        }});
+                            }});
                     if (targetSource) {
                         creep.memory.adjacentContainer = targetSource.id;
                     }

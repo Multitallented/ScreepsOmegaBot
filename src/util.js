@@ -10,6 +10,8 @@ module.exports = {
     RESERVE: "RESERVE",
     PICKUP: "PICKUP",
 
+    USERNAME: 'Multitallented',
+
     /** @param {Room} room **/
     /** @param string find **/
     /** @param {Creep} callingCreep **/

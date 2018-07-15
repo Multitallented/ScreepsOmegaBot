@@ -23,7 +23,7 @@ module.exports = {
         CLAIM: {type: "claim", hits: 100, buildCost: 600},
         TOUGH: {type: "tough", hits: 100, buildCost: 10},
     },
-    buildBestCreep: function(type, energy) {
+    buildBestCreep: function(type, energy, inputMemory) {
         if (type === this.roles.MINER) {
             energy = Math.min(energy, 1000);
         } else if (type === this.roles.HARVESTER) {
@@ -193,6 +193,11 @@ module.exports = {
             // }
         }
         let memory = { memory: { role: type }};
+        if (inputMemory) {
+            _.forEach(inputMemory, (mem, key) => {
+                memory.memory[key] = mem;
+            });
+        }
         return {
             bodyArray: bodyArray,
             memory: memory,
