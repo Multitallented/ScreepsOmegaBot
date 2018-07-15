@@ -81,12 +81,17 @@ let roleBuilder = {
             }
         }
 
+        if (creep.carry.energy >= creep.carryCapacity && creep.memory && creep.memory.currentOrder &&
+                creep.memory.currentOrder.split(":")[0] === Util.WITHDRAW) {
+            creep.memory.currentOrder = undefined;
+        }
 
         if (creep.carry.energy < 1 || (creep.memory.currentOrder !== undefined &&
             creep.memory.currentOrder.split(":")[0] === Util.HARVEST && creep.carry.energy < creep.carryCapacity)) {
             let container = Util.checkIfInUse(creep.room, FIND_STRUCTURES, creep, Util.WITHDRAW,
                 (structure) => {
-                    return structure.structureType === STRUCTURE_CONTAINER &&
+                    return (structure.structureType === STRUCTURE_CONTAINER ||
+                        structure.structureType === STRUCTURE_STORAGE) &&
                         structure.store.energy > 0;
                 });
             if (container !== undefined) {

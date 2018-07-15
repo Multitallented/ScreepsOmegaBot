@@ -79,7 +79,13 @@ let roleCourier = {
             }
 
             if (!containers.length) {
-                creep.memory.currentOrder = undefined;
+                let spawns = creep.room.find(FIND_STRUCTURES, {filter: (s) => {
+                        return s.structureType && s.structureType === STRUCTURE_SPAWN;
+                    }});
+                if (spawns.length) {
+                    creep.moveTo(spawns[0], {visualizePathStyle: {stroke: '#ffaa00'}});
+                    creep.memory.currentOrder = Util.MOVE + ":" + spawns[0].id;
+                }
                 return;
             }
             let container = creep.pos.findClosestByPath(containers);
@@ -91,7 +97,13 @@ let roleCourier = {
                     creep.memory.currentOrder = Util.WITHDRAW + ":" + container.id;
                 }
             } else {
-                creep.memory.currentOrder = undefined;
+                let spawns = creep.room.find(FIND_STRUCTURES, {filter: (s) => {
+                        return s.structureType && s.structureType === STRUCTURE_SPAWN;
+                    }});
+                if (spawns.length) {
+                    creep.moveTo(spawns[0], {visualizePathStyle: {stroke: '#ffaa00'}});
+                    creep.memory.currentOrder = Util.MOVE + ":" + spawns[0].id;
+                }
             }
         } else {
             let targets = creep.room.find(FIND_STRUCTURES);
@@ -121,6 +133,22 @@ let roleCourier = {
                 } else if (bestTarget !== undefined && bestTarget !== null) {
                     creep.moveTo(bestTarget, {visualizePathStyle: {stroke: '#ffffff'}});
                     creep.memory.currentOrder = Util.MOVE + ":" + bestTarget.id;
+                }
+            } else {
+                targets = _.sortBy(creep.room.find(FIND_STRUCTURES, {filter: (s) => {
+                        return s.structureType && (s.structureType === STRUCTURE_CONTAINER ||
+                            s.structureType === STRUCTURE_STORAGE) && s.store.energy < s.storeCapacity;
+                    }}), (s) => {
+                    return s.store.energy;
+                });
+                if (targets.length) {
+                    let canTransfer = creep.transfer(targets[0], RESOURCE_ENERGY);
+                    if (canTransfer === ERR_NOT_IN_RANGE) {
+                        creep.moveTo(targets[0], {visualizePathStyle: {stroke: '#ffffff'}});
+                        creep.memory.currentOrder = Util.MOVE + ":" + targets[0].id;
+                    } else if (canTransfer === OK) {
+                        creep.memory.currentOrder = Util.TRANSFER + ":" + targets[0].id;
+                    }
                 }
             }
         }
