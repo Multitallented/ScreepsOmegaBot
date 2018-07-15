@@ -41,9 +41,9 @@ module.exports = {
 
         this.getWalls(constructionSites, room);
 
-        for (let i=0; i< 60; i++) {
-            this.getPositionWithBuffer(constructionSites, room, 25, 25, 38, 1, STRUCTURE_EXTENSION);
-        }
+        // for (let i=0; i< 60; i++) {
+        //     this.getPositionWithBuffer(constructionSites, room, 25, 25, 38, 1, STRUCTURE_EXTENSION);
+        // }
 
 
         let controllerLevel = room.controller.level;
