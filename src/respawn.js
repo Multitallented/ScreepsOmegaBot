@@ -102,25 +102,19 @@ module.exports = {
                 if (count['energyAvailable'] < 800) {
                     return;
                 }
-                let flag = null;
-                let flagPos = 0;
-                for (let i=0; i< creepsUnderAttack.length; i++) {
-                    if (_.filter(Game.flags, (f) => {
-                        return f.name === this.getRescueFlagName(creepsUnderAttack[i]);
-                    }).length) {
-                        continue;
-                    }
-                    flag = this.getRescueFlagName(creepsUnderAttack[i]);
-                    flagPos = i;
-                }
+                let flags = _.sortBy(_.filter(Game.flags, (flag) => {
+                            return flag.name && flag.name.split(":")[0] === "Rescue";
+                        }), (flag) => {
+                    return _.filter(Game.creeps, (creep) => {
+                        return creep.memory && creep.memory.rescue === flag.name;
+                    }).length;
+                });
+
                 this.spawnACreep(Game.getObjectById(spawnId), creepUtil.roles.MELEE, count['energyAvailable']);
                 let creep = Game.getObjectById(spawnId).spawning;
                 if (creep && creep.memory && creep.memory.role === creepUtil.roles.MELEE) {
-                    if (flag !== null) {
-                        creepsUnderAttack[flagPos].room.createFlag(creepsUnderAttack[flagPos].x, creepsUnderAttack[flagPos].y, flag);
-                        creep.memory.rescue = flag;
-                    } else {
-                        creep.memory.rescue = this.getRescueFlagName(creepsUnderAttack[flagPos]);
+                    if (flags.length) {
+                        creep.memory.rescue = flags[0].name;
                     }
                 }
             }
