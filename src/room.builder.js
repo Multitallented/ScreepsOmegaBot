@@ -85,17 +85,17 @@ module.exports = {
             }
         }
 
-        saveAndQuit = this.getRoadsAndRamparts(constructionSites, room, pointsOfImportance, siteCounts, siteLocations);
-        if (saveAndQuit) {
-            this.saveToCache(room, siteCounts, siteLocations, constructionSites);
-            return;
-        }
+        // saveAndQuit = this.getRoadsAndRamparts(constructionSites, room, pointsOfImportance, siteCounts, siteLocations);
+        // if (saveAndQuit) {
+        //     this.saveToCache(room, siteCounts, siteLocations, constructionSites);
+        //     return;
+        // }
 
-        saveAndQuit = this.getWalls(room, siteCounts, siteLocations, constructionSites);
-        if (saveAndQuit) {
-            this.saveToCache(room, siteCounts, siteLocations, constructionSites);
-            return;
-        }
+        // saveAndQuit = this.getWalls(room, siteCounts, siteLocations, constructionSites);
+        // if (saveAndQuit) {
+        //     this.saveToCache(room, siteCounts, siteLocations, constructionSites);
+        //     return;
+        // }
 
         let extensionCount = siteCounts[STRUCTURE_EXTENSION] ? siteCounts[STRUCTURE_EXTENSION] : 0;
         for (let i=0; i< 60 - extensionCount; i++) {
