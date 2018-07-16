@@ -72,8 +72,7 @@ module.exports = {
                 room.controller.owner.username === 'Multitallented' &&
                 (!room.memory || !room.memory.controllerLevel ||
                 room.memory.controllerLevel < room.controller.level)) {
-                console.log(room.name);
-                // roomBuilder.buildRoom(room);
+                roomBuilder.buildRoom(room);
             }
         });
     }
