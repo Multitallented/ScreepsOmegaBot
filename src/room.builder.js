@@ -84,12 +84,29 @@ module.exports = {
                 return;
             }
         }
+        let spawns = _.filter(constructionSites, (site) => {
+            return site.type === STRUCTURE_SPAWN;
+        });
 
-        // saveAndQuit = this.getRoadsAndRamparts(constructionSites, room, pointsOfImportance, siteCounts, siteLocations);
-        // if (saveAndQuit) {
-        //     this.saveToCache(room, siteCounts, siteLocations, constructionSites);
-        //     return;
-        // }
+        saveAndQuit = this.getRoadsAndRamparts(constructionSites, room, sources[0], spawns[0], siteCounts, siteLocations);
+        if (saveAndQuit) {
+            this.saveToCache(room, siteCounts, siteLocations, constructionSites);
+            return;
+        }
+
+        if (sources.length > 2) {
+            saveAndQuit = this.getRoadsAndRamparts(constructionSites, room, sources[0], sources[1], siteCounts, siteLocations);
+            if (saveAndQuit) {
+                this.saveToCache(room, siteCounts, siteLocations, constructionSites);
+                return;
+            }
+            saveAndQuit = this.getRoadsAndRamparts(constructionSites, room, sources[1], spawns[0], siteCounts, siteLocations);
+            if (saveAndQuit) {
+                this.saveToCache(room, siteCounts, siteLocations, constructionSites);
+                return;
+            }
+        }
+
 
         // saveAndQuit = this.getWalls(room, siteCounts, siteLocations, constructionSites);
         // if (saveAndQuit) {
@@ -127,6 +144,8 @@ module.exports = {
         // _.forEach(constructionSites, (site) => {
         //     console.log(site.pos.x + ":" + site.pos.y + " type=" + site.type);
         // });
+        siteCounts = {};
+        siteLocations = {};
         this.saveToCache(room, siteCounts, siteLocations, constructionSites);
         room.memory.controllerLevel = controllerLevel;
     },
@@ -162,34 +181,30 @@ module.exports = {
         room.memory.constructionSites = constructionSites;
     },
 
-    getRoadsAndRamparts: function(constructionSites, room, pointsOfImportance, siteCounts, siteLocations) {
+    getRoadsAndRamparts: function(constructionSites, room, point1, point2, siteCounts, siteLocations) {
         let saveAndQuit = false;
-        _.forEach(pointsOfImportance, (point1) => {
-            _.forEach(pointsOfImportance, (point2) => {
-                if (point1 === point2 || point1.pos === undefined || point2.pos === undefined ||
-                        point1.pos === null || point2.pos === null) {
-                    return;
-                }
-                let pos1 = room.getPositionAt(point1.pos.x, point1.pos.y);
-                let pos2 = room.getPositionAt(point2.pos.x, point2.pos.y);
-                _.forEach(pos1.findPathTo(pos2), (roadPos) => {
-                    let isWall = roadPos.x === 4 || roadPos.x === 46 || roadPos.y === 4 || roadPos.y === 46;
-                    if (isWall) {
-                        let newSite = {type: STRUCTURE_RAMPART, pos: {x: roadPos.x, y: roadPos.y}};
-                        siteLocations[roadPos.x + ":" + roadPos.y] = newSite;
-                        constructionSites.push(newSite);
-                        saveAndQuit = true;
-                    } else if (!siteLocations[roadPos.x + ":" + roadPos.y] &&
-                            !_.filter(room.lookAt(roadPos.x, roadPos.y), (c) => {
-                            return c.type === 'structure' || (c.type === 'terrain' && c.terrain === 'wall');
-                            }).length) {
-                        let newSite = {type: STRUCTURE_ROAD, pos: {x: roadPos.x, y: roadPos.y}};
-                        siteLocations[roadPos.x + ":" + roadPos.y] = newSite;
-                        constructionSites.push(newSite);
-                        saveAndQuit = true;
-                    }
-                });
-            });
+        if (point1 === point2 || point1.pos === undefined || point2.pos === undefined ||
+                point1.pos === null || point2.pos === null) {
+            return;
+        }
+        let pos1 = room.getPositionAt(point1.pos.x, point1.pos.y);
+        let pos2 = room.getPositionAt(point2.pos.x, point2.pos.y);
+        _.forEach(pos1.findPathTo(pos2), (roadPos) => {
+            let isWall = roadPos.x === 4 || roadPos.x === 46 || roadPos.y === 4 || roadPos.y === 46;
+            if (isWall) {
+                let newSite = {type: STRUCTURE_RAMPART, pos: {x: roadPos.x, y: roadPos.y}};
+                siteLocations[roadPos.x + ":" + roadPos.y] = newSite;
+                constructionSites.push(newSite);
+                saveAndQuit = true;
+            } else if (!siteLocations[roadPos.x + ":" + roadPos.y] &&
+                    !_.filter(room.lookAt(roadPos.x, roadPos.y), (c) => {
+                    return c.type === 'structure' || (c.type === 'terrain' && c.terrain === 'wall');
+                    }).length) {
+                let newSite = {type: STRUCTURE_ROAD, pos: {x: roadPos.x, y: roadPos.y}};
+                siteLocations[roadPos.x + ":" + roadPos.y] = newSite;
+                constructionSites.push(newSite);
+                saveAndQuit = true;
+            }
         });
         return saveAndQuit;
     },
@@ -315,6 +330,7 @@ module.exports = {
 
     getContainers: function(constructionSites, room, sources, siteCounts, siteLocations) {
         let saveAndQuit = false;
+        sources.push(room.controller);
         _.forEach(sources, (source) => {
             if (saveAndQuit) {
                 return;

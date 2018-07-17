@@ -132,7 +132,7 @@ module.exports = {
 
             if (targets.length) {
                 targets = _.sortBy(targets, (t) => {
-                    let hits = t.structure ? t.structure.hits : t.creep.hits;
+                    let hits = t.structure ? t.structure.hits && !t.structure.my : t.creep.hits && !t.creep.my;
                     return hits });
                 let attack = null;
                 if (targets[0].structure) {

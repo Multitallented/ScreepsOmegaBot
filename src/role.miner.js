@@ -72,7 +72,9 @@ module.exports = {
                 }
 
                 let transfer = creep.transfer(target, RESOURCE_ENERGY);
-                creep.memory.currentOrder = Util.TRANSFER + ":" + target.id;
+                if (target) {
+                    creep.memory.currentOrder = Util.TRANSFER + ":" + target.id;
+                }
                 if (transfer !== OK) {
                     creep.moveTo(target);
                 }

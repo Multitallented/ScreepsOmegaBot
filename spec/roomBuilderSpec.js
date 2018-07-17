@@ -1,6 +1,8 @@
 let roomBuilder = require('../src/room.builder');
 
 describe("Room Builder tests", function() {
+    let controllerLevel = 2;
+
     beforeEach(function() {
         require('./mocks/game')();
         Game.rooms.Room1.entities[FIND_SOURCES].push(
@@ -14,7 +16,7 @@ describe("Room Builder tests", function() {
     it("Init tests", function() {
         let count = 0;
         console.log("Controller Level: " + Game.rooms.Room1.memory.controllerLevel);
-        while (Game.rooms.Room1.memory.controllerLevel < 5) {
+        while (Game.rooms.Room1.memory.controllerLevel < controllerLevel) {
             roomBuilder.buildRoom(Game.rooms.Room1);
             count++;
         }
@@ -25,7 +27,7 @@ describe("Room Builder tests", function() {
         });
     });
     it("Output should contain storage", function() {
-        while (Game.rooms.Room1.memory.controllerLevel < 5) {
+        while (Game.rooms.Room1.memory.controllerLevel < controllerLevel) {
             roomBuilder.buildRoom(Game.rooms.Room1);
         }
         let hasStorage = false;
@@ -40,7 +42,7 @@ describe("Room Builder tests", function() {
         Game.rooms.Room1.entities[107].push(
             require('./mocks/structure')('Storage1', 25, 25, STRUCTURE_STORAGE, Game.rooms.Room1)
         );
-        while (Game.rooms.Room1.memory.controllerLevel < 5) {
+        while (Game.rooms.Room1.memory.controllerLevel < controllerLevel) {
             roomBuilder.buildRoom(Game.rooms.Room1);
         }
         let hasStorage = false;
@@ -63,7 +65,7 @@ describe("Room Builder tests", function() {
     });
 
     it("Output should contain spawn", function() {
-        while (Game.rooms.Room1.memory.controllerLevel < 5) {
+        while (Game.rooms.Room1.memory.controllerLevel < controllerLevel) {
             roomBuilder.buildRoom(Game.rooms.Room1);
         }
         let hasSpawn = false;
@@ -75,7 +77,7 @@ describe("Room Builder tests", function() {
         expect(hasSpawn).toBe(true);
     });
     it("Output should not have 2 spawn", function() {
-        while (Game.rooms.Room1.memory.controllerLevel < 5) {
+        while (Game.rooms.Room1.memory.controllerLevel < controllerLevel) {
             roomBuilder.buildRoom(Game.rooms.Room1);
         }
         let hasSpawn = 0;
