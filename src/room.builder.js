@@ -335,6 +335,7 @@ module.exports = {
             if (saveAndQuit) {
                 return;
             }
+            let pos = null;
             let hasContainer = _.filter(room.lookAtArea(source.pos.y-1, source.pos.x-1, source.pos.y+1, source.pos.x+1, true), (c) => {
                 return c.type === 'structure' && c.structure.structureType === STRUCTURE_CONTAINER;
             }).length;
@@ -347,18 +348,25 @@ module.exports = {
                 if (_.filter(room.lookAt(c.x, c.y), (terrain) => {
                     return terrain.type === 'structure';
                 }).length) {
+                    if (c.structure.structureType === STRUCTURE_CONTAINER) {
+                        hasContainer = true;
+                        pos = null;
+                    }
                     return;
                 }
-                siteLocations[c.x + ":" + c.y] = STRUCTURE_CONTAINER;
+                pos = {x: c.x, y: c.y};
+            });
+            if (pos !== null) {
+                siteLocations[pos.x + ":" + pos.y] = STRUCTURE_CONTAINER;
                 if (siteCounts[STRUCTURE_CONTAINER]) {
                     siteCounts[STRUCTURE_CONTAINER]++;
                 } else {
                     siteCounts[STRUCTURE_CONTAINER] = 1;
                 }
-                constructionSites.push({type: STRUCTURE_CONTAINER, pos: {x: c.x, y: c.y}});
+                constructionSites.push({type: STRUCTURE_CONTAINER, pos: {x: pos.x, y: pos.y}});
                 hasContainer = true;
                 saveAndQuit = true;
-            });
+            }
         });
         return saveAndQuit;
     }

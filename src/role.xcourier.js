@@ -28,9 +28,26 @@ module.exports = {
                 }
             }
         } else if (creep.carry.energy === creep.carryCapacity) {
-            creep.memory.role = creepUtil.roles.HOMING;
-            creep.say("homing");
-            return;
+            if (creep.room.controller && creep.room.controller.my && creep.room.controller.owner && creep.room.controller.owner.username === 'Multitallented') {
+                let targets = creep.pos.findClosestByPath(creep.room.find(FIND_STRUCTURES, {filter: (s) => {
+                        return s.structureType && (s.structureType === STRUCTURE_CONTAINER ||
+                            s.structureType === STRUCTURE_STORAGE) && s.store.energy < s.storeCapacity;
+                    }}));
+                if (targets != null) {
+                    let canTransfer = creep.transfer(targets, RESOURCE_ENERGY);
+                    if (canTransfer === ERR_NOT_IN_RANGE) {
+                        creep.moveTo(targets, {visualizePathStyle: {stroke: '#ffffff'}});
+                        creep.memory.currentOrder = Util.MOVE + ":" + targets.id;
+                    } else if (canTransfer === OK) {
+                        creep.memory.currentOrder = Util.TRANSFER + ":" + targets.id;
+                    }
+                }
+                return;
+            } else {
+                creep.memory.role = creepUtil.roles.HOMING;
+                creep.say("homing");
+                return;
+            }
         }
 
         if (creep.room.controller && creep.room.controller.reservation && creep.room.controller.reservation.username === 'Multitallented') {
