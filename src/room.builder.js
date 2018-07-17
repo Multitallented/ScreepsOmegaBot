@@ -319,7 +319,9 @@ module.exports = {
             if (saveAndQuit) {
                 return;
             }
-            let hasContainer = false;
+            let hasContainer = _.filter(room.lookAtArea(source.pos.y-1, source.pos.x-1, source.pos.y+1, source.pos.x+1, true), (c) => {
+                return c.type === 'structure' && c.structure.structureType === STRUCTURE_CONTAINER;
+            }).length;
             _.forEach(_.filter(room.lookAtArea(source.pos.y-1, source.pos.x-1, source.pos.y+1, source.pos.x+1, true), (c) => {
                 return c.type === 'terrain' && c.terrain !== 'wall';
             }), (c) => {

@@ -11,6 +11,7 @@ let respawn = require('./respawn');
 let roleMelee = require('./role.melee');
 let roleXCourier = require('./role.xcourier');
 let roomBuilder = require('./room.builder');
+let roleManual = require('./role.manual');
 let creepUtil = require('./creep.util');
 let Util = require('./util');
 
@@ -64,6 +65,8 @@ module.exports = {
                 roleMelee.run(creep);
             } else if (creep.memory.role === 'xcourier') {
                 roleXCourier.run(creep);
+            } else if (creep.memory.role === 'manual') {
+                roleManual.run(creep);
             }
         });
 
