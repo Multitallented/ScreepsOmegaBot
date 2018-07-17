@@ -1,4 +1,4 @@
-const scoutScript = require('../src/role.scout');
+const scoutScript = require('../src/roles/exploration/role.scout');
 
 describe("Scout tests", function() {
     beforeEach(function() {

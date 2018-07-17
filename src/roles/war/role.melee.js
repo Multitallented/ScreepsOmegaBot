@@ -1,6 +1,6 @@
-let Util = require('./util');
-let creepUtil = require('./creep.util');
-let scoutScript = require('./role.scout');
+let Util = require('../../util/util');
+let creepUtil = require('../../util/creep.util');
+let scoutScript = require('../exploration/role.scout');
 
 module.exports = {
     moveCreepToDestination: function(creep, flagName) {

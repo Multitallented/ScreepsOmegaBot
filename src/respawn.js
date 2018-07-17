@@ -1,5 +1,5 @@
-let creepUtil = require('./creep.util');
-let Util = require('./util');
+let creepUtil = require('./util/creep.util');
+let Util = require('./util/util');
 
 module.exports = {
     spawnACreep: function(spawn, key, energy, memory) {

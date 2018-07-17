@@ -1,5 +1,5 @@
 let main = require('../src/main');
-let Util = require('../src/util');
+let Util = require('../src/util/util');
 
 describe("Main Loop execution", function() {
 

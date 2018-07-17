@@ -1,6 +1,6 @@
-let Util = require('./util');
-let structUtil = require('./structure.util');
-let creepUtil = require('./creep.util');
+let Util = require('../../util/util');
+let structUtil = require('../../util/structure.util');
+let creepUtil = require('../../util/creep.util');
 let roleBuilder = {
 
     actionById: function(creep) {

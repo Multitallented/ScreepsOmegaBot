@@ -1,4 +1,4 @@
-let creepUtil = require('../src/creep.util');
+let creepUtil = require('../src/util/creep.util');
 
 describe("Creep Util Tests", function() {
     beforeEach(function() {

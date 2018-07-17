@@ -1,5 +1,5 @@
-let harvesterScript = require('../src/role.harvester');
-let Util = require('../src/util');
+let harvesterScript = require('../src/roles/base-building/role.harvester');
+let Util = require('../src/util/util');
 
 describe("Harvester Tests", function() {
     let harvester1 = null;

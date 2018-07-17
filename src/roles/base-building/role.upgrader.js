@@ -1,4 +1,4 @@
-let Util = require('./util');
+let Util = require('../../util/util');
 let builderScript = require('./role.builder');
 
 let roleUpgrader = {

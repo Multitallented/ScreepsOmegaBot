@@ -1,5 +1,5 @@
-let builderScript = require('../src/role.builder');
-let Util = require("../src/util");
+let builderScript = require('../src/roles/base-building/role.builder');
+let Util = require("../src/util/util");
 
 describe("Builder Tests", function() {
     let builder1 = null;

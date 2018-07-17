@@ -1,4 +1,4 @@
-let minerScript = require('../src/role.miner');
+let minerScript = require('../src/roles/base-building/role.miner');
 
 describe("Miner Tests", function() {
     let miner1 = null;

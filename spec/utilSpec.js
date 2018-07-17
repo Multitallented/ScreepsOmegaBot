@@ -1,4 +1,4 @@
-let Util = require('../src/util');
+let Util = require('../src/util/util');
 
 describe("Util Tests", function() {
     let room1 = null;

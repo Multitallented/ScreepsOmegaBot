@@ -1,4 +1,4 @@
-var Util = require('./util');
+var Util = require('./util/util');
 
 module.exports = {
     buildRoom: function(room) {

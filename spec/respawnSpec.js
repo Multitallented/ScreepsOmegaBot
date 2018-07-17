@@ -1,5 +1,5 @@
 var respawn = require('../src/respawn');
-var util = require('../src/util');
+var util = require('../src/util/util');
 
 describe("Respawn Tests", function() {
     beforeEach(function() {
