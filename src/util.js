@@ -137,9 +137,9 @@ module.exports = {
     },
 
     distance: function(entity1, entity2) {
-        if (entity1.room.name !== entity2.room.name) {
-            return -1;
-        }
+        // if (entity1.room.name !== entity2.room.name) {
+        //     return -1;
+        // }
         return Math.max(Math.abs(entity1.pos.x - entity2.pos.x), Math.abs(entity1.pos.y - entity2.pos.y));
     }
 };

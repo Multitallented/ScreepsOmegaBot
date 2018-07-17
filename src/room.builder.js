@@ -326,7 +326,7 @@ module.exports = {
             if (site.type !== STRUCTURE_ROAD && site.type !== STRUCTURE_SPAWN) {
                 return;
             }
-            let currentRange = Math.max(Math.abs(pos.x - site.pos.x), Math.abs(pos.y - site.pos.y));
+            let currentRange = Util.distance({pos: pos}, site);
             if (currentRange > range) {
                 return;
             }
