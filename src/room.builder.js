@@ -89,11 +89,11 @@ module.exports = {
         });
 
 
-        saveAndQuit = this.getRoadsAndRamparts(constructionSites, room, sources[0], spawns[0], siteCounts, siteLocations);
-        if (saveAndQuit) {
-            this.saveToCache(room, siteCounts, siteLocations, constructionSites);
-            return;
-        }
+        // saveAndQuit = this.getRoadsAndRamparts(constructionSites, room, sources[0], spawns[0], siteCounts, siteLocations);
+        // if (saveAndQuit) {
+        //     this.saveToCache(room, siteCounts, siteLocations, constructionSites);
+        //     return;
+        // }
 
         // saveAndQuit = this.getWalls(room, siteCounts, siteLocations, constructionSites);
         // if (saveAndQuit) {
