@@ -414,6 +414,7 @@ module.exports = {
                 (y === 47 && (this.checkForWall(x+1, 49,  room) || this.checkForWall(x-1, 49, room)))) {
             let hasRoad = false;
             let obstructed = false;
+            let saveAndQuit = false;
             _.forEach(room.lookAt(x,y), (c) => {
                 if ((c.type === 'terrain' && c.terrain === 'wall') ||
                     (c.type === 'structure' && (c.structure.structureType === STRUCTURE_WALL ||
@@ -423,18 +424,50 @@ module.exports = {
                     hasRoad = true;
                 }
             });
-            if (obstructed) {
-                return false;
+            if (!obstructed) {
+                let newSite = null;
+                if (hasRoad) {
+                    newSite = {type: STRUCTURE_RAMPART, pos: {x: x, y: y}};
+                } else {
+                    newSite = {type: STRUCTURE_WALL, pos: {x: x, y: y}};
+                }
+                constructionSites.push(newSite);
+                siteLocations[x + ":" + y] = newSite;
+                saveAndQuit = true;
             }
-            let newSite = null;
-            if (hasRoad) {
-                newSite = {type: STRUCTURE_RAMPART, pos: {x: x, y: y}};
-            } else {
-                newSite = {type: STRUCTURE_WALL, pos: {x: x, y: y}};
+            hasRoad = false;
+            obstructed = false;
+
+            if (x === 2) {
+                x = 1;
+            } else if (x === 47) {
+                x = 48;
+            } else if (y === 2) {
+                y = 1;
+            } else if (y === 47) {
+                y = 48;
             }
-            constructionSites.push(newSite);
-            siteLocations[x + ":" + y] = newSite;
-            return true;
+            _.forEach(room.lookAt(x,y), (c) => {
+                if ((c.type === 'terrain' && c.terrain === 'wall') ||
+                    (c.type === 'structure' && (c.structure.structureType === STRUCTURE_WALL ||
+                        c.structure.structureType === STRUCTURE_RAMPART))) {
+                    obstructed = true;
+                } else if (c.type === 'structure') {
+                    hasRoad = true;
+                }
+            });
+            if (!obstructed) {
+                let newSite = null;
+                if (hasRoad) {
+                    newSite = {type: STRUCTURE_RAMPART, pos: {x: x, y: y}};
+                } else {
+                    newSite = {type: STRUCTURE_WALL, pos: {x: x, y: y}};
+                }
+                constructionSites.push(newSite);
+                siteLocations[x + ":" + y] = newSite;
+                saveAndQuit = true;
+            }
+            return saveAndQuit;
         }
         return false;
     },
