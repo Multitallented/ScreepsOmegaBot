@@ -113,20 +113,11 @@ module.exports = {
             return;
         }
 
-
-
-
-        // saveAndQuit = this.getRoadsAndRamparts(constructionSites, room, sources[0], spawns[0], siteCounts, siteLocations);
-        // if (saveAndQuit) {
-        //     this.saveToCache(room, siteCounts, siteLocations, constructionSites);
-        //     return;
-        // }
-
-        // saveAndQuit = this.getWalls(room, siteCounts, siteLocations, constructionSites);
-        // if (saveAndQuit) {
-        //     this.saveToCache(room, siteCounts, siteLocations, constructionSites);
-        //     return;
-        // }
+        saveAndQuit = this.getWalls(room, siteCounts, siteLocations, constructionSites);
+        if (saveAndQuit) {
+            this.saveToCache(room, siteCounts, siteLocations, constructionSites);
+            return;
+        }
 
         let extensionCount = siteCounts[STRUCTURE_EXTENSION] ? siteCounts[STRUCTURE_EXTENSION] : 0;
         for (let i=0; i< 60 - extensionCount; i++) {
@@ -323,12 +314,12 @@ module.exports = {
     getWalls: function(room, siteCounts, siteLocations, constructionSites) {
         let saveAndQuit = false;
         for (let x=3; x<47; x++) {
-            saveAndQuit = saveAndQuit ? saveAndQuit : this.checkWall(x, 4, room, siteCounts, siteLocations, constructionSites);
-            saveAndQuit = saveAndQuit ? saveAndQuit : this.checkWall(x, 46, room, siteCounts, siteLocations, constructionSites);
+            saveAndQuit = saveAndQuit ? saveAndQuit : this.checkWall(x, 3, room, siteCounts, siteLocations, constructionSites);
+            saveAndQuit = saveAndQuit ? saveAndQuit : this.checkWall(x, 47, room, siteCounts, siteLocations, constructionSites);
         }
         for (let y=3; y<47; y++) {
-            saveAndQuit = saveAndQuit ? saveAndQuit : this.checkWall(4, y, room, siteCounts, siteLocations, constructionSites);
-            saveAndQuit = saveAndQuit ? saveAndQuit : this.checkWall(46, y, room, siteCounts, siteLocations, constructionSites);
+            saveAndQuit = saveAndQuit ? saveAndQuit : this.checkWall(3, y, room, siteCounts, siteLocations, constructionSites);
+            saveAndQuit = saveAndQuit ? saveAndQuit : this.checkWall(47, y, room, siteCounts, siteLocations, constructionSites);
         }
         return saveAndQuit;
     },
@@ -424,7 +415,7 @@ module.exports = {
                 if (siteLocations[roadPos.x + ":" + roadPos.y]) {
                     return;
                 }
-                let isWall = roadPos.x === 4 || roadPos.x === 46 || roadPos.y === 4 || roadPos.y === 46;
+                let isWall = roadPos.x === 3 || roadPos.x === 47 || roadPos.y === 3 || roadPos.y === 47;
                 if (isWall) {
                     let newSite = {type: STRUCTURE_RAMPART, pos: {x: roadPos.x, y: roadPos.y}};
                     siteLocations[roadPos.x + ":" + roadPos.y] = newSite;
