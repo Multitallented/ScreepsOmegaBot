@@ -196,7 +196,7 @@ module.exports = {
         let pos1 = room.getPositionAt(point1.pos.x, point1.pos.y);
         let pos2 = room.getPositionAt(point2.pos.x, point2.pos.y);
         _.forEach(pos1.findPathTo(pos2), (roadPos) => {
-            let isWall = roadPos.x === 4 || roadPos.x === 46 || roadPos.y === 4 || roadPos.y === 46;
+            let isWall = roadPos.x === 2 || roadPos.x === 47 || roadPos.y === 2 || roadPos.y === 47;
             if (isWall) {
                 let newSite = {type: STRUCTURE_RAMPART, pos: {x: roadPos.x, y: roadPos.y}};
                 siteLocations[roadPos.x + ":" + roadPos.y] = newSite;
@@ -313,12 +313,12 @@ module.exports = {
 
     getWalls: function(room, siteCounts, siteLocations, constructionSites) {
         let saveAndQuit = false;
-        for (let x=3; x<47; x++) {
-            saveAndQuit = saveAndQuit ? saveAndQuit : this.checkWall(x, 3, room, siteCounts, siteLocations, constructionSites);
+        for (let x=2; x<47; x++) {
+            saveAndQuit = saveAndQuit ? saveAndQuit : this.checkWall(x, 2, room, siteCounts, siteLocations, constructionSites);
             saveAndQuit = saveAndQuit ? saveAndQuit : this.checkWall(x, 47, room, siteCounts, siteLocations, constructionSites);
         }
-        for (let y=3; y<47; y++) {
-            saveAndQuit = saveAndQuit ? saveAndQuit : this.checkWall(3, y, room, siteCounts, siteLocations, constructionSites);
+        for (let y=2; y<47; y++) {
+            saveAndQuit = saveAndQuit ? saveAndQuit : this.checkWall(2, y, room, siteCounts, siteLocations, constructionSites);
             saveAndQuit = saveAndQuit ? saveAndQuit : this.checkWall(47, y, room, siteCounts, siteLocations, constructionSites);
         }
         return saveAndQuit;
@@ -380,12 +380,30 @@ module.exports = {
             return false;
         }
 
-        if (this.checkForWall(x, y, room) &&
-                ((x === 3 && this.checkForWall(1,  y,  room)) ||
+        if (   ((x === 2  && this.checkForWall(0,  y,  room)) ||
                 (x === 47 && this.checkForWall(49, y,  room)) ||
-                (y === 3  && this.checkForWall(x,  1,  room)) ||
+                (y === 2  && this.checkForWall(x,  0,  room)) ||
                 (y === 47 && this.checkForWall(x,  49, room)))) {
-            let newSite = {type: STRUCTURE_WALL, pos: {x: x, y: y}};
+            let hasRoad = false;
+            let obstructed = false;
+            _.forEach(room.lookAt(x,y), (c) => {
+                if ((c.type === 'terrain' && c.terrain === 'wall') ||
+                    (c.type === 'structure' && (c.structure.structureType === STRUCTURE_WALL ||
+                    c.structure.structureType === STRUCTURE_RAMPART))) {
+                    obstructed = true;
+                } else if (c.type === 'structure') {
+                    hasRoad = true;
+                }
+            });
+            if (obstructed) {
+                return false;
+            }
+            let newSite = null;
+            if (hasRoad) {
+                newSite = {type: STRUCTURE_RAMPART, pos: {x: x, y: y}};
+            } else {
+                newSite = {type: STRUCTURE_WALL, pos: {x: x, y: y}};
+            }
             constructionSites.push(newSite);
             siteLocations[x + ":" + y] = newSite;
             return true;

@@ -16,8 +16,8 @@ gulp.task('default', function() {
     gulp.start('js');
     return watch(jsFiles, {ignoreInitial: false })
         .pipe(flatten())
-        .pipe(replace('/util', '.'))
-        .pipe(replace('/roles', '.'))
+        .pipe(replace('/util/', '/'))
+        .pipe(replace('/roles', ''))
         .pipe(replace('/base-building', ''))
         .pipe(replace('/exploration', ''))
         .pipe(replace('/war', ''))

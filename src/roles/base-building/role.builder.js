@@ -132,7 +132,7 @@ let roleBuilder = {
                     return belowMax && (belowRepairAt || belowRepairUntil);
                 }
             });
-            targets = _.sortBy(targets, (o) => o.hits * -1);
+            targets = _.sortBy(targets, (o) => o.hits);
             if (targets.length) {
                 creep.memory.currentOrder = Util.REPAIR + ":" + targets[0].id;
                 this.actionById(creep);
