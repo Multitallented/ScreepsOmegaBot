@@ -99,7 +99,8 @@ module.exports = {
                 }
                 this.spawnACreep(Game.getObjectById(spawnId), creepUtil.roles.BUILDER, Math.min(600, count['energyAvailable']));
             } else if ((count['numContainers'] > count[creepUtil.roles.MINER] && count['numSources'] > count[creepUtil.roles.MINER])
-                    || (count['numContainers'] > 0 && count['numContainers'] >= count[creepUtil.roles.MINER] && room != null &&
+                    || (count['numContainers'] > 0 && count['numContainers'] >= count[creepUtil.roles.MINER] &&
+                    room != null && count['numSources'] >= count[creepUtil.roles.MINER] &&
                     room.find(FIND_CREEPS, {filter: (creep) => {
                         return creep.memory && creep.memory.role === creepUtil.roles.MINER && creep.ticksToLive < 200;
                     }}).length > 0)) {

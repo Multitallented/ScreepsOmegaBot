@@ -408,10 +408,10 @@ module.exports = {
             siteLocations[x + ":" + y] = newSite;
             return true;
         } else if (
-                (x === 2  && (!this.checkForWall(0,  y+1,  room) || !this.checkForWall(0, y-1,  room))) ||
-                (x === 47 && (!this.checkForWall(49, y+1,  room) || !this.checkForWall(49, y-1, room))) ||
-                (y === 2  && (!this.checkForWall(x+1,  0,  room) || !this.checkForWall(x-1, 0,  room))) ||
-                (y === 47 && (!this.checkForWall(x+1, 49,  room) || !this.checkForWall(x-1, 49, room)))) {
+                (x === 2  && (this.checkForWall(0,  y+1,  room) || this.checkForWall(0, y-1,  room))) ||
+                (x === 47 && (this.checkForWall(49, y+1,  room) || this.checkForWall(49, y-1, room))) ||
+                (y === 2  && (this.checkForWall(x+1,  0,  room) || this.checkForWall(x-1, 0,  room))) ||
+                (y === 47 && (this.checkForWall(x+1, 49,  room) || this.checkForWall(x-1, 49, room)))) {
             let hasRoad = false;
             let obstructed = false;
             _.forEach(room.lookAt(x,y), (c) => {
