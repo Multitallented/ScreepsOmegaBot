@@ -17,7 +17,7 @@ module.exports = {
             randDirection.push(FIND_EXIT_BOTTOM);
         }
         let direction = randDirection[Math.floor(Math.random() * randDirection.length)];
-        creep.say(direction);
+        creep.say(this.getRoomName(creep.room.name, direction));
         return this.getRoomName(creep.room.name, direction);
     },
 

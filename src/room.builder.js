@@ -1,4 +1,5 @@
 var Util = require('./util/util');
+let roleScout = require('./roles/exploration/role.scout');
 
 module.exports = {
     buildRoom: function(room) {
@@ -28,15 +29,20 @@ module.exports = {
             siteCounts = room.memory.siteCounts;
         }
 
-        this.updateCache(room, siteLocations, siteCounts, constructionSites);
+        this.updateCache(room, siteLocations, siteCounts);
 
         let sources = room.find(FIND_SOURCES);
         let importantStructures = room.find(FIND_STRUCTURES, {filter: (s) => {
-            if (s.structureType && s.my) {
+            if (s.structureType && s.my && s.structureType !== STRUCTURE_CONTROLLER) {
                 siteLocations[s.pos.x + ":" + s.pos.y] = { type: s.structureType, pos: s.pos };
+                if (siteCounts[s.structureType]) {
+                    siteCounts[s.structureType]++;
+                } else {
+                    siteCounts[s.structureType] = 1;
+                }
             }
             return s.my && s.structureType && (s.structureType === STRUCTURE_SPAWN || s.structureType === STRUCTURE_TOWER ||
-                s.structureType === STRUCTURE_STORAGE);
+                s.structureType === STRUCTURE_STORAGE || s.structureType === STRUCTURE_CONTROLLER);
             }});
 
         let containerCount = siteCounts[STRUCTURE_CONTAINER] ? siteCounts[STRUCTURE_CONTAINER] : 0;
@@ -48,9 +54,7 @@ module.exports = {
             }
         }
 
-        let pointsOfImportance = _.merge(sources, importantStructures);
-        pointsOfImportance.push(room.controller);
-
+        let pointsOfImportance = sources.concat(importantStructures);
 
         let centerOfInterest = this.getCenterOfArray(pointsOfImportance);
         let towerCount = siteCounts[STRUCTURE_TOWER] ? siteCounts[STRUCTURE_TOWER] : 0;
@@ -84,9 +88,32 @@ module.exports = {
                 return;
             }
         }
-        let spawns = _.filter(constructionSites, (site) => {
-            return site.type === STRUCTURE_SPAWN;
+
+        _.forEach(pointsOfImportance, (source) => {
+            if (saveAndQuit || (source.structureType && source.structureType === STRUCTURE_SPAWN)) {
+                return;
+            }
+            saveAndQuit = this.buildShortestRoad(room, source.pos, siteLocations, constructionSites);
         });
+        let directions = [ FIND_EXIT_TOP, FIND_EXIT_LEFT, FIND_EXIT_BOTTOM, FIND_EXIT_RIGHT ];
+        _.forEach(directions, (direction) => {
+            if (saveAndQuit) {
+                return;
+            }
+            if (this.hasExit(direction, room)) {
+                let targetRoomName = roleScout.getRoomName(room.name, direction);
+                let target = room.getPositionAt(25,25).findClosestByRange(room.findExitTo(targetRoomName));
+                if (target != null) {
+                    saveAndQuit = this.buildShortestRoad(room, target, siteLocations, constructionSites);
+                }
+            }
+        });
+        if (saveAndQuit) {
+            this.saveToCache(room, siteCounts, siteLocations, constructionSites);
+            return;
+        }
+
+
 
 
         // saveAndQuit = this.getRoadsAndRamparts(constructionSites, room, sources[0], spawns[0], siteCounts, siteLocations);
@@ -137,7 +164,7 @@ module.exports = {
         room.memory.controllerLevel = controllerLevel;
     },
 
-    updateCache: function(room, siteLocations, siteCounts, constructionSites) {
+    updateCache: function(room, siteLocations, siteCounts) {
         _.forEach(room.find(FIND_STRUCTURES), (structure) => {
             if (!structure.my && structure.owner && structure.owner.username !== 'Multitallented') {
                 structure.destroy();
@@ -149,16 +176,17 @@ module.exports = {
                 return;
             }
 
-            if (siteCounts[structure.structureType]) {
-                siteCounts[structure.structureType] = 1;
-            } else {
-                siteCounts[structure.structureType]++;
+            if (structure.structureType) {
+                if (siteCounts[structure.structureType]) {
+                    siteCounts[structure.structureType] = 1;
+                } else {
+                    siteCounts[structure.structureType]++;
+                }
+                let currentSite = {
+                    pos: {x: structure.pos.x, y: structure.pos.y}, type: structure.structureType,
+                };
+                siteLocations[structure.pos.x + ":" + structure.pos.y] = currentSite;
             }
-            let currentSite = {
-                pos: {x: structure.pos.x, y: structure.pos.y}, type: structure.structureType,
-            };
-            siteLocations[structure.pos.x + ":" + structure.pos.y] = currentSite;
-            constructionSites.push(currentSite);
         });
     },
 
@@ -294,22 +322,78 @@ module.exports = {
 
     getWalls: function(room, siteCounts, siteLocations, constructionSites) {
         let saveAndQuit = false;
-        for (let x=4; x<46; x++) {
+        for (let x=3; x<47; x++) {
             saveAndQuit = saveAndQuit ? saveAndQuit : this.checkWall(x, 4, room, siteCounts, siteLocations, constructionSites);
             saveAndQuit = saveAndQuit ? saveAndQuit : this.checkWall(x, 46, room, siteCounts, siteLocations, constructionSites);
         }
-        for (let y=4; y<46; y++) {
+        for (let y=3; y<47; y++) {
             saveAndQuit = saveAndQuit ? saveAndQuit : this.checkWall(4, y, room, siteCounts, siteLocations, constructionSites);
             saveAndQuit = saveAndQuit ? saveAndQuit : this.checkWall(46, y, room, siteCounts, siteLocations, constructionSites);
         }
         return saveAndQuit;
     },
 
-    checkWall: function(x, y, room, siteCounts, siteLocations, constructionSites) {
-        if (!siteLocations[x + ":" + y] &&
-                !_.filter(room.lookAt(x, y), (c) => {
+    hasExit: function(exit, room) {
+        let hasExit = false;
+        if (exit === FIND_EXIT_TOP) {
+            for (let x=2; x<49; x++) {
+                hasExit = hasExit || _.filter(room.lookAt(x, 1), (c) => {
                     return c.type === 'terrain' && c.terrain === 'wall';
-                }).length) {
+                }).length > 0;
+                if (hasExit) {
+                    return hasExit;
+                }
+            }
+        }
+        else if (exit === FIND_EXIT_LEFT) {
+            for (let x=2; x<49; x++) {
+                hasExit = hasExit || _.filter(room.lookAt(1, x), (c) => {
+                    return c.type === 'terrain' && c.terrain === 'wall';
+                }).length > 0;
+                if (hasExit) {
+                    return hasExit;
+                }
+            }
+        }
+        else if (exit === FIND_EXIT_BOTTOM) {
+            for (let x=2; x<49; x++) {
+                hasExit = hasExit || _.filter(room.lookAt(x, 49), (c) => {
+                    return c.type === 'terrain' && c.terrain === 'wall';
+                }).length > 0;
+                if (hasExit) {
+                    return hasExit;
+                }
+            }
+        }
+        else if (exit === FIND_EXIT_RIGHT) {
+            for (let x=2; x<49; x++) {
+                hasExit = hasExit || _.filter(room.lookAt(49, x), (c) => {
+                    return c.type === 'terrain' && c.terrain === 'wall';
+                }).length > 0;
+                if (hasExit) {
+                    return hasExit;
+                }
+            }
+        }
+        return hasExit;
+    },
+
+    checkForWall: function(x,y,room) {
+        return _.filter(room.lookAt(x, y), (c) => {
+            return c.type === 'terrain' && c.terrain === 'wall';
+        }).length < 1;
+    },
+
+    checkWall: function(x, y, room, siteCounts, siteLocations, constructionSites) {
+        if (siteLocations[x + ":" + y]) {
+            return false;
+        }
+
+        if (this.checkForWall(x, y, room) &&
+                ((x === 3 && this.checkForWall(1,  y,  room)) ||
+                (x === 47 && this.checkForWall(49, y,  room)) ||
+                (y === 3  && this.checkForWall(x,  1,  room)) ||
+                (y === 47 && this.checkForWall(x,  49, room)))) {
             let newSite = {type: STRUCTURE_WALL, pos: {x: x, y: y}};
             constructionSites.push(newSite);
             siteLocations[x + ":" + y] = newSite;
@@ -374,6 +458,9 @@ module.exports = {
             let hasContainer = _.filter(room.lookAtArea(source.pos.y-1, source.pos.x-1, source.pos.y+1, source.pos.x+1, true), (c) => {
                 return c.type === 'structure' && c.structure.structureType === STRUCTURE_CONTAINER;
             }).length;
+            if (hasContainer) {
+                return;
+            }
             _.forEach(_.filter(room.lookAtArea(source.pos.y-1, source.pos.x-1, source.pos.y+1, source.pos.x+1, true), (c) => {
                 return c.type === 'terrain' && c.terrain !== 'wall';
             }), (c) => {

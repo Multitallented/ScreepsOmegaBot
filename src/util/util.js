@@ -69,8 +69,8 @@ module.exports = {
     getActionArray: function(creep, target, action) {
         let actionArray = {};
         if (action === this.WITHDRAW) {
-            actionArray[action] = 5;
-            actionArray[this.MOVE] = 10;
+            actionArray[action] = 2;
+            actionArray[this.MOVE] = 5;
         } else {
             let emptySquares = this.getEmptyAdjacentSpaces(creep.room, target.pos);
             actionArray[action] = emptySquares - 1;

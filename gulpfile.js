@@ -1,9 +1,9 @@
-import gulp from 'gulp';
-import flatten from 'gulp-flatten';
-import watch from 'gulp-watch';
-import replace from 'gulp-replace';
+var gulp = require('gulp');
+var flatten = require('gulp-flatten');
+var watch = require('gulp-watch');
+var replace = require('gulp-replace');
 
-let jsFiles = './src/**/*.js',
+var jsFiles = './src/**/*.js',
     jsDest = 'dist';
 
 gulp.task('js', function() {

@@ -4,6 +4,7 @@ module.exports = function(id, x, y, room, memory) {
         energyCapacity: 300,
         name: id,
         spawning: null,
+        my: true,
         spawnCreep: function(partArray, name, memory) {
             if (this.spawning != null) {
                 return;
