@@ -407,6 +407,34 @@ module.exports = {
             constructionSites.push(newSite);
             siteLocations[x + ":" + y] = newSite;
             return true;
+        } else if (
+                (x === 2  && (!this.checkForWall(0,  y+1,  room) || !this.checkForWall(0, y-1,  room))) ||
+                (x === 47 && (!this.checkForWall(49, y+1,  room) || !this.checkForWall(49, y-1, room))) ||
+                (y === 2  && (!this.checkForWall(x+1,  0,  room) || !this.checkForWall(x-1, 0,  room))) ||
+                (y === 47 && (!this.checkForWall(x+1, 49,  room) || !this.checkForWall(x-1, 49, room)))) {
+            let hasRoad = false;
+            let obstructed = false;
+            _.forEach(room.lookAt(x,y), (c) => {
+                if ((c.type === 'terrain' && c.terrain === 'wall') ||
+                    (c.type === 'structure' && (c.structure.structureType === STRUCTURE_WALL ||
+                        c.structure.structureType === STRUCTURE_RAMPART))) {
+                    obstructed = true;
+                } else if (c.type === 'structure') {
+                    hasRoad = true;
+                }
+            });
+            if (obstructed) {
+                return false;
+            }
+            let newSite = null;
+            if (hasRoad) {
+                newSite = {type: STRUCTURE_RAMPART, pos: {x: x, y: y}};
+            } else {
+                newSite = {type: STRUCTURE_WALL, pos: {x: x, y: y}};
+            }
+            constructionSites.push(newSite);
+            siteLocations[x + ":" + y] = newSite;
+            return true;
         }
         return false;
     },
