@@ -1,5 +1,6 @@
 let Util = require('../../util/util');
 let builderScript = require('./role.builder');
+let scoutScript = require('../exploration/role.scout');
 
 let roleUpgrader = {
 
@@ -8,6 +9,7 @@ let roleUpgrader = {
         if (builderScript.originRoom(creep)) {
             return;
         }
+        scoutScript.moveCreepIntoRoom(creep);
 
         if(creep.memory.upgrading && creep.carry.energy === 0) {
             creep.memory.upgrading = false;

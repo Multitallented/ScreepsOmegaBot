@@ -2,6 +2,7 @@ let Util = require('../../util/util');
 let creepUtil = require('../../util/creep.util');
 let builderScript = require('./role.builder');
 
+//TODO have courier equalize all containers
 let roleCourier = {
 
     /** @param {Creep} creep **/

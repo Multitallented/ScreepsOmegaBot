@@ -1,6 +1,7 @@
 let Util = require('../../util/util');
 let creepUtil = require('../../util/creep.util');
 
+//TODO fix room exploration
 module.exports = {
     getRandomAdjacentRoom: function(creep) {
         let randDirection = [];
@@ -22,14 +23,17 @@ module.exports = {
     },
 
     moveCreepIntoRoom: function(creep) {
-        creep.memory.currentOrder = undefined;
         if (creep.pos.x === 0) {
+            creep.memory.currentOrder = undefined;
             creep.moveTo(1, creep.pos.y);
         } else if (creep.pos.x === 49) {
+            creep.memory.currentOrder = undefined;
             creep.moveTo(48, creep.pos.y);
         } else if (creep.pos.y === 0) {
+            creep.memory.currentOrder = undefined;
             creep.moveTo(creep.pos.x, 1);
         } else if (creep.pos.y === 49) {
+            creep.memory.currentOrder = undefined;
             creep.moveTo(creep.pos.x, 48);
         } else {
             return false;
@@ -197,14 +201,36 @@ module.exports = {
     },
 
     getRoomName: function(roomName, direction) {
+        let isWest = roomName.indexOf("W") !== -1;
+        let isNorth = roomName.indexOf("N") !== -1;
+        let splitName = roomName.slice(1).split(isNorth ? "N" : "S");
+        let x = Number(splitName[0]);
+        let y = Number(splitName[1]);
+
         if (direction === FIND_EXIT_TOP) {
-            return roomName.slice(0,1) + (Number(roomName.charAt(1)) - 1) + roomName.slice(2, 4);
+            if (isNorth) {
+                return (isWest ? "W" : "E") + x + "N" + (y+1);
+            } else {
+                return (isWest ? "W" : "E") + x + "S" + (y-1);
+            }
         } else if (direction === FIND_EXIT_LEFT) {
-            return roomName.slice(0,3) + (Number(roomName.charAt(3)) - 1);
+            if (isWest) {
+                return "W" + (x+1) + (isNorth ? "N" : "S") + y;
+            } else {
+                return "W" + (x-1) + (isNorth ? "N" : "S") + y;
+            }
         } else if (direction === FIND_EXIT_RIGHT) {
-            return roomName.slice(0,3) + (Number(roomName.charAt(3)) + 1);
+            if (isWest) {
+                return "W" + (x-1) + (isNorth ? "N" : "S") + y;
+            } else {
+                return "W" + (x+1) + (isNorth ? "N" : "S") + y;
+            }
         } else if (direction === FIND_EXIT_BOTTOM) {
-            return roomName.slice(0,1) + (Number(roomName.charAt(1)) + 1) + roomName.slice(2, 4);
+            if (isNorth) {
+                return (isWest ? "W" : "E") + x + "N" + (y-1);
+            } else {
+                return (isWest ? "W" : "E") + x + "S" + (y+1);
+            }
         }
     }
 };

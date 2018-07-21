@@ -2,6 +2,7 @@ let Util = require('../../util/util');
 let creepUtil = require('../../util/creep.util');
 let builderScript = require('./role.builder');
 
+//TODO make miner only mine from sources that have containers
 module.exports = {
 
     run: function(creep) {
@@ -20,10 +21,7 @@ module.exports = {
                 return creep.room.find(FIND_CREEPS, {filter: (c) => {
                         return c.memory && c.memory.role && c.memory.role === creepUtil.roles.MINER &&
                             c.memory.inPosition === resource.id;
-                        }}).length &&
-                        _.filter(creep.room.lookAtArea(resource.pos.x-1, resource.pos.y-1, resource.pos.x+1, resource.pos.y+1, true), (c) => {
-                            return c.type === 'structure' && c.structure.structureType === STRUCTURE_CONTAINER;
-                        }).length;
+                        }});
             });
             if (source !== undefined) {
                 let canHarvest = creep.harvest(source);

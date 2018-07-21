@@ -98,7 +98,16 @@ module.exports = {
                     return;
                 }
                 this.spawnACreep(Game.getObjectById(spawnId), creepUtil.roles.BUILDER, Math.min(600, count['energyAvailable']));
-            } else if ((count['numContainers'] > count[creepUtil.roles.MINER] && count['numSources'] > count[creepUtil.roles.MINER])
+            } else if (count['numContainers'] > 0 && count[creepUtil.roles.COURIER] < count[creepUtil.roles.MINER] &&
+                    count[creepUtil.roles.COURIER] < count['numSources']) {
+                spawning = creepUtil.roles.COURIER;
+                this.saySomething(spawnId, spawning + 1);
+                if (count['energyAvailable'] < 300) {
+                    return;
+                }
+                this.spawnACreep(Game.getObjectById(spawnId), creepUtil.roles.COURIER, count['energyAvailable']);
+            }
+            else if ((count['numContainers'] > count[creepUtil.roles.MINER] && count['numSources'] > count[creepUtil.roles.MINER])
                     || (count['numContainers'] > 0 && count['numContainers'] >= count[creepUtil.roles.MINER] &&
                     room != null && count['numSources'] >= count[creepUtil.roles.MINER] &&
                     room.find(FIND_CREEPS, {filter: (creep) => {
@@ -127,13 +136,6 @@ module.exports = {
                     return;
                 }
                 this.spawnACreep(Game.getObjectById(spawnId), creepUtil.roles.HARVESTER, 400);
-            } else if (count['numContainers'] > 0 && count[creepUtil.roles.COURIER] < count[creepUtil.roles.MINER]) {
-                spawning = creepUtil.roles.COURIER;
-                this.saySomething(spawnId, spawning + 1);
-                if (count['energyAvailable'] < 300) {
-                    return;
-                }
-                this.spawnACreep(Game.getObjectById(spawnId), creepUtil.roles.COURIER, count['energyAvailable']);
             }
             else if (count[creepUtil.roles.MELEE] < 8 && rescueFlags.length > 0) {
                 spawning = creepUtil.roles.MELEE;

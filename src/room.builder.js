@@ -506,15 +506,18 @@ module.exports = {
             if (currentRange > range) {
                 return;
             }
-            // let pathArray = pos.findPathTo(site.pos.x, site.pos.y, {ignoreCreeps: true, avoid: constructionSites, swampCost: 1});
-            let pathArray = pos.findPathTo(site.pos.x, site.pos.y, {ignoreCreeps: true, costCallback: (roomName, costMatrix) => {
-                    if (roomName === room.name) {
-                        _.forEach(constructionSites, (site) => {
-                            costMatrix.set(site.pos.x, site.pos.y, 256);
-                        });
-                    }
-                    return costMatrix;
-                }, swampCost: 1});
+            //TODO update this in a way that it doesn't cause time outs
+            PathFinder.use(false);
+            let pathArray = pos.findPathTo(site.pos.x, site.pos.y, {ignoreCreeps: true, avoid: constructionSites, swampCost: 1});
+            PathFinder.use(true);
+            // let pathArray = pos.findPathTo(site.pos.x, site.pos.y, {ignoreCreeps: true, costCallback: (roomName, costMatrix) => {
+            //         if (roomName === room.name) {
+            //             _.forEach(constructionSites, (site) => {
+            //                 costMatrix.set(site.pos.x, site.pos.y, 256);
+            //             });
+            //         }
+            //         return costMatrix;
+            //     }, swampCost: 1});
             if (pathArray.length > distance) {
                 return;
             }
