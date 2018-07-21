@@ -65,7 +65,7 @@ module.exports = {
                 creepCount[spawn.id][role] =
                     spawn.room.find(FIND_CREEPS, {filter: (creep) => {return creep.memory && creep.memory.role &&
                             creep.memory.role === role && !creep.memory.wasScout;}}).length;
-                creepCount[role + ":X"] =
+                creepCount[spawn.id][role + ":X"] =
                     _.filter(Game.creeps, (c) => {return c.memory && c.memory.role === role}).length;
             });
         });
@@ -74,6 +74,7 @@ module.exports = {
             if (spawnId == null || count[creepUtil.roles.MELEE] > 7) {
                 return;
             }
+            let room = Game.getObjectById(spawnId) ? Game.getObjectById(spawnId).room : null;
 
             let spawning = "none";
             if (count[creepUtil.roles.HARVESTER] < 1) {
@@ -97,7 +98,12 @@ module.exports = {
                     return;
                 }
                 this.spawnACreep(Game.getObjectById(spawnId), creepUtil.roles.BUILDER, Math.min(600, count['energyAvailable']));
-            } else if (count['numContainers'] > count[creepUtil.roles.MINER] && count['numSources'] > count[creepUtil.roles.MINER]) {
+            } else if ((count['numContainers'] > count[creepUtil.roles.MINER] && count['numSources'] > count[creepUtil.roles.MINER])
+                    || (count['numContainers'] > 0 && count['numContainers'] >= count[creepUtil.roles.MINER] &&
+                    room != null && count['numSources'] >= count[creepUtil.roles.MINER] &&
+                    room.find(FIND_CREEPS, {filter: (creep) => {
+                        return creep.memory && creep.memory.role === creepUtil.roles.MINER && creep.ticksToLive < 200;
+                    }}).length > 0)) {
                 spawning = creepUtil.roles.MINER;
                 this.saySomething(spawnId, spawning + 1);
                 if (count[creepUtil.roles.MINER] < 1 && count['energyAvailable'] < 300) {
@@ -145,7 +151,7 @@ module.exports = {
                 this.spawnACreep(Game.getObjectById(spawnId), creepUtil.roles.MELEE, count['energyAvailable'], memory);
             }
             else if ((count[creepUtil.roles.UPGRADER] < 2 ||
-                (count[creepUtil.roles.UPGRADER] < 3 && creepCount[creepUtil.roles.CLAIMER + ":X"] > 3)) && count['energyCapacity'] > 549) {
+                (count[creepUtil.roles.UPGRADER] < 3 && creepCount[spawnId][creepUtil.roles.CLAIMER + ":X"] > 3)) && count['energyCapacity'] > 549) {
                 spawning = creepUtil.roles.UPGRADER;
                 this.saySomething(spawnId, spawning + 2);
                 if (count['energyAvailable'] < 550) {
@@ -153,13 +159,13 @@ module.exports = {
                 }
                 this.spawnACreep(Game.getObjectById(spawnId), creepUtil.roles.UPGRADER, count['energyAvailable']);
             }
-            // else if (count[creepUtil.roles.TANK] < 4 && creepCount[creepUtil.roles.TANK + ":X"] < 4) {
+            // else if (count[creepUtil.roles.TANK] < 4 && creepCount[spawnId][creepUtil.roles.TANK + ":X"] < 4) {
             //     if (count['energyAvailable'] < 1100) {
             //         return;
             //     }
             //     this.spawnACreep(Game.getObjectById(spawnId), creepUtil.roles.TANK, count['energyAvailable']);
             // }
-            // else if (count[creepUtil.roles.MELEE] < 4 && creepCount[creepUtil.roles.MELEE + ":X"] < 4) {
+            // else if (count[creepUtil.roles.MELEE] < 4 && creepCount[spawnId][creepUtil.roles.MELEE + ":X"] < 4) {
             //     if (count['energyAvailable'] < 900) {
             //         return;
             //     }
@@ -173,8 +179,8 @@ module.exports = {
             //     }
             //     this.spawnACreep(Game.getObjectById(spawnId), creepUtil.roles.BUILDER, count['energyAvailable']);
             // }
-            else if (count[creepUtil.roles.CLAIMER] < 1 && creepCount[creepUtil.roles.CLAIMER + ":X"] < 8 &&
-                    creepCount[creepUtil.roles.SCOUT + ":X"] > 1 && count['energyCapacity'] > 799) {
+            else if (count[creepUtil.roles.CLAIMER] < 1 && creepCount[spawnId][creepUtil.roles.CLAIMER + ":X"] < 8 &&
+                    creepCount[spawnId][creepUtil.roles.SCOUT + ":X"] > 1 && count['energyCapacity'] > 799) {
                 spawning = creepUtil.roles.CLAIMER;
                 this.saySomething(spawnId, spawning + 1);
                 if (count['energyAvailable'] < 800) {
@@ -183,7 +189,7 @@ module.exports = {
                 this.spawnACreep(Game.getObjectById(spawnId), creepUtil.roles.CLAIMER, 800)
             }
             else if (count[creepUtil.roles.SCOUT] < 1 &&
-                    creepCount[creepUtil.roles.SCOUT + ":X"] < creepCount[creepUtil.roles.XCOURIER + ":X"] && count['energyCapacity'] > 799) {
+                    creepCount[spawnId][creepUtil.roles.SCOUT + ":X"] <= creepCount[spawnId][creepUtil.roles.XCOURIER + ":X"] && count['energyCapacity'] > 799) {
                 spawning = creepUtil.roles.SCOUT;
                 this.saySomething(spawnId, spawning + 1);
                 if (count['energyAvailable'] < 800) {
@@ -191,7 +197,7 @@ module.exports = {
                 }
                 this.spawnACreep(Game.getObjectById(spawnId), creepUtil.roles.SCOUT, count['energyAvailable']);
             }
-            else if (count[creepUtil.roles.XCOURIER] < 2 && count['energyCapacity'] > 799 && creepCount[creepUtil.roles.CLAIMER + ":X"] > 0) {
+            else if (count[creepUtil.roles.XCOURIER] < 2 && count['energyCapacity'] > 799 && creepCount[spawnId][creepUtil.roles.CLAIMER + ":X"] > 0) {
                 spawning = creepUtil.roles.XCOURIER;
                 this.saySomething(spawnId, spawning + 1);
                 if (count['energyAvailable'] < 800) {

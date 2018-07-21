@@ -143,12 +143,12 @@ module.exports = {
 
         let discoveredRoom = (creep.room.controller && creep.room.controller.my) ||
             _.filter(Game.flags, (f) => f.room === creep.room).length === 1;
-        if (discoveredRoom && (!creep.memory.currentOrder || creep.memory.currentOrder.split(":")[1] === creep.room.name)) {
+        if (!creep.memory.currentOrder || creep.memory.currentOrder.split(":")[1] === creep.room.name) {
             let targetRoomName = this.getRandomAdjacentRoom(creep);
             if (creep.moveTo(creep.pos.findClosestByRange(creep.room.findExitTo(targetRoomName)), {reusePath: 3, visualizePathStyle: {stroke: '#ffffff'}}) === OK) {
                 creep.memory.currentOrder = Util.MOVE + ":" + targetRoomName;
             }
-        } else if (discoveredRoom && creep.memory.currentOrder) {
+        } else if (creep.memory.currentOrder) {
             let targetRoomName = creep.memory.currentOrder.split(":")[1];
             let direction = creep.room.findExitTo(targetRoomName);
             let move = creep.moveTo(creep.pos.findClosestByRange(direction), {reusePath: 3, visualizePathStyle: {stroke: '#ffffff'}});
@@ -161,7 +161,8 @@ module.exports = {
                 this.moveCreepIntoRoom(creep);
                 return;
             }
-        } else if (!discoveredRoom) {
+        }
+        if (!discoveredRoom) {
             // 0 = claim status
             // 1 = owner name | game time
             // 2 = room name

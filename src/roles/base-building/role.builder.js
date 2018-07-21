@@ -31,7 +31,8 @@ let roleBuilder = {
     originRoom: function(creep) {
         if (!creep.memory.wasScout && creep.memory.originRoom !== creep.room.name) {
             if (!creep.memory.originName) {
-                creep.memory.originName = creep.room.name;
+                creep.memory.originName = creep.room
+                    .name;
             }
             let room = Game.rooms[creep.memory.originName];
             if (room !== undefined && room !== null && creep.room !== room) {
@@ -86,6 +87,8 @@ let roleBuilder = {
             creep.memory.currentOrder = undefined;
         }
 
+        let controllerLevel = creep.room.controller ? creep.room.controller.level : 0;
+
         if (creep.carry.energy < 1 || (creep.memory.currentOrder !== undefined &&
             creep.memory.currentOrder.split(":")[0] === Util.HARVEST && creep.carry.energy < creep.carryCapacity)) {
             let container = Util.checkIfInUse(creep.room, FIND_STRUCTURES, creep, Util.WITHDRAW,
@@ -123,12 +126,12 @@ let roleBuilder = {
             let targets = creep.room.find(FIND_STRUCTURES, {
                 filter: (target) => {
                     let belowMax = target.hits < target.hitsMax;
-                    let belowRepairAt = structUtil.getRepairPoints().repairPoints[target.structureType] === undefined ||
-                        target.hits < structUtil.getRepairPoints().repairPoints[target.structureType].repairAt;
-                    let belowRepairUntil = structUtil.getRepairPoints().repairPoints[target.structureType] === undefined ||
+                    let belowRepairAt = structUtil.getRepairPoints(controllerLevel).repairPoints[target.structureType] === undefined ||
+                        target.hits < structUtil.getRepairPoints(controllerLevel).repairPoints[target.structureType].repairAt;
+                    let belowRepairUntil = structUtil.getRepairPoints(controllerLevel).repairPoints[target.structureType] === undefined ||
                         ((creep.memory.currentOrder === Util.MOVE + target.id ||
                             creep.memory.currentOrder === Util.REPAIR + target.id) &&
-                            target.hits < structUtil.getRepairPoints().repairPoints[target.structureType].repairUntil);
+                            target.hits < structUtil.getRepairPoints(controllerLevel).repairPoints[target.structureType].repairUntil);
                     return belowMax && (belowRepairAt || belowRepairUntil);
                 }
             });
