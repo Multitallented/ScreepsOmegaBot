@@ -135,9 +135,9 @@ module.exports = {
                     let hits = t.structure ? t.structure.hits && !t.structure.my : t.creep.hits && !t.creep.my;
                     return hits });
                 let attack = null;
-                if (targets[0].structure) {
+                if (targets[0].structure && !targets[0].my) {
                     attack = creep.attack(targets[0].structure);
-                } else if (targets[0].creep) {
+                } else if (targets[0].creep && !targets[0].my) {
                     attack = creep.attack(targets[0].creep);
                 }
                 // console.log(attack);

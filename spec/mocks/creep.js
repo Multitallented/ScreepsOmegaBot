@@ -1,4 +1,4 @@
-module.exports = function(partArray, name, memory, room) {
+module.exports = function(partArray, name, memory, room, x, y) {
     let body = [];
     _.forEach(partArray, (part) => {
         body.push({
@@ -28,8 +28,8 @@ module.exports = function(partArray, name, memory, room) {
         },
         name: name,
         pos: {
-            x: 0,
-            y: 0,
+            x: x ? x : 0,
+            y: y ? y : 0,
             findClosestByRange: function(array) {
                 return array[0];
             },
