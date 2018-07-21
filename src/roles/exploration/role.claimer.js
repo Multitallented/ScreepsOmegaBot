@@ -47,8 +47,16 @@ module.exports = {
             }
         } else if (creep.room.controller && !creep.room.controller.my) {
             roleScout.moveCreepIntoRoom(creep);
-            let reserve = creep.reserveController(creep.room.controller);
-            if (reserve !== OK) {
+            let action = null;
+            if (creep.room.find(FIND_SOURCES).length > 1 &&
+                    Game.gcl.level > _.filter(Game.rooms, (r) => {
+                        return r.controller && r.controller.owner && r.controller.owner.username === 'Multitallented';
+                    }).length) {
+                action = creep.claimController(creep.room.controller);
+            } else {
+                action = creep.reserveController(creep.room.controller);
+            }
+            if (action !== OK) {
                 let move = creep.moveTo(creep.room.controller.pos, {visualizePathStyle: {stroke: '#ffffff'}});
                 creep.memory.currentOrder = Util.MOVE + ":" + creep.room.name;
             } else {
