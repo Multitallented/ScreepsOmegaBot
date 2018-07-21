@@ -244,8 +244,8 @@ module.exports = {
         switch(type) {
             case STRUCTURE_SPAWN: return 0;
             case STRUCTURE_TOWER: return 2;
-            case STRUCTURE_EXTENSION: return 5;
-            case STRUCTURE_CONTAINER: return 10;
+            case STRUCTURE_CONTAINER: return 5;
+            case STRUCTURE_EXTENSION: return 10;
             case STRUCTURE_ROAD: return 15;
             case STRUCTURE_WALL:
             case STRUCTURE_RAMPART: return 20;
