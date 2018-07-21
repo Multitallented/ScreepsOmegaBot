@@ -57,7 +57,7 @@ module.exports = {
         let creepArray = [];
         _.forEach(actionArray, (value, key) => {
             let currentCreepArray = _.filter(Game.creeps, (creep) => creep !== callingCreep &&
-                Game.spawns['Spawn1'].spawning !== creep &&
+                !creep.spawning &&
                 creep.memory.currentOrder === key + ":" + id);
             if (currentCreepArray.length > value) {
                 _.merge(creepArray, currentCreepArray);

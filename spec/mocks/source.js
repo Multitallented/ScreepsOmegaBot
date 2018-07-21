@@ -2,7 +2,10 @@ module.exports = function(id, x, y, room) {
     return {
         pos: {
             x: x,
-            y: y
+            y: y,
+            findPathTo: function() {
+                return [];
+            }
         },
         room: room,
         energy: 3000,

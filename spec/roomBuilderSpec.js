@@ -63,7 +63,59 @@ describe("Room Builder tests", function() {
             }
         });
         expect(hasExtension).toBe(false);
-    })
+    });
+    it("There should be 5 extensions in level 2", function() {
+        Game.rooms.Room1.controller.level = 2;
+        while (Game.rooms.Room1.memory.controllerLevel < 2) {
+            roomBuilder.buildRoom(Game.rooms.Room1);
+        }
+        let hasExtension = 0;
+        _.forEach(Game.rooms.Room1.memory.constructionSites, (site) => {
+            if (site.type === STRUCTURE_EXTENSION) {
+                hasExtension++;
+            }
+        });
+        expect(hasExtension).toBe(5);
+    });
+    it("There should be 10 extensions in level 3", function() {
+        Game.rooms.Room1.controller.level = 3;
+        while (Game.rooms.Room1.memory.controllerLevel < 3) {
+            roomBuilder.buildRoom(Game.rooms.Room1);
+        }
+        let hasExtension = 0;
+        _.forEach(Game.rooms.Room1.memory.constructionSites, (site) => {
+            if (site.type === STRUCTURE_EXTENSION) {
+                hasExtension++;
+            }
+        });
+        expect(hasExtension).toBe(10);
+    });
+    it("There should be 20 extensions in level 4", function() {
+        Game.rooms.Room1.controller.level = 4;
+        while (Game.rooms.Room1.memory.controllerLevel < 4) {
+            roomBuilder.buildRoom(Game.rooms.Room1);
+        }
+        let hasExtension = 0;
+        _.forEach(Game.rooms.Room1.memory.constructionSites, (site) => {
+            if (site.type === STRUCTURE_EXTENSION) {
+                hasExtension++;
+            }
+        });
+        expect(hasExtension).toBe(20);
+    });
+    it("There should be 30 extensions in level 5", function() {
+        Game.rooms.Room1.controller.level = 5;
+        while (Game.rooms.Room1.memory.controllerLevel < 5) {
+            roomBuilder.buildRoom(Game.rooms.Room1);
+        }
+        let hasExtension = 0;
+        _.forEach(Game.rooms.Room1.memory.constructionSites, (site) => {
+            if (site.type === STRUCTURE_EXTENSION) {
+                hasExtension++;
+            }
+        });
+        expect(hasExtension).toBe(30);
+    });
 
     // it("Output should contain storage", function() {
     //     while (Game.rooms.Room1.memory.controllerLevel < controllerLevel) {
