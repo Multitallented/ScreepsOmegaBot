@@ -31,7 +31,8 @@ let roleBuilder = {
     originRoom: function(creep) {
         if (!creep.memory.wasScout && creep.memory.originRoom !== creep.room.name) {
             if (!creep.memory.originName) {
-                creep.memory.originName = creep.room.name;
+                creep.memory.originName = creep.room
+                    .name;
             }
             let room = Game.rooms[creep.memory.originName];
             if (room !== undefined && room !== null && creep.room !== room) {
