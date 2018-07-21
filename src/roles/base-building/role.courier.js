@@ -72,11 +72,11 @@ let roleCourier = {
             }
             let containers = creep.room.find(FIND_STRUCTURES, {filter:
                     (structure) => { return (structure.structureType === STRUCTURE_CONTAINER ||
-                        structure.structureType === STRUCTURE_STORAGE) && structure.store.energy >= creep.carryCapacity; }});
+                        structure.structureType === STRUCTURE_STORAGE) && structure.store.energy > creep.carryCapacity; }});
             if (!containers.length) {
                 containers = creep.room.find(FIND_STRUCTURES, {filter:
                         (structure) => { return (structure.structureType === STRUCTURE_CONTAINER ||
-                            structure.structureType === STRUCTURE_STORAGE); }});
+                            structure.structureType === STRUCTURE_STORAGE) && structure.store.energy > 0; }});
             }
 
             if (!containers.length) {
