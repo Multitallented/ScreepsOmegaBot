@@ -64,6 +64,20 @@ describe("Room Builder tests", function() {
         });
         expect(hasExtension).toBe(false);
     });
+    it("Dont build a spawn if one already exists", function() {
+        Game.rooms.Room1.controller.level = 1;
+        while (Game.rooms.Room1.memory.controllerLevel < 1) {
+            roomBuilder.buildRoom(Game.rooms.Room1);
+        }
+        let hasExtension = false;
+        _.forEach(Game.rooms.Room1.memory.constructionSites, (site) => {
+            console.log(site.type);
+            if (site.type === STRUCTURE_SPAWN) {
+                hasExtension = true;
+            }
+        });
+        expect(hasExtension).toBe(false);
+    });
     it("There should be 5 extensions in level 2", function() {
         Game.rooms.Room1.controller.level = 2;
         while (Game.rooms.Room1.memory.controllerLevel < 2) {

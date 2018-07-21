@@ -4,6 +4,11 @@ let roleScout = require('./roles/exploration/role.scout');
 module.exports = {
     buildRoom: function(room) {
         let controllerLevel = room.controller ? room.controller.level : 0;
+
+        if (room.memory && room.memory.harvestSpots === undefined) {
+            room.memory.harvestSpots =  Util.findHarvestSpace(room);
+        }
+
         if (room.memory && room.memory.controllerLevel === controllerLevel) {
             return;
         }
@@ -34,11 +39,14 @@ module.exports = {
         let sources = room.find(FIND_SOURCES);
         let importantStructures = room.find(FIND_STRUCTURES, {filter: (s) => {
             if (s.structureType && s.my && s.structureType !== STRUCTURE_CONTROLLER) {
-                siteLocations[s.pos.x + ":" + s.pos.y] = { type: s.structureType, pos: s.pos };
-                if (siteCounts[s.structureType]) {
-                    siteCounts[s.structureType]++;
-                } else {
-                    siteCounts[s.structureType] = 1;
+                if (!siteLocations[s.pos.x + ":" + s.pos.y] ||
+                        siteLocations[s.pos.x + ":" + s.pos.y].type !== s.structureType) {
+                    siteLocations[s.pos.x + ":" + s.pos.y] = { type: s.structureType, pos: s.pos };
+                    if (siteCounts[s.structureType]) {
+                        siteCounts[s.structureType]++;
+                    } else {
+                        siteCounts[s.structureType] = 1;
+                    }
                 }
             }
             return s.my && s.structureType && (s.structureType === STRUCTURE_SPAWN || s.structureType === STRUCTURE_TOWER ||
@@ -130,6 +138,20 @@ module.exports = {
         }
 
         let structureCount = {};
+        _.forEach(room.find(FIND_STRUCTURES), (s) => {
+            if (!s.structureType) {
+                return;
+            }
+            if (s.structureType !== STRUCTURE_ROAD &&
+                    s.structureType !== STRUCTURE_WALL &&
+                    s.structureType !== STRUCTURE_RAMPART) {
+                if (!structureCount[s.structureType]) {
+                    structureCount[s.structureType] = 1;
+                } else {
+                    structureCount[s.structureType]++;
+                }
+            }
+        });
         constructionSites = _.filter(constructionSites, (site) => {
             let type = site.type ? site.type : site.structureType;
             if (!structureCount[type]) {

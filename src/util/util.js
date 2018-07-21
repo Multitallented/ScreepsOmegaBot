@@ -94,10 +94,10 @@ module.exports = {
         return runningTotal;
     },
 
-    findHarvestSpace: function(creep) {
+    findHarvestSpace: function(room) {
         let runningTotal = 0;
-        _.forEach(creep.room.find(FIND_SOURCES), (source) => {
-            runningTotal += this.getEmptyAdjacentSpaces(creep.room, source.pos);
+        _.forEach(room.find(FIND_SOURCES), (source) => {
+            runningTotal += this.getEmptyAdjacentSpaces(room, source.pos);
         });
         return runningTotal;
     },
