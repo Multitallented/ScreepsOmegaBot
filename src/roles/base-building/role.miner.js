@@ -20,8 +20,11 @@ module.exports = {
                 return creep.room.find(FIND_CREEPS, {filter: (c) => {
                         return c.memory && c.memory.role && c.memory.role === creepUtil.roles.MINER &&
                             c.memory.inPosition === resource.id;
-                    }
-            })});
+                        }}).length &&
+                        _.filter(creep.room.lookAtArea(resource.pos.x-1, resource.pos.y-1, resource.pos.x+1, resource.pos.y+1, true), (c) => {
+                            return c.type === 'structure' && c.structure.structureType === STRUCTURE_CONTAINER;
+                        }).length;
+            });
             if (source !== undefined) {
                 let canHarvest = creep.harvest(source);
                 if (canHarvest === ERR_NOT_IN_RANGE) {

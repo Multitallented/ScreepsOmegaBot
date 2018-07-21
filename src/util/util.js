@@ -73,20 +73,20 @@ module.exports = {
             actionArray[this.MOVE] = 5;
         } else {
             let emptySquares = this.getEmptyAdjacentSpaces(creep.room, target.pos);
-            actionArray[action] = emptySquares - 1;
-            actionArray[this.MOVE] = emptySquares;
+            actionArray[action] = emptySquares;
+            actionArray[this.MOVE] = emptySquares + 1;
         }
         return actionArray;
     },
 
-    getEmptyAdjacentSpaces: function(room, position) {
+    getEmptyAdjacentSpaces: function(room, position, countCreeps) {
         let runningTotal = 0;
         _.forEach(room.lookAtArea(position.y-1, position.x-1, position.y+1, position.x+1, true), (s) => {
-            if (s.type === 'terrain' && s.terrain !== 'plain') {
+            if (s.type === 'terrain' && s.terrain !== 'wall') {
                 runningTotal++;
-            } else if (s.type === 'structure' && s.structureType !== STRUCTURE_CONTAINER) {
+            } else if (s.type === 'structure' && s.structure.structureType !== STRUCTURE_CONTAINER) {
                 runningTotal--;
-            } else if (s.type === 'creep') {
+            } else if (s.type === 'creep' && countCreeps) {
                 runningTotal--;
             }
         });
@@ -97,7 +97,7 @@ module.exports = {
     findHarvestSpace: function(room) {
         let runningTotal = 0;
         _.forEach(room.find(FIND_SOURCES), (source) => {
-            runningTotal += this.getEmptyAdjacentSpaces(room, source.pos);
+            runningTotal += this.getEmptyAdjacentSpaces(room, source.pos, false);
         });
         return runningTotal;
     },
