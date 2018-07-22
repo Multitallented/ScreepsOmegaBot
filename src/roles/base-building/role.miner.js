@@ -17,13 +17,19 @@ module.exports = {
                 creep.say('🔄 harvest');
             }
 
-            let source = Util.checkIfInUse(creep.room, FIND_SOURCES, creep, Util.HARVEST, (resource) => {
-                return creep.room.find(FIND_CREEPS, {filter: (c) => {
-                        return c.memory && c.memory.role && c.memory.role === creepUtil.roles.MINER &&
-                            c.memory.inPosition === resource.id;
-                        }});
-            });
-            if (source !== undefined) {
+            let source = creep.pos.findClosestByPath(creep.room.find(FIND_SOURCES, {filter: (resource) => {
+                    return creep.room.find(FIND_CREEPS, {filter: (c) => {
+                            return c.memory && c.memory.role && c.memory.role === creepUtil.roles.MINER &&
+                                    c.memory.inPosition === resource.id;
+                        }}).length < 1;
+                }}));
+            // let source = Util.checkIfInUse(creep.room, FIND_SOURCES, creep, Util.HARVEST, (resource) => {
+            //     return creep.room.find(FIND_CREEPS, {filter: (c) => {
+            //             return c.memory && c.memory.role && c.memory.role === creepUtil.roles.MINER &&
+            //                 c.memory.inPosition === resource.id;
+            //             }});
+            // });
+            if (source !== undefined && source !== null) {
                 let canHarvest = creep.harvest(source);
                 if (canHarvest === ERR_NOT_IN_RANGE) {
                     creep.moveTo(source, {visualizePathStyle: {stroke: '#ffffff'}});

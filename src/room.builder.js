@@ -268,8 +268,8 @@ module.exports = {
             minY = entity.pos.y < minY ? entity.pos.y : minY;
         });
         return {
-            x: minX + Math.floor(Math.abs(maxX - minX) / array.length),
-            y: minY + Math.floor(Math.abs(maxY - minY) / array.length),
+            x: minX + Math.floor(Math.abs(maxX - minX) / 2),
+            y: minY + Math.floor(Math.abs(maxY - minY) / 2),
         }
     },
 
