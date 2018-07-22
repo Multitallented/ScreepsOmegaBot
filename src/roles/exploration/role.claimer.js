@@ -48,8 +48,7 @@ module.exports = {
         } else if (creep.room.controller && !creep.room.controller.my) {
             roleScout.moveCreepIntoRoom(creep);
             let action = null;
-            if (creep.room.find(FIND_SOURCES).length > 1 &&
-                    Game.gcl.level > _.filter(Game.rooms, (r) => {
+            if (Game.gcl.level > _.filter(Game.rooms, (r) => {
                         return r.controller && r.controller.owner && r.controller.owner.username === 'Multitallented';
                     }).length) {
                 action = creep.claimController(creep.room.controller);
