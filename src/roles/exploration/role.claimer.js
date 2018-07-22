@@ -9,7 +9,7 @@ module.exports = {
         };
         let direction = randDirection[Math.floor(Math.random() * 4)];
         creep.say(direction);
-        return this.getRoomName(creep.room.name, direction);
+        return roleScout.getRoomName(creep.room.name, direction);
     },
 
     run: function(creep) {
@@ -62,18 +62,6 @@ module.exports = {
             } else {
                 creep.memory.currentOrder = Util.RESERVE + ":" + creep.room.name;
             }
-        }
-    },
-
-    getRoomName: function(roomName, direction) {
-        if (direction === FIND_EXIT_TOP) {
-            return roomName.slice(0,1) + (Number(roomName.charAt(1)) - 1) + roomName.slice(2, 4);
-        } else if (direction === FIND_EXIT_LEFT) {
-            return roomName.slice(0,3) + (Number(roomName.charAt(3)) - 1);
-        } else if (direction === FIND_EXIT_RIGHT) {
-            return roomName.slice(0,3) + (Number(roomName.charAt(3)) + 1);
-        } else if (direction === FIND_EXIT_BOTTOM) {
-            return roomName.slice(0,1) + (Number(roomName.charAt(1)) + 1) + roomName.slice(2, 4);
         }
     }
 };

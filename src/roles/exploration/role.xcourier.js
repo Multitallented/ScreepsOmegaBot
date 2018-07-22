@@ -2,7 +2,6 @@ let Util = require('../../util/util');
 let creepUtil = require('../../util/creep.util');
 let scoutScript = require("./role.scout");
 
-//TODO fix room exploration
 module.exports = {
 
     run: function(creep) {
@@ -12,22 +11,24 @@ module.exports = {
 
         creep.memory.wasXCourier = true;
         if (creep.carry.energy < creep.carryCapacity) {
-            let energy = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {filter: (r) => {
-                    return r.resourceType && r.resourceType === RESOURCE_ENERGY;
-                }});
-            if (energy !== undefined && energy !== null && energy.energy > 100) {
-                let pickup = creep.pickup(energy);
-                if (pickup === OK) {
-                    creep.memory.currentOrder = Util.PICKUP + ":" + "energy";
-                    return;
-                } else {
-                    let move = creep.moveTo(energy, {visualizePathStyle: {stroke: '#ffffff'}});
-                    if (move === OK) {
-                        creep.memory.currentOrder = Util.MOVE + ":energy";
-                        return;
-                    }
-                }
-            }
+            // let energy = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {filter: (r) => {
+            //         return r.resourceType && r.resourceType === RESOURCE_ENERGY;
+            //     }});
+            // if (energy !== undefined && energy !== null && energy.energy > 100) {
+            //     let pickup = creep.pickup(energy);
+            //     if (pickup === OK) {
+            //         creep.memory.currentOrder = Util.PICKUP + ":" + "energy";
+            //         return;
+            //     } else {
+            //         let move = creep.moveTo(energy, {visualizePathStyle: {stroke: '#ffffff'}});
+            //         if (move === OK) {
+            //             creep.memory.currentOrder = Util.MOVE + ":energy";
+            //             return;
+            //         } else {
+            //             creep.memory.currentOrder = undefined;
+            //         }
+            //     }
+            // }
         } else if (creep.carry.energy === creep.carryCapacity) {
             if (creep.room.controller && creep.room.controller.my && creep.room.controller.owner && creep.room.controller.owner.username === 'Multitallented') {
                 let targets = creep.pos.findClosestByPath(creep.room.find(FIND_STRUCTURES, {filter: (s) => {
@@ -40,7 +41,7 @@ module.exports = {
                         creep.moveTo(targets, {visualizePathStyle: {stroke: '#ffffff'}});
                         creep.memory.currentOrder = Util.MOVE + ":" + targets.id;
                     } else if (canTransfer === OK) {
-                        creep.memory.currentOrder = Util.TRANSFER + ":" + targets.id;
+                        creep.memory.currentOrder = undefined;
                     }
                 }
                 return;
@@ -52,10 +53,10 @@ module.exports = {
         }
 
         if (creep.room.controller && creep.room.controller.reservation && creep.room.controller.reservation.username === 'Multitallented') {
+            scoutScript.moveCreepIntoRoom(creep);
             if (creep.room.find(FIND_STRUCTURES, {filter: (c) => {
                     return c.structureType === STRUCTURE_CONTAINER && c.store.energy > c.storeCapacity / 2;
                 }}).length) {
-                scoutScript.moveCreepIntoRoom(creep);
                 creep.memory.role = creepUtil.roles.HOMING;
                 creep.say("homing");
                 return;

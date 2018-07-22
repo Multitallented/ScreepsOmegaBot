@@ -112,7 +112,7 @@ module.exports = {
                 let targetRoomName = roleScout.getRoomName(room.name, direction);
                 let target = room.getPositionAt(25,25).findClosestByRange(room.findExitTo(targetRoomName));
                 if (target != null) {
-                    saveAndQuit = this.buildShortestRoad(room, target, siteLocations, constructionSites);
+                    saveAndQuit = this.buildShortestRoad(room, target, siteLocations, constructionSites, 3);
                 }
             }
         });
@@ -120,7 +120,6 @@ module.exports = {
             this.saveToCache(room, siteCounts, siteLocations, constructionSites);
             return;
         }
-
         saveAndQuit = this.getWalls(room, siteCounts, siteLocations, constructionSites);
         if (saveAndQuit) {
             this.saveToCache(room, siteCounts, siteLocations, constructionSites);
@@ -161,6 +160,9 @@ module.exports = {
             }
             if (CONTROLLER_STRUCTURES[type]) {
                 return structureCount[type] <= CONTROLLER_STRUCTURES[type][controllerLevel];
+            }
+            if (controllerLevel < site.minLevel) {
+                return false;
             }
             return true;
         });
@@ -494,7 +496,7 @@ module.exports = {
         return false;
     },
 
-    buildShortestRoad: function(room, pos, siteLocations, constructionSites) {
+    buildShortestRoad: function(room, pos, siteLocations, constructionSites, minLevel) {
         let saveAndQuit = false;
         let distance = 9999;
         let range = 9999;
@@ -532,7 +534,7 @@ module.exports = {
                     let newSite = {type: STRUCTURE_RAMPART, pos: {x: roadPos.x, y: roadPos.y}};
                     siteLocations[roadPos.x + ":" + roadPos.y] = newSite;
                     constructionSites.push(newSite);
-                    let newSite2 = {type: STRUCTURE_ROAD, pos: {x: roadPos.x, y: roadPos.y}};
+                    let newSite2 = {type: STRUCTURE_ROAD, pos: {x: roadPos.x, y: roadPos.y}, minLevel: minLevel};
                     siteLocations[roadPos.x + ":" + roadPos.y] = newSite2;
                     constructionSites.push(newSite2);
                     saveAndQuit = true;
@@ -540,7 +542,7 @@ module.exports = {
                     !_.filter(room.lookAt(roadPos.x, roadPos.y), (c) => {
                         return c.type === 'structure' || (c.type === 'terrain' && c.terrain === 'wall');
                     }).length) {
-                    let newSite = {type: STRUCTURE_ROAD, pos: {x: roadPos.x, y: roadPos.y}};
+                    let newSite = {type: STRUCTURE_ROAD, pos: {x: roadPos.x, y: roadPos.y}, minLevel: minLevel};
                     siteLocations[roadPos.x + ":" + roadPos.y] = newSite;
                     constructionSites.push(newSite);
                     saveAndQuit = true;

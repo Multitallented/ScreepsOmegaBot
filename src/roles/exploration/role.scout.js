@@ -1,7 +1,6 @@
 let Util = require('../../util/util');
 let creepUtil = require('../../util/creep.util');
 
-//TODO fix room exploration
 module.exports = {
     getRandomAdjacentRoom: function(creep) {
         let randDirection = [];
@@ -64,16 +63,18 @@ module.exports = {
                     return r.resourceType && r.resourceType === RESOURCE_ENERGY;
                 }});
             if (energy !== undefined && energy !== null && energy.energy > 100) {
-                let pickup = creep.pickup(energy);
-                if (pickup === OK) {
-                    creep.memory.currentOrder = Util.PICKUP + ":" + "energy";
-                    return;
-                } else {
-                    let move = creep.moveTo(energy, {visualizePathStyle: {stroke: '#ffffff'}});
-                    if (move === OK) {
-                        return;
-                    }
-                }
+                // let pickup = creep.pickup(energy);
+                // if (pickup === OK) {
+                //     creep.memory.currentOrder = Util.PICKUP + ":" + "energy";
+                //     return;
+                // } else {
+                //     let move = creep.moveTo(energy, {visualizePathStyle: {stroke: '#ffffff'}});
+                //     if (move === OK) {
+                //         return;
+                //     } else {
+                //         creep.memory.currentOrder = undefined;
+                //     }
+                // }
             }
         } else if (creep.carry.energy === creep.carryCapacity) {
             creep.memory.role = creepUtil.roles.HOMING;
@@ -109,7 +110,7 @@ module.exports = {
         } else if (creep.room.controller && creep.room.controller.my && creep.room.find(FIND_STRUCTURES, {filter: (s) => {
                 return s.structureType === STRUCTURE_SPAWN && s.my;
             }}).length === 0) {
-
+            this.moveCreepIntoRoom(creep);
             if (creep.room.find(FIND_STRUCTURES, {filter: (s) => {
                     return s.structureType === STRUCTURE_CONTAINER && s.store.energy < s.storeCapacity / 2;
                 }}).length && creep.room.find(FIND_CREEPS, {filter: (c) => {
@@ -133,9 +134,15 @@ module.exports = {
                 creep.memory.role = creepUtil.roles.UPGRADER;
                 return;
             }
+            else if (!creep.memory.wasBuilder) {
+                creep.say("builder");
+                creep.memory.role = creepUtil.roles.BUILDER;
+                return;
+            }
         }
         if (creep.room.controller && (!creep.room.controller.owner || creep.room.controller.owner.username !== 'Multitallented')) {
             if (creep.room.find(FIND_STRUCTURES, {filter: (s) => {
+                this.moveCreepIntoRoom(creep);
                 return s.structureType && s.structureType === STRUCTURE_CONTAINER &&
                     s.store.energy > 0;
                 }})) {
@@ -148,6 +155,7 @@ module.exports = {
         let discoveredRoom = (creep.room.controller && creep.room.controller.my) ||
             _.filter(Game.flags, (f) => f.room === creep.room).length === 1;
         if (!creep.memory.currentOrder || creep.memory.currentOrder.split(":")[1] === creep.room.name) {
+            this.moveCreepIntoRoom(creep);
             let targetRoomName = this.getRandomAdjacentRoom(creep);
             if (creep.moveTo(creep.pos.findClosestByRange(creep.room.findExitTo(targetRoomName)), {reusePath: 3, visualizePathStyle: {stroke: '#ffffff'}}) === OK) {
                 creep.memory.currentOrder = Util.MOVE + ":" + targetRoomName;

@@ -125,14 +125,14 @@ module.exports = {
                 return s.type === 'structure' && s.structure.structureType === STRUCTURE_CONTAINER && s.structure.store.energy > 0;
             });
             let targets = _.filter(creep.room.lookAtArea(creep.pos.y - 1, creep.pos.x - 1, creep.pos.y + 1, creep.pos.x + 1, true), (s) => {
-                return (!s.my && s.structure && s.structure.structureType !== STRUCTURE_CONTAINER &&
+                return (s.structure && !s.structure.my && s.structure.structureType !== STRUCTURE_CONTAINER &&
                     s.structure.structureType !== STRUCTURE_ROAD) || (s.creep && !s.creep.my);
             });
 
 
             if (targets.length) {
                 targets = _.sortBy(targets, (t) => {
-                    let hits = t.structure ? t.structure.hits && !t.structure.my : t.creep.hits && !t.creep.my;
+                    let hits = t.structure ? t.structure.hits : t.creep.hits;
                     return hits });
                 let attack = null;
                 if (targets[0].structure && !targets[0].my) {
