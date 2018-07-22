@@ -54,14 +54,25 @@ let roleBuilder = {
             return;
         }
 
-        if (creep.memory && creep.memory.wasScout && (!creep.room.controller ||
-                !creep.room.controller.my || !creep.room.controller.owner ||
-                creep.room.controller.owner.username !== 'Multitallented') &&
-                creep.room.find(FIND_CREEPS, {filter: (c) => {
+        // if (creep.memory && creep.memory.wasScout && (!creep.room.controller ||
+        //         !creep.room.controller.my || !creep.room.controller.owner ||
+        //         creep.room.controller.owner.username !== 'Multitallented') &&
+        //         creep.room.find(FIND_CREEPS, {filter: (c) => {
+        //             return c.memory && c.memory.role === creepUtil.roles.BUILDER;
+        //         }}).length > 2) {
+        //     creep.say("scout");
+        //     creep.memory.role = creepUtil.roles.SCOUT;
+        //     return;
+        // }
+        if (creep.memory && creep.memory.wasScout &&
+                (creep.room.find(FIND_CREEPS, {filter: (c) => {
                     return c.memory && c.memory.role === creepUtil.roles.BUILDER;
-                }}).length > 1) {
+                }}).length > 2 || creep.room.find(FIND_STRUCTURES, {filter: (c) => {
+                    return c.structure && c.structure.structureType === STRUCTURE_SPAWN;
+                    }}).length < 1)) {
             creep.say("scout");
             creep.memory.role = creepUtil.roles.SCOUT;
+            creep.memory.currentOrder = undefined;
             return;
         }
 

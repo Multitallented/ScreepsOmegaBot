@@ -86,6 +86,9 @@ module.exports = {
         this.fight(creep);
     },
     fight: function(creep) {
+        if (creep.spawning) {
+            return;
+        }
         let goals = creep.room.find(FIND_STRUCTURES, {filter: (s) => {
                 return !s.my && s.structureType && s.structureType === STRUCTURE_TOWER;
             }});
