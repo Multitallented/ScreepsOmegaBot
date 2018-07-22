@@ -3,15 +3,6 @@ let roleScout = require('./role.scout');
 let creepUtil = require('../../util/creep.util');
 
 module.exports = {
-    getRandomAdjacentRoom: function(creep) {
-        let randDirection = {
-            0: FIND_EXIT_TOP, 1: FIND_EXIT_LEFT, 2: FIND_EXIT_RIGHT, 3: FIND_EXIT_BOTTOM
-        };
-        let direction = randDirection[Math.floor(Math.random() * 4)];
-        creep.say(direction);
-        return roleScout.getRoomName(creep.room.name, direction);
-    },
-
     run: function(creep) {
         if (creep.room.controller && !creep.room.controller.my && creep.room.controller.owner !== undefined) {
             creep.say("Don't shoot", true);
@@ -27,7 +18,7 @@ module.exports = {
         let claimConsistent = creep.room && creep.room.controller && creep.room.controller.reservation &&
             creep.memory.currentOrder && creep.memory.currentOrder.split(":")[0] === Util.RESERVE;
         if ((claimedRoom || (claimUnnecessary && !claimConsistent)) && (!creep.memory.currentOrder || creep.memory.currentOrder.split(":")[1] === creep.room.name)) {
-            let targetRoomName = this.getRandomAdjacentRoom(creep);
+            let targetRoomName = roleScout.getRandomAdjacentRoom(creep);
             if (creep.moveTo(creep.pos.findClosestByRange(creep.room.findExitTo(targetRoomName)), {visualizePathStyle: {stroke: '#ffffff'}}) === OK) {
                 creep.memory.currentOrder = Util.MOVE + ":" + targetRoomName;
             }

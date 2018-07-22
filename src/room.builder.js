@@ -436,62 +436,39 @@ module.exports = {
                 (x === 47 && (this.checkForWall(49, y+1,  room) || this.checkForWall(49, y-1, room))) ||
                 (y === 2  && (this.checkForWall(x+1,  0,  room) || this.checkForWall(x-1, 0,  room))) ||
                 (y === 47 && (this.checkForWall(x+1, 49,  room) || this.checkForWall(x-1, 49, room)))) {
-            let hasRoad = false;
-            let obstructed = false;
-            let saveAndQuit = false;
-            _.forEach(room.lookAt(x,y), (c) => {
-                if ((c.type === 'terrain' && c.terrain === 'wall') ||
-                    (c.type === 'structure' && (c.structure.structureType === STRUCTURE_WALL ||
-                        c.structure.structureType === STRUCTURE_RAMPART))) {
-                    obstructed = true;
-                } else if (c.type === 'structure') {
-                    hasRoad = true;
-                }
-            });
-            if (!obstructed) {
-                let newSite = null;
-                if (hasRoad) {
-                    newSite = {type: STRUCTURE_RAMPART, pos: {x: x, y: y}};
-                } else {
-                    newSite = {type: STRUCTURE_WALL, pos: {x: x, y: y}};
-                }
-                constructionSites.push(newSite);
-                siteLocations[x + ":" + y] = newSite;
-                saveAndQuit = true;
-            }
-            hasRoad = false;
-            obstructed = false;
+            let newSite = {type: STRUCTURE_WALL, pos: {x: x, y: y}};
+            constructionSites.push(newSite);
+            siteLocations[x + ":" + y] = newSite;
+            let wallArray = [];
 
             if (x === 2) {
-                x = 1;
+                wallArray.push({x:x, y:y+1});
+                wallArray.push({x:x, y:y-1});
+                wallArray.push({x:x-1, y:y-1});
+                wallArray.push({x:x-1, y:y+1});
             } else if (x === 47) {
-                x = 48;
+                wallArray.push({x:x, y:y+1});
+                wallArray.push({x:x, y:y-1});
+                wallArray.push({x:x+1, y:y-1});
+                wallArray.push({x:x+1, y:y+1});
             } else if (y === 2) {
-                y = 1;
+                wallArray.push({x:x+1, y:y});
+                wallArray.push({x:x-1, y:y});
+                wallArray.push({x:x+1, y:y-1});
+                wallArray.push({x:x-1, y:y-1});
             } else if (y === 47) {
-                y = 48;
+                wallArray.push({x:x+1, y:y});
+                wallArray.push({x:x-1, y:y});
+                wallArray.push({x:x+1, y:y+1});
+                wallArray.push({x:x-1, y:y+1});
             }
-            _.forEach(room.lookAt(x,y), (c) => {
-                if ((c.type === 'terrain' && c.terrain === 'wall') ||
-                    (c.type === 'structure' && (c.structure.structureType === STRUCTURE_WALL ||
-                        c.structure.structureType === STRUCTURE_RAMPART))) {
-                    obstructed = true;
-                } else if (c.type === 'structure') {
-                    hasRoad = true;
-                }
-            });
-            if (!obstructed) {
-                let newSite = null;
-                if (hasRoad) {
-                    newSite = {type: STRUCTURE_RAMPART, pos: {x: x, y: y}};
-                } else {
-                    newSite = {type: STRUCTURE_WALL, pos: {x: x, y: y}};
-                }
+            _.forEach(wallArray, (wall) => {
+                newSite = {type: STRUCTURE_WALL, pos: {x: wall.x, y: wall.y}};
                 constructionSites.push(newSite);
-                siteLocations[x + ":" + y] = newSite;
-                saveAndQuit = true;
-            }
-            return saveAndQuit;
+                siteLocations[wall.x + ":" + wall.y] = newSite;
+            });
+
+            return true;
         }
         return false;
     },

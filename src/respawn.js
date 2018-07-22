@@ -190,7 +190,7 @@ module.exports = {
             //     }
             //     this.spawnACreep(Game.getObjectById(spawnId), creepUtil.roles.BUILDER, count['energyAvailable']);
             // }
-            else if (count[creepUtil.roles.CLAIMER] < 1 && creepCount[spawnId][creepUtil.roles.CLAIMER + ":X"] < 8 &&
+            else if (count[creepUtil.roles.CLAIMER] < 1 && creepCount[spawnId][creepUtil.roles.CLAIMER + ":X"] < 6 &&
                     creepCount[spawnId][creepUtil.roles.SCOUT + ":X"] > 0 && count['energyCapacity'] > 699) {
                 spawning = creepUtil.roles.CLAIMER;
                 this.saySomething(spawnId, spawning + 1);
