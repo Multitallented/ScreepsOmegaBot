@@ -469,7 +469,7 @@ module.exports = {
                 if (siteLocations[roadPos.x + ":" + roadPos.y]) {
                     return;
                 }
-                let isWall = roadPos.x === 3 || roadPos.x === 47 || roadPos.y === 3 || roadPos.y === 47;
+                let isWall = roadPos.x === 2 || roadPos.x === 47 || roadPos.y === 2 || roadPos.y === 47;
                 if (isWall) {
                     let newSite = {type: STRUCTURE_RAMPART, pos: {x: roadPos.x, y: roadPos.y}};
                     siteLocations[roadPos.x + ":" + roadPos.y] = newSite;
