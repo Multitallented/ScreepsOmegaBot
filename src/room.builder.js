@@ -446,6 +446,8 @@ module.exports = {
     buildShortestRoad: function(room, startingPoint, siteLocations, constructionSites, minLevel) {
         let saveAndQuit = false;
         let range = 9999;
+        let distance = 9999;
+        let bestPathArray = null;
         _.forEach(siteLocations, (site) => {
             if (saveAndQuit || (site.type !== STRUCTURE_ROAD && site.type !== STRUCTURE_SPAWN)) {
                 return;
@@ -454,23 +456,29 @@ module.exports = {
             if (currentRange > range) {
                 return;
             }
-            //TODO update this in a way that it doesn't cause time outs
             // PathFinder.use(false);
             // let pathArray = pos.findPathTo(site.pos.x, site.pos.y, {ignoreCreeps: true, avoid: constructionSites, swampCost: 1});
             // PathFinder.use(true);
-            let pathPoint =  room.getPositionAt(startingPoint.pos.x, startingPoint.pos.y);
-            let pathArray = pathPoint.findPathTo(site.pos.x, site.pos.y, {ignoreCreeps: true, costCallback: (roomName, costMatrix) => {
+            let pathPoint = room.getPositionAt(startingPoint.pos.x, startingPoint.pos.y);
+            let pathArray = pathPoint.findPathTo(site.pos.x, site.pos.y, {
+                ignoreCreeps: true, costCallback: (roomName, costMatrix) => {
                     if (roomName === room.name) {
                         _.forEach(constructionSites, (site) => {
                             costMatrix.set(site.pos.x, site.pos.y, 256);
                         });
                     }
                     return costMatrix;
-                }, swampCost: 1});
-            // if (pathArray.length > distance) {
-            //     return;
-            // }
-            _.forEach(pathArray, (roadPos) => {
+                }, swampCost: 1
+            });
+            if (pathArray.length > distance) {
+                return;
+            }
+            range = currentRange;
+            distance = pathArray.length;
+            bestPathArray = pathArray;
+        });
+        if (bestPathArray != null) {
+            _.forEach(bestPathArray, (roadPos) => {
                 if (siteLocations[roadPos.x + ":" + roadPos.y]) {
                     return;
                 }
@@ -490,7 +498,7 @@ module.exports = {
                 saveAndQuit = true;
                 startingPoint.roadPlanned = true;
             });
-        });
+        }
         return saveAndQuit;
     },
 
@@ -517,7 +525,7 @@ module.exports = {
                 if (_.filter(room.lookAt(c.x, c.y), (terrain) => {
                     return terrain.type === 'structure';
                 }).length) {
-                    if (c.structure.structureType === STRUCTURE_CONTAINER) {
+                    if (c.structure && c.structure.structureType === STRUCTURE_CONTAINER) {
                         hasContainer = true;
                         pos = null;
                     }
