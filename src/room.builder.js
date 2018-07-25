@@ -132,6 +132,9 @@ module.exports = {
             if (saveAndQuit) {
                 this.saveToCache(room, siteCounts, siteLocations, constructionSites, pointsOfImportance);
                 return;
+            } else {
+                siteCounts[STRUCTURE_EXTENSION] = 60;
+                break;
             }
         }
 
@@ -239,21 +242,21 @@ module.exports = {
     },
 
     getPositionWithBuffer: function(room, x, y, size, buffer, type, pointsOfImportance, siteCounts, siteLocations, constructionSites) {
+        let siteFound = false;
         this.loopFromCenter(x, y, size, (x, y) => {
             let positionOk = true;
+            if (siteLocations[x + ":" + y] || _.filter(room.lookAt(x, y), (c) => {
+                return c.type === 'structure' || (c.type === 'terrain' && c.terrain === 'wall'); }).length) {
+                positionOk = false;
+            }
             if (buffer > 0) {
                 this.loopFromCenter(x, y, 1 + 2 * buffer, (x, y) => {
                     if (siteLocations[x + ":" + y] || _.filter(room.lookAt(x, y), (c) => {
-                            return c.type === 'structure' || (c.type === 'terrain' && c.terrain === 'wall'); }).length) {
+                            return c.type === 'structure'; }).length) {
                         positionOk = false;
                         return true;
                     }
                 });
-            } else {
-                if (siteLocations[x + ":" + y] || _.filter(room.lookAt(x, y), (c) => {
-                        return c.type === 'structure' || (c.type === 'terrain' && c.terrain === 'wall'); }).length) {
-                    positionOk = false;
-                }
             }
             if (positionOk) {
                 if (siteCounts[type]) {
@@ -267,10 +270,11 @@ module.exports = {
                 if (pointsOfImportance && type !== STRUCTURE_EXTENSION) {
                     pointsOfImportance.push(newSite);
                 }
+                siteFound = true;
                 return true;
             }
         });
-        return true;
+        return siteFound;
     },
 
     loopFromCenter: function(x, y, size, callback) {
