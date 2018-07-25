@@ -104,7 +104,7 @@ module.exports = {
                 let targetRoomName = roleScout.getRoomName(room.name, direction);
                 let target = room.getPositionAt(25,25).findClosestByRange(room.findExitTo(targetRoomName));
                 if (target != null) {
-                    pointsOfImportance.push({pos: {x: target.x, y: target.y}});
+                    pointsOfImportance.push({pos: {x: target.x, y: target.y}, type: direction});
                 }
             }
         });
@@ -264,7 +264,7 @@ module.exports = {
                 let newSite = {type: type, pos: {x: x, y: y}};
                 siteLocations[x + ":" + y] = newSite;
                 constructionSites.push(newSite);
-                if (pointsOfImportance) {
+                if (pointsOfImportance && type !== STRUCTURE_EXTENSION) {
                     pointsOfImportance.push(newSite);
                 }
                 return true;
@@ -317,9 +317,9 @@ module.exports = {
         let hasExit = false;
         if (exit === FIND_EXIT_TOP) {
             for (let x=2; x<49; x++) {
-                hasExit = hasExit || _.filter(room.lookAt(x, 1), (c) => {
+                hasExit = hasExit || _.filter(room.lookAt(x, 0), (c) => {
                     return c.type === 'terrain' && c.terrain === 'wall';
-                }).length > 0;
+                }).length < 1;
                 if (hasExit) {
                     return hasExit;
                 }
@@ -327,9 +327,9 @@ module.exports = {
         }
         else if (exit === FIND_EXIT_LEFT) {
             for (let x=2; x<49; x++) {
-                hasExit = hasExit || _.filter(room.lookAt(1, x), (c) => {
+                hasExit = hasExit || _.filter(room.lookAt(0, x), (c) => {
                     return c.type === 'terrain' && c.terrain === 'wall';
-                }).length > 0;
+                }).length < 1;
                 if (hasExit) {
                     return hasExit;
                 }
@@ -339,7 +339,7 @@ module.exports = {
             for (let x=2; x<49; x++) {
                 hasExit = hasExit || _.filter(room.lookAt(x, 49), (c) => {
                     return c.type === 'terrain' && c.terrain === 'wall';
-                }).length > 0;
+                }).length < 1;
                 if (hasExit) {
                     return hasExit;
                 }
@@ -349,7 +349,7 @@ module.exports = {
             for (let x=2; x<49; x++) {
                 hasExit = hasExit || _.filter(room.lookAt(49, x), (c) => {
                     return c.type === 'terrain' && c.terrain === 'wall';
-                }).length > 0;
+                }).length < 1;
                 if (hasExit) {
                     return hasExit;
                 }
@@ -385,6 +385,7 @@ module.exports = {
                 }
             });
             if (obstructed) {
+                siteLocations[x + ":" + y] = {type: "terrain", pos: {x: x, y: y}};
                 return false;
             }
             let newSite = null;
