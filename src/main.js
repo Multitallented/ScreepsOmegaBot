@@ -71,10 +71,11 @@ module.exports = {
         });
 
         _.forEach(Game.rooms, (room) => {
-            if (room.controller && room.controller.my && room.controller.owner &&
-                room.controller.owner.username === 'Multitallented' &&
-                (!room.memory || !room.memory.controllerLevel ||
-                room.memory.controllerLevel < room.controller.level)) {
+            if (room.controller && ((room.controller.my && room.controller.owner &&
+                    room.controller.owner.username === 'Multitallented') ||
+                    (room.controller.reservation && room.controller.reservation.username === 'Multitallented')) &&
+                    (!room.memory || !room.memory.controllerLevel ||
+                    room.memory.controllerLevel < room.controller.level)) {
                 roomBuilder.buildRoom(room);
             }
         });

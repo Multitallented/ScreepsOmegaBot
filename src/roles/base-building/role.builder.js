@@ -177,9 +177,10 @@ let roleBuilder = {
                         this.actionById(creep);
                     }
                 } else {
-                    if (creep.room.controller && creep.room.controller.my &&
+                    if (creep.room.controller && ((creep.room.controller.my &&
                             creep.room.controller.owner !== undefined &&
-                            creep.room.controller.owner.username === 'Multitallented' &&
+                            creep.room.controller.owner.username === 'Multitallented') ||
+                            creep.room.controller.reservation && creep.room.controller.reservation.username === 'Multitallented') &&
                             creep.room.memory &&
                             creep.room.memory.controllerLevel >= creep.room.controller.level &&
                             creep.room.memory.constructionSites.length > 0) {
