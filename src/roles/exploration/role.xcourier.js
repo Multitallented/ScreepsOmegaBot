@@ -75,7 +75,8 @@ module.exports = {
             }
         }
 
-        let discoveredRoom = (creep.room.controller && creep.room.controller.my) ||
+        let discoveredRoom = (creep.room.controller && (creep.room.controller.my || (creep.room.controller.reservation
+                && creep.room.controller.reservation.username === 'Multitallented'))) ||
             _.filter(Game.flags, (f) => f.room === creep.room).length === 1;
         if (discoveredRoom && (!creep.memory.currentOrder || creep.memory.currentOrder.split(":")[1] === creep.room.name)) {
             let targetRoomName = scoutScript.getRandomAdjacentRoom(creep);

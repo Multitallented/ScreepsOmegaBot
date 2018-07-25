@@ -36,6 +36,13 @@ let roleBuilder = {
             }
             let room = Game.rooms[creep.memory.originName];
             if (room !== undefined && room !== null && creep.room !== room) {
+                if (creep.memory.currentOrder !== undefined) {
+                    this.actionById(creep);
+                    if (creep.memory.currentOrder !== undefined) {
+                        return false;
+                    }
+                }
+
                 let pos = room.getPositionAt(creep.pos.x, creep.pos.y);
                 if (pos !== null) {
                     let move = creep.moveTo(pos, {visualizePathStyle: {stroke: '#ffaa00'}});
