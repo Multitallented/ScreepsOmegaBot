@@ -64,13 +64,22 @@ let roleBuilder = {
         //     creep.memory.role = creepUtil.roles.SCOUT;
         //     return;
         // }
+        // if (creep.memory && creep.memory.wasScout &&
+        //         (creep.room.find(FIND_CREEPS, {filter: (c) => {
+        //             return c.memory && c.memory.role === creepUtil.roles.BUILDER;
+        //         }}).length > 2 || creep.room.find(FIND_STRUCTURES, {filter: (c) => {
+        //             return c.structure && c.structure.structureType === STRUCTURE_SPAWN;
+        //             }}).length < 1)) {
+        //     creep.say("scout");
+        //     creep.memory.role = creepUtil.roles.SCOUT;
+        //     creep.memory.currentOrder = undefined;
+        //     return;
+        // }
         if (creep.memory && creep.memory.wasScout &&
-                (creep.room.find(FIND_CREEPS, {filter: (c) => {
+                creep.room.find(FIND_CREEPS, {filter: (c) => {
                     return c.memory && c.memory.role === creepUtil.roles.BUILDER;
-                }}).length > 2 || creep.room.find(FIND_STRUCTURES, {filter: (c) => {
-                    return c.structure && c.structure.structureType === STRUCTURE_SPAWN;
-                    }}).length < 1)) {
-            creep.say("scout");
+                }}).length > 3) {
+            creep.say("scoot");
             creep.memory.role = creepUtil.roles.SCOUT;
             creep.memory.currentOrder = undefined;
             return;

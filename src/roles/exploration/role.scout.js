@@ -134,11 +134,11 @@ module.exports = {
                 creep.memory.role = creepUtil.roles.UPGRADER;
                 return;
             }
-            else if (!creep.memory.wasBuilder) {
-                creep.say("builder");
-                creep.memory.role = creepUtil.roles.BUILDER;
-                return;
-            }
+            // else if (!creep.memory.wasBuilder) {
+            //     creep.say("builder");
+            //     creep.memory.role = creepUtil.roles.BUILDER;
+            //     return;
+            // }
         }
         if (creep.room.controller && (!creep.room.controller.owner || creep.room.controller.owner.username !== 'Multitallented')) {
             if (creep.room.find(FIND_STRUCTURES, {filter: (s) => {
