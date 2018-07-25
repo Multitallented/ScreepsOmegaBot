@@ -21,18 +21,26 @@ module.exports = {
         return this.getRoomName(creep.room.name, direction);
     },
 
-    moveCreepIntoRoom: function(creep) {
+    moveCreepIntoRoom: function(creep, preserveOrder) {
         if (creep.pos.x === 0) {
-            creep.memory.currentOrder = undefined;
+            if (!preserveOrder) {
+                creep.memory.currentOrder = undefined;
+            }
             creep.moveTo(1, creep.pos.y);
         } else if (creep.pos.x === 49) {
-            creep.memory.currentOrder = undefined;
+            if (!preserveOrder) {
+                creep.memory.currentOrder = undefined;
+            }
             creep.moveTo(48, creep.pos.y);
         } else if (creep.pos.y === 0) {
-            creep.memory.currentOrder = undefined;
+            if (!preserveOrder) {
+                creep.memory.currentOrder = undefined;
+            }
             creep.moveTo(creep.pos.x, 1);
         } else if (creep.pos.y === 49) {
-            creep.memory.currentOrder = undefined;
+            if (!preserveOrder) {
+                creep.memory.currentOrder = undefined;
+            }
             creep.moveTo(creep.pos.x, 48);
         } else {
             return false;

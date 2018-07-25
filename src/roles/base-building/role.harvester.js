@@ -14,7 +14,7 @@ let roleHarvester = {
             return;
         }
 
-        if (scoutScript.moveCreepIntoRoom(creep)) {
+        if (scoutScript.moveCreepIntoRoom(creep, true)) {
             return;
         }
 
