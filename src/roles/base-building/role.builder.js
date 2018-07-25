@@ -1,6 +1,7 @@
 let Util = require('../../util/util');
 let structUtil = require('../../util/structure.util');
 let creepUtil = require('../../util/creep.util');
+let scoutUtil = require('../exploration/role.scout');
 let roleBuilder = {
 
     actionById: function(creep) {
@@ -24,7 +25,8 @@ let roleBuilder = {
                 creep.memory.currentOrder = Util.REPAIR + ":" + target.id;
             }
         } else {
-            creep.memory.currentOrder = undefined;
+            creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});
+            creep.memory.currentOrder = Util.MOVE + ":" + target.id;
         }
     },
 
@@ -60,6 +62,8 @@ let roleBuilder = {
         if (this.originRoom(creep)) {
             return;
         }
+
+        scoutUtil.moveCreepIntoRoom(creep);
 
         // if (creep.memory && creep.memory.wasScout && (!creep.room.controller ||
         //         !creep.room.controller.my || !creep.room.controller.owner ||

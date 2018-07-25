@@ -1,5 +1,6 @@
 let Util = require('../../util/util');
 let builderScript = require('./role.builder');
+let scoutScript = require('../exploration/role.scout');
 
 let roleHarvester = {
 
@@ -10,6 +11,10 @@ let roleHarvester = {
         }
 
         if (builderScript.originRoom(creep)) {
+            return;
+        }
+
+        if (scoutScript.moveCreepIntoRoom(creep)) {
             return;
         }
 
