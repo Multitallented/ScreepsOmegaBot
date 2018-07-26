@@ -56,7 +56,10 @@ let roleUpgrader = {
                 if (creep.memory.currentOrder) {
                     let splitOrder = creep.memory.currentOrder.split(":");
                     if (splitOrder[0] === Util.WITHDRAW || splitOrder[0] === Util.HARVEST) {
-                        previousHarvest = Game.getObjectById(splitOrder[1]).id;
+                        let obj = Game.getObjectById(splitOrder[1]);
+                        if (obj) {
+                            previousHarvest = obj.id;
+                        }
                     }
                 }
                 if (previousHarvest == null) {

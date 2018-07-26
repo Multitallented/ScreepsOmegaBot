@@ -4,7 +4,7 @@ let creepUtil = require('../../util/creep.util');
 let scoutUtil = require('../exploration/role.scout');
 let roleBuilder = {
 
-    actionById: function(creep) {
+    actionById: function(creep, idle) {
         let target = Game.getObjectById(creep.memory.currentOrder.split(":")[1]);
         if (target === null) {
             creep.memory.currentOrder = undefined;
@@ -24,6 +24,8 @@ let roleBuilder = {
             } else {
                 creep.memory.currentOrder = Util.REPAIR + ":" + target.id;
             }
+        } else if (idle) {
+            creep.memory.currentOrder = undefined;
         } else {
             creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});
             creep.memory.currentOrder = Util.MOVE + ":" + target.id;
@@ -154,7 +156,7 @@ let roleBuilder = {
         } else if (creep.carry.energy > 0 && creep.memory.currentOrder !== undefined &&
             (creep.memory.currentOrder.split(":")[0] === Util.REPAIR || creep.memory.currentOrder.split(":")[0] === Util.MOVE ||
                 creep.memory.currentOrder.split(":")[0] === Util.BUILD)) {
-            this.actionById(creep);
+            this.actionById(creep, true);
         } else {
             let targets = creep.room.find(FIND_STRUCTURES, {
                 filter: (target) => {
@@ -171,14 +173,14 @@ let roleBuilder = {
             targets = _.sortBy(targets, (o) => o.hits);
             if (targets.length) {
                 creep.memory.currentOrder = Util.REPAIR + ":" + targets[0].id;
-                this.actionById(creep);
+                this.actionById(creep, true);
             } else {
                 let sites = creep.room.find(FIND_CONSTRUCTION_SITES);
                 if (sites.length) {
                     let site = creep.pos.findClosestByPath(sites);
                     if (site !== null) {
                         creep.memory.currentOrder = Util.BUILD + ":" + site.id;
-                        this.actionById(creep);
+                        this.actionById(creep, true);
                     }
                 } else {
                     if (creep.room.controller && ((creep.room.controller.my &&
@@ -210,7 +212,7 @@ let roleBuilder = {
                         if (targets.length) {
                             targets = _.sortBy(targets, (o) => o.hits);
                             creep.memory.currentOrder = Util.REPAIR + ":" + targets[0].id;
-                            this.actionById(creep);
+                            this.actionById(creep, true);
                         } else if (reservedController) {
                             creep.memory.role = creepUtil.roles.SCOUT;
                             creep.memory.wasBuilder = true;
