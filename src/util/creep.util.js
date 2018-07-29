@@ -47,7 +47,7 @@ module.exports = {
         };
         let bodyArray = [];
         let energyRemaining = energy;
-        while (energyRemaining > 10) {
+        while (energyRemaining > 10 && bodyArray.length < 50) {
             if (type === this.roles.BUILDER ||
                 type === this.roles.UPGRADER ||
                 type === this.roles.HARVESTER ||
