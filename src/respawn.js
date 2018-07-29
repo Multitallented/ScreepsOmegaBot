@@ -126,8 +126,8 @@ module.exports = {
                 this.saySomething(spawnId, spawning + 1);
                 if (count[creepUtil.roles.MINER] < 1 && count['energyAvailable'] < 300) {
                     return;
-                } else if ((count['energyCapacity'] > 899 && count['energyAvailable'] < 900) ||
-                        (count['energyCapacity'] < 900 && count['energyCapacity'] > count['energyAvailable'])) {
+                } else if (count[creepUtil.roles.MINER] > 0 && ((count['energyCapacity'] > 899 && count['energyAvailable'] < 900) ||
+                        (count['energyCapacity'] < 900 && count['energyCapacity'] > count['energyAvailable']))) {
                     return;
                 }
                 this.spawnACreep(Game.getObjectById(spawnId), creepUtil.roles.MINER, Math.min(count['energyAvailable'], 900));
